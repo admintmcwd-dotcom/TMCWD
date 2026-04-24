@@ -104,6 +104,7 @@ namespace TMCWD.Data.Controllers
             return user;
         }
 
+        [HttpGet]
         public User GetByEmail(string email)
         {
             User user = new();

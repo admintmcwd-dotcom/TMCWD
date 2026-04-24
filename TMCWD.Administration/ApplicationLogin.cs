@@ -4,6 +4,9 @@ using System.Text;
 using System.Net.Http.Json;
 using TMCWD.Utility.Generic;
 using TMCWD.Model.Administrator;
+using TMCWD.Data.Test;
+using System.Text.Encodings.Web;
+using System.Web;
 
 namespace TMCWD.Administration
 {
@@ -45,6 +48,10 @@ namespace TMCWD.Administration
 
             if (user.Password.Equals(this.Password)) isSuccess = true;
 
+            //TestUser user = new TestUser();
+            //var testUser = user.GetByEmail(this.Email);
+
+
             return isSuccess;
         }
 
@@ -63,8 +70,9 @@ namespace TMCWD.Administration
 
                 var loginData = new { Email = this.Email };
                 HttpClient client = new HttpClient();
-                client.BaseAddress = new Uri("http://localhost:5178/Users");
-                var response = await client.PostAsJsonAsync("/GetByEmail", loginData);
+                client.BaseAddress = new Uri($"https://localhost:7003/Users?email={HttpUtility.UrlEncode(this.Email)}&password={this.Password}");
+                //client.BaseAddress = new Uri($"https://localhost:7003/Users?email={HttpUtility.UrlEncode(this.Email)}&password={this.Password}");
+                var response = await client.GetAsync("/GetByEmail");
                 if (!response.IsSuccessStatusCode)
                     throw new ArgumentException("Login failed. Please check your credentials and try again.");
 

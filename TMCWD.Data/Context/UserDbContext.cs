@@ -7,15 +7,16 @@ namespace TMCWD.Data.Context
     {
         #region Fields
 
+        string connectionString = "server=localhost;port=3306;database=tmcwd;user=root;password=password123;";
+
         public DbSet<Users> UserEntities { get; set; }
 
         #endregion
 
-        #region Methods
+        #region methods
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = "server=localhost;uid=sa;pwd=password123;database=tmcwd";
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             base.OnConfiguring(optionsBuilder);
         }

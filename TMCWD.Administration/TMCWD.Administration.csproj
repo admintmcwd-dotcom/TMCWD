@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TMCWD.Data\TMCWD.Data.csproj" />
     <ProjectReference Include="..\TMCWD.Model\TMCWD.Model.csproj" />
     <ProjectReference Include="..\TMCWD.Utility\TMCWD.Utility.csproj" />
   </ItemGroup>
