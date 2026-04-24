@@ -1,37 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Projects\\TMCWD\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{7EEF6108-D2D4-47FD-BA05-4713E8676C92}|TMCWD.Data\\TMCWD.Data.csproj|c:\\projects\\tmcwd\\tmcwd.data\\entities\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7EEF6108-D2D4-47FD-BA05-4713E8676C92}|TMCWD.Data\\TMCWD.Data.csproj|solutionrelative:tmcwd.data\\entities\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UserData.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Data\\Entities\\UserData.cs",
-              "RelativeDocumentMoniker": "TMCWD.Data\\Entities\\UserData.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Data\\Entities\\UserData.cs",
-              "RelativeToolTip": "TMCWD.Data\\Entities\\UserData.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-24T01:19:36.234Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }
