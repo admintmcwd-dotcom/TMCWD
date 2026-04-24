@@ -4,4 +4,5 @@
   <Project Path="TMCWD.Data/TMCWD.Data.csproj" Id="7eef6108-d2d4-47fd-ba05-4713e8676c92" />
   <Project Path="TMCWD.Engineering/TMCWD.Engineering.csproj" Id="1e81ea05-7bfa-4024-a35a-9925a9f2be39" />
   <Project Path="TMCWD.Model/TMCWD.Model.csproj" Id="dce5392c-28fb-4ac3-b636-c8c79fea3f8d" />
+  <Project Path="TMCWD.Utility/TMCWD.Utility.csproj" Id="3e604da5-f3c1-439e-9f5c-aad4abb56eeb" />
 </Solution>
