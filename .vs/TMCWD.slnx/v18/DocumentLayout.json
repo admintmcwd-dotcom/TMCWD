@@ -1,0 +1,101 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Projects\\TMCWD\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B4BF77C1-28B5-4A24-90DD-F9BE5B872915}|TMCWD.Data\\TMCWD.Data.csproj|c:\\projects\\tmcwd\\tmcwd.data\\administrator\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B4BF77C1-28B5-4A24-90DD-F9BE5B872915}|TMCWD.Data\\TMCWD.Data.csproj|solutionrelative:tmcwd.data\\administrator\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B4BF77C1-28B5-4A24-90DD-F9BE5B872915}|TMCWD.Data\\TMCWD.Data.csproj|c:\\projects\\tmcwd\\tmcwd.data\\utilities\\userdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B4BF77C1-28B5-4A24-90DD-F9BE5B872915}|TMCWD.Data\\TMCWD.Data.csproj|solutionrelative:tmcwd.data\\utilities\\userdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B4BF77C1-28B5-4A24-90DD-F9BE5B872915}|TMCWD.Data\\TMCWD.Data.csproj|c:\\projects\\tmcwd\\tmcwd.data\\administrator\\userentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B4BF77C1-28B5-4A24-90DD-F9BE5B872915}|TMCWD.Data\\TMCWD.Data.csproj|solutionrelative:tmcwd.data\\administrator\\userentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DCE5392C-28FB-4AC3-B636-C8C79FEA3F8D}|TMCWD.Model\\TMCWD.Model.csproj|c:\\projects\\tmcwd\\tmcwd.model\\administrator\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DCE5392C-28FB-4AC3-B636-C8C79FEA3F8D}|TMCWD.Model\\TMCWD.Model.csproj|solutionrelative:tmcwd.model\\administrator\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DCE5392C-28FB-4AC3-B636-C8C79FEA3F8D}|TMCWD.Model\\TMCWD.Model.csproj|c:\\projects\\tmcwd\\tmcwd.model\\administrator\\interface\\iuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DCE5392C-28FB-4AC3-B636-C8C79FEA3F8D}|TMCWD.Model\\TMCWD.Model.csproj|solutionrelative:tmcwd.model\\administrator\\interface\\iuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UserData.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Data\\Administrator\\UserData.cs",
+              "RelativeDocumentMoniker": "TMCWD.Data\\Administrator\\UserData.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Data\\Administrator\\UserData.cs",
+              "RelativeToolTip": "TMCWD.Data\\Administrator\\UserData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-22T08:32:47.534Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserDbContext.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Data\\Utilities\\UserDbContext.cs",
+              "RelativeDocumentMoniker": "TMCWD.Data\\Utilities\\UserDbContext.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Data\\Utilities\\UserDbContext.cs",
+              "RelativeToolTip": "TMCWD.Data\\Utilities\\UserDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-22T08:10:56.758Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UserEntity.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Data\\Administrator\\UserEntity.cs",
+              "RelativeDocumentMoniker": "TMCWD.Data\\Administrator\\UserEntity.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Data\\Administrator\\UserEntity.cs",
+              "RelativeToolTip": "TMCWD.Data\\Administrator\\UserEntity.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-22T07:48:36.083Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Model\\Administrator\\User.cs",
+              "RelativeDocumentMoniker": "TMCWD.Model\\Administrator\\User.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Model\\Administrator\\User.cs",
+              "RelativeToolTip": "TMCWD.Model\\Administrator\\User.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAqwBcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-22T07:25:36.35Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IUser.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Model\\Administrator\\Interface\\IUser.cs",
+              "RelativeDocumentMoniker": "TMCWD.Model\\Administrator\\Interface\\IUser.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Model\\Administrator\\Interface\\IUser.cs",
+              "RelativeToolTip": "TMCWD.Model\\Administrator\\Interface\\IUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwBMAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-22T07:22:18.455Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
