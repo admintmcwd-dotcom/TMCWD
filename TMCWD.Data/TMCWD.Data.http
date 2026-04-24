@@ -1,0 +1,6 @@
+@TMCWD.Data_HostAddress = http://localhost:5178
+
+GET {{TMCWD.Data_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
