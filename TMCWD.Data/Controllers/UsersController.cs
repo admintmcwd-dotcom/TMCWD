@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TMCWD.Model.Administrator;
-using TMCWD.Utility.Generic;
+using System.Data;
+using System.Xml.Linq;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
+using TMCWD.Model.Administrator;
+using TMCWD.Utility.Generic;
 
 namespace TMCWD.Data.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UsersController : Controller
     {
         [HttpPost]
@@ -99,6 +101,37 @@ namespace TMCWD.Data.Controllers
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
             }
+            return user;
+        }
+
+        public User GetByEmail(string email)
+        {
+            User user = new();
+
+            try
+            {
+                using(var dbContext = new UserDbContext())
+                {
+                    var userEnt = dbContext.UserEntities.Where(x => x.Email.Equals(email, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                    if (userEnt == null) throw new Exception($"User with email {email} is not found.");
+                    user.DateCreated = userEnt.DateCreated;
+                    user.DateUpdated = userEnt.DateUpdated;
+                    user.DateVerified = userEnt.DateVerified;
+                    user.Email = userEnt.Email;
+                    user.Id = userEnt.Id;
+                    user.IsActive = userEnt.IsActive;
+                    user.IsVerified = userEnt.IsVerified;
+                    user.Name = userEnt.Name;
+                    user.Password = userEnt.Password;
+                    user.RememberToken = userEnt.RememberToken;
+                    user.Role = userEnt.Role;
+                }
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
+            }
+
             return user;
         }
 
