@@ -18,7 +18,7 @@ namespace TMCWD.Application.Controllers
             ApplicationLogin login = new ApplicationLogin(email, password);
             if(login.Login())
             {
-                return RedirectToAction("Index", "Dashboard");
+                return RedirectToAction("Index", "Engineering");
             }
             return View("Index", new LoginViewModel() { Email = string.Empty, Password = string.Empty });
         }

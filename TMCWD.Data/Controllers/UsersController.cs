@@ -12,7 +12,7 @@ namespace TMCWD.Data.Controllers
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
-        [HttpPost]
+        [HttpPost("SaveUser")]
         public bool Save(User user)
         {
             bool isSuccess = false;
@@ -31,12 +31,12 @@ namespace TMCWD.Data.Controllers
                         Role = (int)user.Role,
                         IsVerified = false
                     };
-                    dbContext.UserEntities.Add(userEntity);
+                    dbContext.Users.Add(userEntity);
                     dbContext.SaveChanges();
                 }
                 isSuccess = true;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
             }
@@ -44,7 +44,7 @@ namespace TMCWD.Data.Controllers
             return isSuccess;
         }
 
-        [HttpGet]
+        [HttpGet("GetById")]
         public User Get(int id)
         {
             User user = new();
@@ -52,7 +52,7 @@ namespace TMCWD.Data.Controllers
             {
                 using (var dbContext = new UserDbContext())
                 {
-                    var userEnt = dbContext.UserEntities.Where(x => x.Id.Equals(id)).SingleOrDefault();
+                    var userEnt = dbContext.Users.Where(x => x.Id.Equals(id)).SingleOrDefault();
                     if (userEnt == null) throw new Exception($"User with id {id} cannot be found.");
                     user.DateCreated = userEnt.DateCreated;
                     user.DateUpdated = userEnt.DateUpdated;
@@ -67,14 +67,14 @@ namespace TMCWD.Data.Controllers
                     user.Role = userEnt.Role;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
             }
             return user;
         }
 
-        [HttpGet]
+        [HttpGet("GetByName")]
         public User GetByName(string name)
         {
             User user = new();
@@ -82,7 +82,7 @@ namespace TMCWD.Data.Controllers
             {
                 using (var dbContext = new UserDbContext())
                 {
-                    var userEnt = dbContext.UserEntities.Where(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                    var userEnt = dbContext.Users.Where(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
                     if (userEnt == null) throw new Exception($"User with name {name} cannot be found.");
                     user.DateCreated = userEnt.DateCreated;
                     user.DateUpdated = userEnt.DateUpdated;
@@ -104,16 +104,16 @@ namespace TMCWD.Data.Controllers
             return user;
         }
 
-        [HttpGet]
+        [HttpGet("GetByEmail")]
         public User GetByEmail(string email)
         {
             User user = new();
 
             try
             {
-                using(var dbContext = new UserDbContext())
+                using (var dbContext = new UserDbContext())
                 {
-                    var userEnt = dbContext.UserEntities.Where(x => x.Email.Equals(email, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                    var userEnt = dbContext.Users.Where(x => x.Email.Equals(email, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
                     if (userEnt == null) throw new Exception($"User with email {email} is not found.");
                     user.DateCreated = userEnt.DateCreated;
                     user.DateUpdated = userEnt.DateUpdated;
@@ -128,7 +128,7 @@ namespace TMCWD.Data.Controllers
                     user.Role = userEnt.Role;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
             }
@@ -136,6 +136,7 @@ namespace TMCWD.Data.Controllers
             return user;
         }
 
+        [HttpGet("GetUsers")]
         public List<User> GetUsers()
         {
             List<User> users = new();
@@ -143,17 +144,17 @@ namespace TMCWD.Data.Controllers
             {
                 using (var dbContext = new UserDbContext())
                 {
-                    users = dbContext.UserEntities.Cast<User>().ToList();
+                    users = dbContext.Users.Cast<User>().ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
             }
             return users;
         }
 
-        [HttpPut]
+        [HttpPut("UpdateUser")]
         public bool Update(User user)
         {
             bool isSuccess = false;
@@ -162,7 +163,7 @@ namespace TMCWD.Data.Controllers
             {
                 using (var dbContext = new UserDbContext())
                 {
-                    var usersEnt = dbContext.UserEntities.Where(x => x.Id.Equals(user.Id)).SingleOrDefault();
+                    var usersEnt = dbContext.Users.Where(x => x.Id.Equals(user.Id)).SingleOrDefault();
                     if(usersEnt == null) throw new Exception("User with id {user.Id} cannot be found.");
                     usersEnt.DateUpdated = DateTime.Now;
                     usersEnt.IsActive = user.IsActive;
@@ -183,7 +184,7 @@ namespace TMCWD.Data.Controllers
             return isSuccess;
         }
 
-        [HttpPut]
+        [HttpPut("ChangePassword")]
         public bool ChangePassword(int id, string newPassword) 
         {
             bool isSuccess = false;
@@ -191,7 +192,7 @@ namespace TMCWD.Data.Controllers
             {
                 using(var dbContext = new UserDbContext())
                 {
-                    var userEnt = dbContext.UserEntities.Where(x => x.Id.Equals(id)).SingleOrDefault();
+                    var userEnt = dbContext.Users.Where(x => x.Id.Equals(id)).SingleOrDefault();
                     if(userEnt == null) throw new Exception("User with id {id} cannot be found.");
                     userEnt.Password = newPassword;
                     dbContext.SaveChanges();

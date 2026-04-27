@@ -9,7 +9,21 @@ namespace TMCWD.Data.Context
 
         string connectionString = "server=localhost;port=3306;database=tmcwd;user=root;password=password123;";
 
-        public DbSet<Users> UserEntities { get; set; }
+        public DbSet<Users> Users { get; set; }
+
+        public DbSet<InspectionType> InspectionTypes { get; set; }
+
+        #endregion
+
+        #region constructors
+
+        public UserDbContext(): base()
+        {
+        }
+
+        public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
+        {
+        }
 
         #endregion
 

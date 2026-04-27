@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Net.Http.Json;
 using TMCWD.Utility.Generic;
+using TMCWD.Utility.Encryption;
 using TMCWD.Model.Administrator;
-using TMCWD.Data.Test;
-using System.Text.Encodings.Web;
 using System.Web;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace TMCWD.Administration
 {
@@ -44,13 +42,12 @@ namespace TMCWD.Administration
         {
             bool isSuccess = false;
 
+            if(String.IsNullOrEmpty(this.Email.Trim()) || String.IsNullOrEmpty(this.Password.Trim()))
+                return isSuccess;
+
             var user = Task.Run(() => LoginTask()).GetAwaiter().GetResult();
 
-            if (user.Password.Equals(this.Password)) isSuccess = true;
-
-            //TestUser user = new TestUser();
-            //var testUser = user.GetByEmail(this.Email);
-
+            if (user.Password.Equals(StringEncyption.Encrypt(this.Password))) isSuccess = true;
 
             return isSuccess;
         }
@@ -68,21 +65,26 @@ namespace TMCWD.Administration
                     throw new ArgumentException("Email and Password cannot be empty.");
                 }
 
-                var loginData = new { Email = this.Email };
-                HttpClient client = new HttpClient();
-                client.BaseAddress = new Uri($"https://localhost:7003/Users?email={HttpUtility.UrlEncode(this.Email)}&password={this.Password}");
-                //client.BaseAddress = new Uri($"https://localhost:7003/Users?email={HttpUtility.UrlEncode(this.Email)}&password={this.Password}");
-                var response = await client.GetAsync("/GetByEmail");
-                if (!response.IsSuccessStatusCode)
-                    throw new ArgumentException("Login failed. Please check your credentials and try again.");
-
-                var userData = await response.Content.ReadFromJsonAsync<User>();
-                if (userData == null)
+                using (HttpClient client = new HttpClient())
                 {
-                    throw new ArgumentException("Login failed. User not found. Please check your credentials and try again.");
-                }
+                    string baseUrl = "http://localhost:5178";
+                    client.BaseAddress = new Uri(baseUrl);
 
-                return userData;
+                    string requestUrl = QueryHelpers.AddQueryString("api/Users/GetByEmail", "email", this.Email.Trim());
+                    using (var response = await client.GetAsync(requestUrl))
+                    {
+                        if (!response.IsSuccessStatusCode)
+                            throw new ArgumentException("Login failed. Please check your credentials and try again.");
+
+                        var userData = await response.Content.ReadFromJsonAsync<User>();
+                        if (userData == null)
+                        {
+                            throw new ArgumentException("Login failed. User not found. Please check your credentials and try again.");
+                        }
+
+                        return userData;
+                    }
+                }
 
             }
             catch (Exception ex)

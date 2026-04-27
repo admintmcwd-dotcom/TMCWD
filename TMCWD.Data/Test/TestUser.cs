@@ -17,7 +17,7 @@ namespace TMCWD.Data.Test
             {
                 using (var dbContext = new UserDbContext())
                 {
-                    var userEnt = dbContext.UserEntities.Where(x => x.Email == email).SingleOrDefault();
+                    var userEnt = dbContext.Users.Where(x => x.Email == email).SingleOrDefault();
                     if (userEnt == null) throw new Exception($"User with email {email} is not found.");
                     user.DateCreated = userEnt.DateCreated;
                     user.DateUpdated = userEnt?.DateUpdated ?? DateTime.MinValue;
