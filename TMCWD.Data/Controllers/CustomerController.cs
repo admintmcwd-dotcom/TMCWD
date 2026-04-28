@@ -12,9 +12,8 @@ namespace TMCWD.Data.Controllers
     {
 
         [HttpPost("SaveUpdate")]
-        public bool SaveUpdate(Customer customer)
+        public ActionResult<bool> SaveUpdate([FromBody] Customer customer)
         {
-            bool isSuccess = false;
             try
             {
                 using (var dbContext = new UserDbContext())
@@ -27,20 +26,20 @@ namespace TMCWD.Data.Controllers
                     {
                         dbContext.Customers.Update(customer);
                     }
-                    dbContext.SaveChanges();
+                    int res = dbContext.SaveChanges();
+                    if (res > 0) return Ok(true);
                 }
-                isSuccess = true;
             }
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                throw;
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
-            return isSuccess;
+            return Ok(false);
         }
 
         [HttpGet("GetById")]
-        public Customer GetById(int id)
+        public ActionResult<Customer> GetById(int id)
         {
             Customer customer = new();
             try
@@ -48,7 +47,7 @@ namespace TMCWD.Data.Controllers
                 using (var dbcContext = new UserDbContext())
                 {
                     var customerEnt = dbcContext.Customers.Where(x => x.Id == id).SingleOrDefault();
-                    if(customer == null) throw new Exception($"Customer with id {id} cannot be found.");
+                    if(customer == null) return NotFound($"Customer with id {id} cannot be found.");
                     customer.DateCreated = customerEnt.DateCreated;
                     customer.DateUpdated = customerEnt.DateUpdated;
                     customer.Email = customerEnt.Email;
@@ -63,14 +62,14 @@ namespace TMCWD.Data.Controllers
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                throw;
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
 
-            return customer;
+            return Ok(customer);
         }
 
         [HttpGet("GetByName")]
-        public Customer GetByName(string firstname, string lastname)
+        public ActionResult<Customer> GetByName(string firstname, string lastname)
         {
             Customer customer = new();
             try
@@ -78,7 +77,7 @@ namespace TMCWD.Data.Controllers
                 using (var dbContext = new UserDbContext())
                 {
                     var customerEnt = dbContext.Customers.Where(x => x.Firstname.ToLower() == firstname.ToLower() && x.Lastname.ToLower() == lastname.ToLower()).SingleOrDefault();
-                    if (customerEnt == null) throw new Exception($"Customer with name {firstname} {lastname} cannot be found.");
+                    if (customerEnt == null) return NotFound($"Customer with name {firstname} {lastname} cannot be found.");
                     customer.DateCreated = customerEnt.DateCreated;
                     customer.DateUpdated = customerEnt.DateUpdated;
                     customer.Email = customerEnt.Email;
@@ -93,31 +92,32 @@ namespace TMCWD.Data.Controllers
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                throw;
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
-            return customer;
+            return Ok(customer);
 
         }
 
-        public List<Customer> GetCustomers()
+        [HttpGet("GetCustomers")]
+        public ActionResult<IEnumerable<Customer>> GetCustomers()
         {
-            List<Customer> customers = new();
+            IEnumerable<Customer> customers = new List<Customer>();
 
             try
             {
                 using(var dbcContext = new UserDbContext())
                 {
-                    customers = dbcContext.Customers.ToList();
-                    if(customers.Count == 0) throw new Exception("No customers found.");
+                    customers = dbcContext.Customers;
+                    if(!customers.Any()) return NotFound("No customers found.");
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                throw;
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
 
-            return customers;
+            return Ok(customers);
         }
     }
 }

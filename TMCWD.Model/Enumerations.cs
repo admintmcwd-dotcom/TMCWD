@@ -14,8 +14,9 @@ public enum ErrorType
 
 public enum ErrorModule
 {
-    Application = 1,
-    CustomerSupport = 2,
-    Data = 3,
-    Engineering = 4
+    Administration = 1,
+    Application = 2,
+    CustomerSupport = 3,
+    Data = 4,
+    Engineering = 5
 }

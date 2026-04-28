@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TMCWD.Model.Administrator.Interface;
+using TMCWD.Model.CustomerSupport.Interfaces;
 
-namespace TMCWD.Model.Administrator
+namespace TMCWD.Model.CustomerSupport
 {
     public class InspectionTypeDetail : IInspectionTypeDetail
     {
