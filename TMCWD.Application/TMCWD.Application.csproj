@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TMCWD.Administration\TMCWD.Administration.csproj" />
+    <ProjectReference Include="..\TMCWD.Model\TMCWD.Model.csproj" />
+  </ItemGroup>
+
 </Project>

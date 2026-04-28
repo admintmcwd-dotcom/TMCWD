@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using TMCWD.Administration;
 using TMCWD.Application.Models;
 
 namespace TMCWD.Application.Controllers
@@ -8,7 +9,18 @@ namespace TMCWD.Application.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return View(new LoginViewModel() { Email = string.Empty, Password = string.Empty });
+        }
+
+        [HttpPost]
+        public IActionResult Login(string email, string password)
+        {
+            ApplicationLogin login = new ApplicationLogin(email, password);
+            if(login.Login())
+            {
+                return RedirectToAction("Index", "Engineering");
+            }
+            return View("Index", new LoginViewModel() { Email = string.Empty, Password = string.Empty });
         }
 
         public IActionResult Privacy()
