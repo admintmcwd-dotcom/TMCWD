@@ -13,6 +13,8 @@ namespace TMCWD.Data.Context
 
         public DbSet<InspectionType> InspectionTypes { get; set; }
 
+        public DbSet<Customer> Customers { get; set; }
+
         #endregion
 
         #region constructors

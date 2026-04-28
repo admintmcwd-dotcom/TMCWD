@@ -4,8 +4,9 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using TMCWD.Model.CustomerSupport;
+using TMCWD.Utility.Generic;
 
-namespace TMCWD.CustomerSupport
+namespace TMCWD.Administration
 {
     public class IncidentTransaction
     {
@@ -20,7 +21,7 @@ namespace TMCWD.CustomerSupport
 
         #region public methods
 
-        public List<Incident> GetIncidentTypes()
+        public List<Incident>? GetIncidentTypes()
         {
             var res = Task.Run(() => GetIncidents()).GetAwaiter().GetResult();
             return res;
@@ -30,7 +31,7 @@ namespace TMCWD.CustomerSupport
 
         #region private methods
 
-        private async Task<List<Incident>> GetIncidents()
+        private async Task<List<Incident>?> GetIncidents()
         {
             using (HttpClient client = new())
             {
@@ -49,6 +50,36 @@ namespace TMCWD.CustomerSupport
                     }
                 }
             }
+        }
+
+        private async Task<bool> SaveUpdateIncident(Incident incident)
+        {
+            bool isSuccess = false;
+
+            try
+            {
+                using(HttpClient client = new())
+                {
+                    client.BaseAddress = new Uri("https://localhost:5178/");
+                    using(var response = await client.PostAsJsonAsync("api/IncidentType/SaveUpdate", incident))
+                    {
+                        if(response.IsSuccessStatusCode)
+                        {
+                            isSuccess = true;
+                        }
+                        else
+                        {
+                            throw new Exception($"Failed to save/update incident. Status code: {response.StatusCode}");
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
+            }
+
+            return isSuccess;
         }
 
         #endregion

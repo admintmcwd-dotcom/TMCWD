@@ -9,6 +9,8 @@ namespace TMCWD.Model.Administrator
     {
         public decimal Id { get; set; }
         public string Name { get; set; }
+
+        public bool WithDetail { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
     }

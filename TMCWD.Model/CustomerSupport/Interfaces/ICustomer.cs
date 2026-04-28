@@ -9,7 +9,7 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
 
         #region properties
 
-        public System.Int64 Id { get; set; }
+        public int Id { get; set; }
 
         public string Firstname { get; set; }
 
@@ -25,9 +25,9 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
             }
         }
 
-        public string Address { get; set; }
-
         public string PhoneNumber { get; set; }
+
+        public string Email { get; set; }
 
         public DateTime DateCreated { get; set; }
 
