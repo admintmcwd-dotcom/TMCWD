@@ -3,25 +3,27 @@ using System.Net.Http.Json;
 using TMCWD.Utility.Generic;
 using TMCWD.Utility.Encryption;
 using TMCWD.Model.Administrator;
-using System.Web;
+using TMCWD.Model.Interfaces;
 using Microsoft.AspNetCore.WebUtilities;
+
 
 namespace TMCWD.Administration
 {
-    public class ApplicationLogin
+    public class ApplicationLoginTransaction : TransactionBase
     {
+
         #region constructors
 
         /// <summary>
         /// Initializes a new instance of the ApplicationLogin class.`
         /// </summary>
-        public ApplicationLogin() 
+        public ApplicationLoginTransaction() 
         {
             Email = string.Empty;
             Password = string.Empty;
         }
 
-        public ApplicationLogin(string email, string password)
+        public ApplicationLoginTransaction(string email, string password)
         {
             Email = email;
             Password = password;
@@ -67,8 +69,7 @@ namespace TMCWD.Administration
 
                 using (HttpClient client = new HttpClient())
                 {
-                    string baseUrl = "http://localhost:5178";
-                    client.BaseAddress = new Uri(baseUrl);
+                    client.BaseAddress = new Uri(this.BaseUrl);
 
                     string requestUrl = QueryHelpers.AddQueryString("api/Users/GetByEmail", "email", this.Email.Trim());
                     using (var response = await client.GetAsync(requestUrl))

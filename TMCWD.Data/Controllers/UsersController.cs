@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Xml.Linq;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
-using TMCWD.Model.Administrator;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.Data.Controllers
@@ -13,47 +13,41 @@ namespace TMCWD.Data.Controllers
     public class UsersController : Controller
     {
         [HttpPost("SaveUser")]
-        public bool Save(User user)
+        public ActionResult<bool> Save([FromBody] User user)
         {
-            bool isSuccess = false;
             try
             {
                 using (var dbContext = new UserDbContext())
                 {
 
-                    Users userEntity = new()
-                    {
-                        DateCreated = DateTime.Now,
-                        DateUpdated = DateTime.Now,
-                        Email = user.Email,
-                        Name = user.Name,
-                        Password = user.Password,
-                        Role = (int)user.Role,
-                        IsVerified = false
-                    };
-                    dbContext.Users.Add(userEntity);
-                    dbContext.SaveChanges();
+                    var res = dbContext.Users.Where(x => x.Email.ToLower() == user.Email.ToLower()).FirstOrDefault();
+
+                    if (res != null) return BadRequest($"User with email id {user.Email} already exists");
+
+                    dbContext.Users.Add(user);
+                    int resp = dbContext.SaveChanges();
+                    if (resp > 0) return Ok(true);
                 }
-                isSuccess = true;
             }
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
 
-            return isSuccess;
+            return Ok(false);
         }
 
         [HttpGet("GetById")]
-        public User Get(int id)
+        public ActionResult<User> Get(int id)
         {
             User user = new();
             try
             {
                 using (var dbContext = new UserDbContext())
                 {
-                    var userEnt = dbContext.Users.Where(x => x.Id.Equals(id)).SingleOrDefault();
-                    if (userEnt == null) throw new Exception($"User with id {id} cannot be found.");
+                    var userEnt = dbContext.Users.Where(x => x.Id == id).SingleOrDefault();
+                    if (userEnt == null) return NotFound($"User with id {id.ToString()} is not found");
                     user.DateCreated = userEnt.DateCreated;
                     user.DateUpdated = userEnt.DateUpdated;
                     user.DateVerified = userEnt.DateVerified;
@@ -70,20 +64,21 @@ namespace TMCWD.Data.Controllers
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
-            return user;
+            return Ok(user);
         }
 
         [HttpGet("GetByName")]
-        public User GetByName(string name)
+        public ActionResult<User> GetByName(string name)
         {
             User user = new();
             try
             {
                 using (var dbContext = new UserDbContext())
                 {
-                    var userEnt = dbContext.Users.Where(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-                    if (userEnt == null) throw new Exception($"User with name {name} cannot be found.");
+                    var userEnt = dbContext.Users.Where(x => x.Name.ToLower() == name.ToLower()).SingleOrDefault();
+                    if (userEnt == null) return NotFound($"User with name {name} is not found");
                     user.DateCreated = userEnt.DateCreated;
                     user.DateUpdated = userEnt.DateUpdated;
                     user.DateVerified = userEnt.DateVerified;
@@ -100,12 +95,13 @@ namespace TMCWD.Data.Controllers
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
-            return user;
+            return Ok(user);
         }
 
         [HttpGet("GetByEmail")]
-        public User GetByEmail(string email)
+        public ActionResult<User> GetByEmail(string email)
         {
             User user = new();
 
@@ -113,8 +109,8 @@ namespace TMCWD.Data.Controllers
             {
                 using (var dbContext = new UserDbContext())
                 {
-                    var userEnt = dbContext.Users.Where(x => x.Email.Equals(email, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-                    if (userEnt == null) throw new Exception($"User with email {email} is not found.");
+                    var userEnt = dbContext.Users.Where(x => x.Email.ToLower() == email.ToLower()).SingleOrDefault();
+                    if (userEnt == null) return NotFound($"User with email {email} is not found.");
                     user.DateCreated = userEnt.DateCreated;
                     user.DateUpdated = userEnt.DateUpdated;
                     user.DateVerified = userEnt.DateVerified;
@@ -131,40 +127,41 @@ namespace TMCWD.Data.Controllers
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
 
-            return user;
+            return Ok(user);
         }
 
         [HttpGet("GetUsers")]
-        public List<User> GetUsers()
+        public ActionResult<IEnumerable<User>> GetUsers()
         {
-            List<User> users = new();
+            IEnumerable<User> users = new List<User>();
             try
             {
                 using (var dbContext = new UserDbContext())
                 {
-                    users = dbContext.Users.Cast<User>().ToList();
+                    users = dbContext.Users;
+                    if (!users.Any()) return NotFound("No user records found");
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
-            return users;
+            return Ok(users);
         }
 
         [HttpPut("UpdateUser")]
-        public bool Update(User user)
+        public ActionResult<bool> Update([FromBody] User user)
         {
-            bool isSuccess = false;
-
             try
             {
                 using (var dbContext = new UserDbContext())
                 {
                     var usersEnt = dbContext.Users.Where(x => x.Id.Equals(user.Id)).SingleOrDefault();
-                    if(usersEnt == null) throw new Exception("User with id {user.Id} cannot be found.");
+                    if (usersEnt == null) BadRequest($"User with id {user.Id} cannot be found.");
                     usersEnt.DateUpdated = DateTime.Now;
                     usersEnt.IsActive = user.IsActive;
                     usersEnt.DateVerified = user.DateVerified;
@@ -172,37 +169,39 @@ namespace TMCWD.Data.Controllers
                     usersEnt.RememberToken = user.RememberToken;
                     usersEnt.Name = user.Name;
                     usersEnt.Email = user.Email;
-                    dbContext.SaveChanges();
-                    isSuccess = true;
+                    int res = dbContext.SaveChanges();
+                    if (res > 0) return Ok(true);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
 
-            return isSuccess;
+            return Ok(false);
         }
 
         [HttpPut("ChangePassword")]
-        public bool ChangePassword(int id, string newPassword) 
+        public ActionResult<bool> ChangePassword(int id, string newPassword)
         {
-            bool isSuccess = false;
             try
             {
-                using(var dbContext = new UserDbContext())
+                using (var dbContext = new UserDbContext())
                 {
                     var userEnt = dbContext.Users.Where(x => x.Id.Equals(id)).SingleOrDefault();
-                    if(userEnt == null) throw new Exception("User with id {id} cannot be found.");
+                    if (userEnt == null) BadRequest($"User with id {id} cannot be found.");
                     userEnt.Password = newPassword;
-                    dbContext.SaveChanges();
+                    int res = dbContext.SaveChanges();
+                    if (res > 0) return Ok(true);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
-            return isSuccess;
+            return Ok(false);
         }
 
     }

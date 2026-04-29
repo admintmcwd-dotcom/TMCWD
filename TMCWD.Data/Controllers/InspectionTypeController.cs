@@ -7,36 +7,32 @@ namespace TMCWD.Data.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class IncidentTypeController : Controller
+    public class InspectionTypeController : Controller
     {
         [HttpGet("GetTypes")]
-        public List<InspectionType> GetTypes()
+        public ActionResult<IEnumerable<InspectionType>> GetTypes()
         {
-            List<InspectionType> types = new();
+            IEnumerable<InspectionType> types = new List<InspectionType>();
 
             try
             {
                 using(var dbContext = new UserDbContext())
                 {
-                    var res = dbContext.InspectionTypes.Select(x => new InspectionType
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        DateCreated = x.DateCreated,
-                        DateUpdated = x.DateUpdated
-                    }).ToList();
+                    types = dbContext.InspectionTypes;
+                    if (!types.Any()) return NotFound("No incident type found");
                 }
             }
             catch(Exception ex)
             {
                 Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
 
-            return types;
+            return Ok(types);
         }
 
         [HttpGet("GetById")]
-        public InspectionType Get(int id)
+        public ActionResult<InspectionType> Get(int id)
         {
             InspectionType type = new();
 
@@ -45,7 +41,7 @@ namespace TMCWD.Data.Controllers
                 using(var dbContext = new UserDbContext())
                 {
                     var res = dbContext.InspectionTypes.Where(x => x.Id == id).FirstOrDefault();
-                    if (res == null) throw new Exception($"Incident type id {id} not found");
+                    if (res == null) return NotFound($"Incident type id {id} not found");
 
                     type.Id = res.Id;
                     type.Name = res.Name;
@@ -56,46 +52,38 @@ namespace TMCWD.Data.Controllers
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
 
-            return type;
+            return Ok(type);
         }
 
         [HttpPost("SaveUpdate")]
-        public bool SaveUpdate(InspectionType type)
+        public ActionResult<bool> SaveUpdate([FromBody] InspectionType type)
         {
-            bool isSuccess = false;
-
             try
             {
                 using(var dbContext = new UserDbContext())
                 {
                     if (type.Id == 0)
                     {
-                        dbContext.InspectionTypes.Add(new Entities.InspectionType
-                        {
-                            Name = type.Name,
-                            DateCreated = DateTime.Now,
-                            DateUpdated = DateTime.Now
-                        });
+                        dbContext.InspectionTypes.Add(type);
                     }
                     else
                     {
-                        var res = dbContext.InspectionTypes.Where(x => x.Id == type.Id).FirstOrDefault();
-                        if (res == null) throw new Exception($"Incident type id {type.Id} not found");
-                        res.Name = type.Name;
-                        res.DateUpdated = DateTime.Now;
+                        dbContext.InspectionTypes.Update(type);
                     }
-                    dbContext.SaveChanges();
-                    isSuccess = true;
+                    int res = dbContext.SaveChanges();
+                    if(res > 0) return Ok(true);
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             }
 
-            return isSuccess;
+            return Ok(false);
         }
     }
 }

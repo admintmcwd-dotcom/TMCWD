@@ -10,6 +10,8 @@ namespace TMCWD.Model.CustomerSupport
         public long Id { get; set; }
         public long CustomerId { get; set; }
         public string AccountNumber { get; set; }
+        public string Address { get; set; }
+        public bool IsCurrentAddress { get; set; }
         public string DateCreated { get; set; }
         public string DateUpdated { get; set; }
         public bool IsActive { get; set; }

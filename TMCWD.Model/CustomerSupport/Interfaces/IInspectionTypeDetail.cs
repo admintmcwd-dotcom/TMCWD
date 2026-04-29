@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TMCWD.Model.Administrator.Interface
+namespace TMCWD.Model.CustomerSupport.Interfaces
 {
     public interface IInspectionTypeDetail
     {

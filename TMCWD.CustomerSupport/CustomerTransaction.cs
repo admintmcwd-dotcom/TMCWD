@@ -1,14 +1,24 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Net.Http.Json;
 using TMCWD.Model.CustomerSupport;
 using TMCWD.Utility.Generic;
+using TMCWD.Model.Interfaces;
 
 namespace TMCWD.CustomerSupport
 {
-    public class CustomerTransaction
+    public class CustomerTransaction : TransactionBase
     {
+
+        #region fields
+
+        private const string _serviceRouteUrl = "api/Customer/";
+        private const string _saveUpdateUrl = $"{_serviceRouteUrl}SaveUpdate";
+        private const string _getByIdUrl = $"{_serviceRouteUrl}GetById";
+        private const string _getByNameUrl = $"{_serviceRouteUrl}GetByName";
+        private const string _getCustomersUrl = $"{_serviceRouteUrl}GetCustomers";
+
+        #endregion
+
         #region constructors
         public CustomerTransaction() { }
 
@@ -28,6 +38,8 @@ namespace TMCWD.CustomerSupport
                 if (String.IsNullOrEmpty(customer.Lastname.Trim())) throw new Exception("Customer lastname is required");
                 if (String.IsNullOrEmpty(customer.PhoneNumber.Trim())) throw new Exception("Customer phone number is required");
                 if (String.IsNullOrEmpty(customer.Email.Trim())) throw new Exception("Customer email is required");
+                if (customer.Id > 0) customer.DateUpdated = DateTime.Now;
+                else customer.DateCreated = DateTime.Now;
 
                 if (customer == null) return isSuccess;
                 isSuccess = Task.Run(() => SaveUpdateTask(customer)).GetAwaiter().GetResult();
@@ -42,7 +54,7 @@ namespace TMCWD.CustomerSupport
 
         public Customer? GetById(int id)
         {
-            Customer customer = new();
+            Customer? customer = new();
             try
             {
                 if (id <= 0) throw new Exception("Invalid customer ID supplied.");
@@ -58,7 +70,7 @@ namespace TMCWD.CustomerSupport
 
         public Customer? GetByName(string firstname, string lastname)
         {
-            Customer customer = new();
+            Customer? customer = new();
             try
             {
                 if (String.IsNullOrEmpty(firstname.Trim())) throw new Exception("Customer firstname is required");
@@ -75,7 +87,7 @@ namespace TMCWD.CustomerSupport
 
         public List<Customer>? GetCustomers()
         {
-            List<Customer> customers = new();
+            List<Customer>? customers = new();
             try
             {
                 customers = Task.Run(() => GetCustomersTask()).GetAwaiter().GetResult();
@@ -100,7 +112,7 @@ namespace TMCWD.CustomerSupport
             {
                 using(HttpClient client = new())
                 {
-                    client.BaseAddress = new Uri("http://localhost:5178");
+                    client.BaseAddress = new Uri(this.BaseUrl);
                     Dictionary<string, string> queryParams = new()
                     {
                         { "Id", customer.Id.ToString() },
@@ -113,8 +125,8 @@ namespace TMCWD.CustomerSupport
                         { "DateUpdated", customer.DateUpdated.ToString("o") },
                         { "IsActive", customer.IsActive.ToString() }
                     };
-                    string url = QueryHelpers.AddQueryString("/api/Customer/SaveUpdate", queryParams);
-                    using(var response = await client.GetAsync(url))
+                    HttpContent content = JsonContent.Create(customer);
+                    using(var response = await client.PostAsync(_saveUpdateUrl, content))
                     {
                         if(!response.IsSuccessStatusCode)
                         {
@@ -137,14 +149,14 @@ namespace TMCWD.CustomerSupport
 
         private async Task<Customer?> GetByIdTask(int id)
         {
-            Customer customer = new();
+            Customer? customer = new();
 
             try
             {
                 using(HttpClient client = new())
                 {
-                    client.BaseAddress = new Uri("http://localhost:5178");
-                    string url = QueryHelpers.AddQueryString("/api/Customer/GetById", "id", id.ToString());
+                    client.BaseAddress = new Uri(this.BaseUrl);
+                    string url = QueryHelpers.AddQueryString(_getByIdUrl, "id", id.ToString());
                     using(var response = await client.GetAsync(url))
                     {
                         if(!response.IsSuccessStatusCode)
@@ -170,15 +182,15 @@ namespace TMCWD.CustomerSupport
 
         private async Task<Customer?> GetByNameTask(string firstname, string lastname)
         {
-            Customer customer = new();
+            Customer? customer = new();
 
             try
             {
 
                 using (HttpClient client = new())
                 {
-                    client.BaseAddress = new Uri("http://localhost:5178");
-                    string url = QueryHelpers.AddQueryString("/api/Customer/GetByName", new Dictionary<string, string>
+                    client.BaseAddress = new Uri(this.BaseUrl);
+                    string url = QueryHelpers.AddQueryString(_getByNameUrl, new Dictionary<string, string?>
                     {
                         { "firstname", firstname },
                         { "lastname", lastname }
@@ -208,14 +220,14 @@ namespace TMCWD.CustomerSupport
 
         private async Task<List<Customer>?> GetCustomersTask()
         {
-            List<Customer> customers = new();
+            List<Customer>? customers = new();
 
             try
             {
                 using(HttpClient client = new())
                 {
-                    client.BaseAddress = new Uri("http://localhost:5178");
-                    using (var response = await client.GetAsync("/api/Customer/GetAll"))
+                    client.BaseAddress = new Uri(this.BaseUrl);
+                    using (var response = await client.GetAsync(_getCustomersUrl))
                     {
                         if (!response.IsSuccessStatusCode)
                         {

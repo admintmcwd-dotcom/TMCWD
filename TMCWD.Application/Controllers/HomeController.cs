@@ -15,7 +15,7 @@ namespace TMCWD.Application.Controllers
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
-            ApplicationLogin login = new ApplicationLogin(email, password);
+            ApplicationLoginTransaction login = new ApplicationLoginTransaction(email, password);
             if(login.Login())
             {
                 return RedirectToAction("Index", "Engineering");

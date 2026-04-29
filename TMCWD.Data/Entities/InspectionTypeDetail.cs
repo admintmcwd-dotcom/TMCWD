@@ -3,26 +3,29 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TMCWD.Data.Entities
 {
-    [Table("inspection_types")]
-    public class InspectionType
+    [Table("inspection_type_details")]
+    public class InspectionTypeDetail
     {
 
         #region constructors
 
-        public InspectionType() { }
+        public InspectionTypeDetail() 
+        {
+            this.Detail = string.Empty;
+        }
 
         #endregion
 
         #region properties
 
         [Key, Column("Id")]
-        public decimal Id { get; set; }
+        public System.Int64 Id { get; set; }
 
-        [Required, MaxLength(150), Column("Name")]
-        public string Name { get; set; }
+        [Required, Column("InspectionTypeId")]
+        public System.Int64 InspectionTypeId { get; set; }
 
-        [Required, Column("WithDetail")]
-        public bool WidthDetail { get; set; }
+        [Required, MaxLength(255), Column("Detail")]
+        public string Detail { get; set; }
 
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
@@ -31,5 +34,6 @@ namespace TMCWD.Data.Entities
         public DateTime DateUpdated { get; set; }
 
         #endregion
+
     }
 }
