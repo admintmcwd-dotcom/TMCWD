@@ -3,16 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TMCWD.Data.Entities
 {
-    [Table("inspection_type_details")]
-    public class InspectionTypeDetail
+
+    [Table("requests")]
+    public class Request
     {
 
         #region constructors
 
-        public InspectionTypeDetail() 
-        {
-            this.Detail = string.Empty;
-        }
+        public Request() { }
 
         #endregion
 
@@ -21,11 +19,17 @@ namespace TMCWD.Data.Entities
         [Key, Column("Id")]
         public System.Int64 Id { get; set; }
 
-        [Required, Column("InspectionTypeId")]
-        public System.Int64 InspectionTypeId { get; set; }
+        [Required, MaxLength(50), Column("ControlNumber")]
+        public string ControlNumber { get; set; } = string.Empty;
 
-        [Required, MaxLength(255), Column("Detail")]
-        public string Detail { get; set; }
+        [Required, Column("CustomerId")]
+        public int CustomerId { get; set; }
+
+        [Required, Column("AccountId")]
+        public int AccountId { get; set; }
+
+        [Required, Column("UserId")]
+        public int UserId { get; set; }
 
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }

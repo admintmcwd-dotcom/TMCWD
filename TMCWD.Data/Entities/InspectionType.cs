@@ -15,13 +15,14 @@ namespace TMCWD.Data.Entities
 
         #region properties
 
-        [Key]
-        [Column("Id")]
+        [Key, Column("Id")]
         public decimal Id { get; set; }
 
-        [Required, MaxLength(150)]
-        [Column("Name")]
+        [Required, MaxLength(150), Column("Name")]
         public string Name { get; set; }
+
+        [Required, Column("WithDetail")]
+        public bool WidthDetail { get; set; }
 
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
