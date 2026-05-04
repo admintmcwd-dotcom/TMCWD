@@ -23,10 +23,13 @@ namespace TMCWD.Data.Entities
         public System.Int64 CustomerId { get; set; }
 
         [Required, MaxLength(50), Column("AccountNumber")]
-        public string AccountNumber { get; set; }
+        public string AccountNumber { get; set; } = string.Empty;
+
+        [Required, MaxLength(50), Column("MeterNumber")]
+        public string MeterNumber { get; set; } = string.Empty;
 
         [Required, MaxLength(255), Column("Address")]
-        public string Address { get; set; }
+        public string Address { get; set; } = string.Empty;
 
         [Required, Column("IsCurrentAddress")]
         public bool IsCurrentAddress { get; set; }

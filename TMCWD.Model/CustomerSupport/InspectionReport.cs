@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 using TMCWD.Model.CustomerSupport.Interfaces;
 
 namespace TMCWD.Model.CustomerSupport
 {
-    public class Incident : IInspection
+    public class InspectionReport : IInspectionReport
     {
         public int Id { get; set; }
-
-        [Required, MaxLength(150)]
-        public string Name { get; set; }
+        public int RequestId { get; set; }
+        public int InspectedByUserId { get; set; }
+        public string Details { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
     }

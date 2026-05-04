@@ -13,19 +13,19 @@ namespace TMCWD.Data.Entities
         public System.Int64 Id { get; set; }
 
         [Required, MaxLength(50), Column("Firstname")]
-        public string Firstname { get; set; }
+        public string Firstname { get; set; } = string.Empty;
 
         [MaxLength(50), Column("Middlename")]
-        public string Middlename { get; set; }
+        public string Middlename { get; set; } = string.Empty;
 
         [Required, MaxLength(50), Column("Lastname")]
-        public string Lastname { get; set; }
+        public string Lastname { get; set; } = string.Empty;
 
         [Required, MaxLength(11), Column("PhoneNumber")]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [Required, MaxLength(100), Column("Email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Column("IsActive")]
         public bool IsActive { get; set; }

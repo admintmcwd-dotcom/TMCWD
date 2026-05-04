@@ -23,6 +23,10 @@ namespace TMCWD.Data.Context
 
         public DbSet<RequestDetail> RequestDetails { get; set; }
 
+        public DbSet<InspectionReport> InspectionReports { get; set; }
+
+        public DbSet<Recommendation> Recommendations { get; set; }
+
         #endregion
 
         #region constructors

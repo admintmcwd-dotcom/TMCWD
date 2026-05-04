@@ -48,15 +48,15 @@ namespace TMCWD.Data.Controllers
                 {
                     var customerEnt = dbcContext.Customers.Where(x => x.Id == id).SingleOrDefault();
                     if(customer == null) return NotFound($"Customer with id {id} cannot be found.");
-                    customer.DateCreated = customerEnt.DateCreated;
-                    customer.DateUpdated = customerEnt.DateUpdated;
-                    customer.Email = customerEnt.Email;
-                    customer.Id = customerEnt.Id;
-                    customer.IsActive = customerEnt.IsActive;
-                    customer.Firstname = customerEnt.Firstname;
-                    customer.Lastname = customerEnt.Lastname;
-                    customer.Middlename = customerEnt.Middlename;
-                    customer.PhoneNumber = customerEnt.PhoneNumber;
+                    customer.DateCreated = customerEnt?.DateCreated ?? DateTime.MinValue;
+                    customer.DateUpdated = customerEnt?.DateUpdated ?? DateTime.MinValue;
+                    customer.Email = customerEnt?.Email ?? string.Empty;
+                    customer.Id = customerEnt?.Id ?? 0;
+                    customer.IsActive = customerEnt?.IsActive ?? false;
+                    customer.Firstname = customerEnt?.Firstname ?? string.Empty;
+                    customer.Lastname = customerEnt?.Lastname ?? string.Empty;
+                    customer.Middlename = customerEnt?.Middlename ?? string.Empty;
+                    customer.PhoneNumber = customerEnt?.PhoneNumber ?? string.Empty;
                 }
             }
             catch (Exception ex)

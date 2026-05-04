@@ -160,15 +160,7 @@ namespace TMCWD.Data.Controllers
             {
                 using (var dbContext = new UserDbContext())
                 {
-                    var usersEnt = dbContext.Users.Where(x => x.Id.Equals(user.Id)).SingleOrDefault();
-                    if (usersEnt == null) BadRequest($"User with id {user.Id} cannot be found.");
-                    usersEnt.DateUpdated = DateTime.Now;
-                    usersEnt.IsActive = user.IsActive;
-                    usersEnt.DateVerified = user.DateVerified;
-                    usersEnt.IsVerified = user.IsVerified;
-                    usersEnt.RememberToken = user.RememberToken;
-                    usersEnt.Name = user.Name;
-                    usersEnt.Email = user.Email;
+                    dbContext.Users.Update(user);
                     int res = dbContext.SaveChanges();
                     if (res > 0) return Ok(true);
                 }
@@ -191,7 +183,7 @@ namespace TMCWD.Data.Controllers
                 {
                     var userEnt = dbContext.Users.Where(x => x.Id.Equals(id)).SingleOrDefault();
                     if (userEnt == null) BadRequest($"User with id {id} cannot be found.");
-                    userEnt.Password = newPassword;
+                    userEnt?.Password = newPassword;
                     int res = dbContext.SaveChanges();
                     if (res > 0) return Ok(true);
                 }

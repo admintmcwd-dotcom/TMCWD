@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
 using TMCWD.Utility.Generic;
@@ -104,5 +105,26 @@ namespace TMCWD.Data.Controllers
             return Ok(accounts);
         }
 
+        [HttpGet("GetByMeterNumber")]
+        public ActionResult<Account> GetByMeterNumber(string meterNumber)
+        {
+            Account account = new();
+            try
+            {
+                using(var dbContext = new UserDbContext())
+                {
+                    var data = dbContext.Accounts.Where(x => x.MeterNumber.ToLower().Trim() == meterNumber.ToLower().Trim()).FirstOrDefault();
+                    if (account == null) return NotFound($"Account with meter number {meterNumber} is not found.");
+                    account = data;
+                }
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
+                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
+            }
+
+            return Ok(account);
+        }
     }
 }

@@ -24,12 +24,12 @@ namespace TMCWD.Data.Test
                     user.DateVerified = userEnt?.DateVerified ?? DateTime.MinValue;
                     user.Email = userEnt?.Email ?? String.Empty;
                     user.Id = userEnt?.Id ?? 0;
-                    user.IsActive = userEnt.IsActive;
-                    user.IsVerified = userEnt.IsVerified;
-                    user.Name = userEnt.Name;
-                    user.Password = userEnt.Password;
-                    user.RememberToken = userEnt.RememberToken;
-                    user.Role = userEnt.Role;
+                    user.IsActive = userEnt?.IsActive ?? true;
+                    user.IsVerified = userEnt?.IsVerified ?? true;
+                    user.Name = userEnt?.Name ?? string.Empty;
+                    user.Password = userEnt?.Password ?? string.Empty;
+                    user.RememberToken = userEnt?.RememberToken ?? string.Empty;
+                    user.Role = userEnt?.Role ?? 1;
                 }
             }
             catch (Exception ex)

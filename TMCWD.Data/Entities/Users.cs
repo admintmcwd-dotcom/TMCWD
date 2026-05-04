@@ -17,10 +17,10 @@ namespace TMCWD.Data.Entities
         public System.Int64 Id { get; set; }
 
         [Required, MaxLength(100), Column("Name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required, MaxLength(100), Column("Email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required, Column("Role")]
         public int Role { get; set; }
@@ -29,10 +29,10 @@ namespace TMCWD.Data.Entities
         public DateTime DateVerified { get; set; }
 
         [Required, MaxLength(20), Column("Password")]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [Column("RememberToken"), MaxLength(100)]
-        public string RememberToken { get; set; }
+        public string RememberToken { get; set; } = string.Empty;
 
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }

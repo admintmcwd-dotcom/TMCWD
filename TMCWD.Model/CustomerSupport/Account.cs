@@ -9,11 +9,12 @@ namespace TMCWD.Model.CustomerSupport
     {
         public long Id { get; set; }
         public long CustomerId { get; set; }
-        public string AccountNumber { get; set; }
-        public string Address { get; set; }
+        public string AccountNumber { get; set; } = string.Empty;
+        public string MeterNumber { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
         public bool IsCurrentAddress { get; set; }
-        public string DateCreated { get; set; }
-        public string DateUpdated { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateUpdated { get; set; }
         public bool IsActive { get; set; }
     }
 }

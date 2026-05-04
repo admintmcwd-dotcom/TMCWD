@@ -15,13 +15,15 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
 
         public string AccountNumber { get; set; }
 
+        public string MeterNumber { get; set; }
+
         public string Address { get; set; }
 
         public bool IsCurrentAddress { get; set; }
         
-        public string DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
 
-        public string DateUpdated { get; set; }
+        public DateTime DateUpdated { get; set; }
 
         public bool IsActive { get; set; }
 
