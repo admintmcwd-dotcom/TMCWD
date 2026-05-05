@@ -40,18 +40,18 @@ namespace TMCWD.Administration
 
         #region methods
 
-        public bool Login()
+        public User? Login()
         {
-            bool isSuccess = false;
+            User currentUser = new();
 
             if(String.IsNullOrEmpty(this.Email.Trim()) || String.IsNullOrEmpty(this.Password.Trim()))
-                return isSuccess;
+                return null;
 
             var user = Task.Run(() => LoginTask()).GetAwaiter().GetResult();
 
-            if (user.Password.Equals(StringEncyption.Encrypt(this.Password))) isSuccess = true;
+            if (user.Password.Equals(StringEncyption.Encrypt(this.Password))) currentUser = user;
 
-            return isSuccess;
+            return currentUser;
         }
 
         #endregion

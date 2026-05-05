@@ -3,7 +3,7 @@ using TMCWD.Data.Entities;
 
 namespace TMCWD.Data.Context
 {
-    internal class UserDbContext : DbContext
+    public class UserDbContext : DbContext
     {
         #region Fields
 
@@ -26,6 +26,8 @@ namespace TMCWD.Data.Context
         public DbSet<InspectionReport> InspectionReports { get; set; }
 
         public DbSet<Recommendation> Recommendations { get; set; }
+
+        public DbSet<Inventory> Inventories { get; set; }
 
         #endregion
 

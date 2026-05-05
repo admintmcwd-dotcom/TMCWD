@@ -26,7 +26,7 @@ namespace TMCWD.Data.Entities
         public string InspectionTypeDetail { get; set; } = string.Empty;
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
-        [Key, Column("DateUpdated")]
+        [Column("DateUpdated")]
         public DateTime DateUpdated { get; set; }
 
         #endregion

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TMCWD.Administration;
+using TMCWD.Model.Administrator;
 using TMCWD.Application.Models;
+using System.Text.Json;
 
 namespace TMCWD.Application.Controllers
 {
@@ -16,9 +18,19 @@ namespace TMCWD.Application.Controllers
         public IActionResult Login(string email, string password)
         {
             ApplicationLoginTransaction login = new ApplicationLoginTransaction(email, password);
-            if(login.Login())
+            User? currentUser = login.Login();
+            if(currentUser != null)
             {
-                return RedirectToAction("Index", "Engineering");
+                var userJson = JsonSerializer.Serialize(currentUser);
+                HttpContext.Session.SetString("currentUser", userJson);
+                switch (currentUser.Role)
+                {
+                    case (int)UserRole.CustomerRepresentative:
+                        return RedirectToAction("Index", "CustomerSupport");
+                        //break;
+                    case (int)UserRole.SuperAdmin:
+                        return RedirectToAction("Index", "Admin");
+                }
             }
             return View("Index", new LoginViewModel() { Email = string.Empty, Password = string.Empty });
         }

@@ -16,7 +16,7 @@ namespace TMCWD.Administration
         #region fields
  
         private const string _serviceRoute = "api/users/";
-        private const string _saveUrl = $"{_serviceRoute}Save";
+        private const string _saveUrl = $"{_serviceRoute}SaveUser";
         private const string _getByIdUrl = $"{_serviceRoute}Get";
         private const string _getByNameUrl = $"{_serviceRoute}GetByName";
         private const string _getByEmailUrl = $"{_serviceRoute}GetByEmail";
@@ -34,7 +34,7 @@ namespace TMCWD.Administration
 
         #region public methods
 
-        public bool SaveUser(User user)
+        public bool SaveUser(User user, string confirmPassword)
         {
             bool isSuccess = false;
 
@@ -43,8 +43,11 @@ namespace TMCWD.Administration
                 if (String.IsNullOrEmpty(user.Name.Trim())) throw new Exception("User name is required");
                 if (String.IsNullOrEmpty(user.Email.Trim())) throw new Exception("User email is required");
                 if (user.Role == 0) throw new Exception("User role is required");
-                if (String.IsNullOrEmpty(user.Password.Trim())) throw new Exception("User password is required");
+                //if (String.IsNullOrEmpty(user.Password.Trim())) throw new Exception("User password is required");
+                if (user.Password != confirmPassword) throw new Exception("Password confirmation does not match");
                 user.DateCreated = DateTime.Now;
+                user.DateUpdated = DateTime.Now;
+                user.DateVerified = DateTime.Now;
 
                 isSuccess = Task.Run(() => SaveUserTask(user)).GetAwaiter().GetResult();
 
@@ -178,7 +181,9 @@ namespace TMCWD.Administration
                 using(HttpClient client = new())
                 {
                     client.BaseAddress = new Uri(this.BaseUrl);
+                    //string jsonPayload = JsonSerializer.Serialize(user);
                     HttpContent content = JsonContent.Create(user);
+                    //var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
                     using(var response = await client.PostAsync(_saveUrl, content))
                     {
                         var data = await response.Content.ReadAsStringAsync();
@@ -286,7 +291,8 @@ namespace TMCWD.Administration
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if(!response.IsSuccessStatusCode) throw new Exception(data);
-                        users = JsonSerializer.Deserialize<List<User>>(data);
+                        var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        users = JsonSerializer.Deserialize<List<User>>(data, serializerOptions);
                     }
                 }
             }

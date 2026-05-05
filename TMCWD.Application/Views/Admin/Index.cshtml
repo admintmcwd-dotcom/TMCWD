@@ -1,0 +1,70 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_InsideLayout";
+}
+@model TMCWD.Application.Models.AdminViewModel
+
+<main class="p-8"> 
+    <!-- Search and Action Button -->
+
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
+        <p class="text-gray-700">
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-2">
+                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                </div>
+                <div class="grid-column">
+                    <button 
+                        class="rounded-md bg-blue-900 p-2 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-blue-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" 
+                        type="button"
+                            onclick="location.href='@Url.Action("AddEditUser", "Admin", new { currentUserId = Model.CurrentUser.Id })'">
+                        <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </p>
+    </div>
+
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
+        <h5 class="mb-2 text-2xl font-bold text-gray-900">Users</h5>
+        <p class="text-gray-700">
+            <!-- Users Table -->
+            <table class="border-collapse border border-gray-full w-full ...">
+                <thead>
+                    <tr>
+                        <th class="border border-gray-300 p-3...">Id #</th>
+                        <th class="border border-gray-300 p-3...">Name</th>
+                        <th class="border border-gray-300 p-3...">Email</th>
+                        <th class="border border-gray-300 p-3...">Date Enrolled</th>
+                        <th class="border border-gray-300 p-3...">Active</th>
+                        <th class="border border-gray-300 p-3..."></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.PagedUserList)
+                    {
+                        <tr>
+                            <td class="border border-gray-300 p-4...">@user.Id</td>
+                            <td class="border border-gray-300 p-4...">@user.Name</td>
+                            <td class="border border-gray-300 p-4...">@user.Email</td>
+                            <td class="border border-gray-300 p-4...">@user.DateCreated</td>
+                            <td class="border border-gray-300 p-4...">@(user.IsActive ? "Yes" : "No")</td>
+                            <td>
+                                <a href="/Admin/Users" class="block text-center w-sm text-black hover:bg-blue-600">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                </a>
+                                <a href="/Admin/Users" class="block text-center w-sm text-black hover:bg-blue-600">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </p>
+    </div>
+</main>

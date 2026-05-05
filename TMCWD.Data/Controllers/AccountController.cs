@@ -114,7 +114,7 @@ namespace TMCWD.Data.Controllers
                 using(var dbContext = new UserDbContext())
                 {
                     var data = dbContext.Accounts.Where(x => x.MeterNumber.ToLower().Trim() == meterNumber.ToLower().Trim()).FirstOrDefault();
-                    if (account == null) return NotFound($"Account with meter number {meterNumber} is not found.");
+                    if (data == null) return NotFound($"Account with meter number {meterNumber} is not found.");
                     account = data;
                 }
             }

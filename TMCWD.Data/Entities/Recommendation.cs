@@ -13,7 +13,7 @@ namespace TMCWD.Data.Entities
         [Required, Column("RecommendationUserId")]
         public System.Int64 RecommendationUserId { get; set; }
         [Required, MaxLength(255), Column("Detail")]
-        public string Detail { get; set; } = string.Empty;
+        public string Details { get; set; } = string.Empty;
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
         [Column("DateUpdated")]

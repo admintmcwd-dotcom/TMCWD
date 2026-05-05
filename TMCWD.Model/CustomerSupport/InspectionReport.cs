@@ -10,7 +10,7 @@ namespace TMCWD.Model.CustomerSupport
         public int Id { get; set; }
         public int RequestId { get; set; }
         public int InspectedByUserId { get; set; }
-        public string Details { get; set; }
+        public string Details { get; set; } = string.Empty;
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
     }

@@ -10,4 +10,9 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="10.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TMCWD.Model\TMCWD.Model.csproj" />
+    <ProjectReference Include="..\TMCWD.Utility\TMCWD.Utility.csproj" />
+  </ItemGroup>
+
 </Project>
