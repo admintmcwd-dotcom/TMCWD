@@ -7,6 +7,7 @@ using System.Text.Json;
 using TMCWD.Model.Administrator;
 using TMCWD.Model.Interfaces;
 using TMCWD.Utility.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TMCWD.Administration
 {
@@ -17,12 +18,13 @@ namespace TMCWD.Administration
  
         private const string _serviceRoute = "api/users/";
         private const string _saveUrl = $"{_serviceRoute}SaveUser";
-        private const string _getByIdUrl = $"{_serviceRoute}Get";
+        private const string _getByIdUrl = $"{_serviceRoute}GetById";
         private const string _getByNameUrl = $"{_serviceRoute}GetByName";
         private const string _getByEmailUrl = $"{_serviceRoute}GetByEmail";
         private const string _getUsersUrl = $"{_serviceRoute}GetUsers";
-        private const string _updateUrl = $"{_serviceRoute}Update";
+        private const string _updateUrl = $"{_serviceRoute}UpdateUser";
         private const string _changePasswordUrl = $"{_serviceRoute}ChangePassword";
+        private const string _searchUsersUrl = $"{_serviceRoute}SearchUser";
 
         #endregion
 
@@ -45,6 +47,7 @@ namespace TMCWD.Administration
                 if (user.Role == 0) throw new Exception("User role is required");
                 //if (String.IsNullOrEmpty(user.Password.Trim())) throw new Exception("User password is required");
                 if (user.Password != confirmPassword) throw new Exception("Password confirmation does not match");
+                user.Password = Utility.Encryption.StringEncyption.Encrypt(user.Password);
                 user.DateCreated = DateTime.Now;
                 user.DateUpdated = DateTime.Now;
                 user.DateVerified = DateTime.Now;
@@ -136,7 +139,6 @@ namespace TMCWD.Administration
                 if (user.Id <= 0) throw new Exception("User id is required for update");
                 if (string.IsNullOrEmpty(user.Name.Trim())) throw new Exception("User name is required for update");
                 if (string.IsNullOrEmpty(user.Email.Trim())) throw new Exception("User email is required for update");
-                if (string.IsNullOrEmpty(user.Password.Trim())) throw new Exception("User password is required for update");
                 user.DateUpdated = DateTime.Now;
 
                 isSuccess = Task.Run(() => UpdateUserTask(user)).GetAwaiter().GetResult();
@@ -166,6 +168,33 @@ namespace TMCWD.Administration
             }
 
             return isSuccess;
+        }
+
+        public List<SelectListItem> GetRoles()
+        {
+            return new List<SelectListItem>()
+            {
+                { new SelectListItem(nameof(UserRole.Engineer), ((int)UserRole.Engineer).ToString()) },
+                { new SelectListItem(nameof(UserRole.SuperAdmin), ((int)UserRole.SuperAdmin).ToString()) },
+                { new SelectListItem(nameof(UserRole.Guest), ((int)UserRole.Guest).ToString()) },
+                { new SelectListItem(nameof(UserRole.CustomerRepresentative), ((int)UserRole.CustomerRepresentative).ToString()) }
+            };
+        }
+
+        public List<User>? SearchUser(string searchString)
+        {
+
+            try
+            {
+                if (string.IsNullOrEmpty(searchString.Trim())) throw new Exception("Search string must not be empty");
+                return Task.Run(() => SearchUserTask(searchString)).GetAwaiter().GetResult();
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(ErrorModule.Administration, ErrorType.Error, ex.Message);
+            }
+
+            return null;
         }
 
         #endregion
@@ -214,7 +243,8 @@ namespace TMCWD.Administration
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        user = JsonSerializer.Deserialize<User>(data);
+                        var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        user = JsonSerializer.Deserialize<User>(data, serializerOptions);
                     }
                 }
             }
@@ -360,6 +390,31 @@ namespace TMCWD.Administration
             }
 
             return isSuccess;
+        }
+
+        private async Task<List<User>?> SearchUserTask(string searchString)
+        {
+            try
+            {
+                using(HttpClient client = new())
+                {
+                    client.BaseAddress = new Uri(this.BaseUrl);
+                    string url = QueryHelpers.AddQueryString(_searchUsersUrl, "searchString", searchString);
+                    using(var response = await client.GetAsync(url))
+                    {
+                        var data = await response.Content.ReadAsStringAsync();
+                        if (!response.IsSuccessStatusCode) throw new Exception(data);
+                        var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<List<User>>(data, serializerOptions);
+                        if (serialized != null) return serialized;
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(ErrorModule.Administration, ErrorType.Error, ex.Message);
+            }
+            return null;
         }
 
         #endregion

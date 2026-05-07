@@ -19,5 +19,7 @@ namespace TMCWD.Application.Models
 
         public List<SelectListItem> Roles { get; set; } = new List<SelectListItem>();
 
+        public string SearchString { get; set; } = string.Empty;
+
     }
 }

@@ -282,7 +282,14 @@
 
         <aside class="w-64 bg-blue-900 text-white">
             <div class="p-6">
-                <h1 class="text-2xl font-bold">TMCWD Admin</h1>
+                @if(ViewBag.Role == 1)
+                    {
+                        <h1 class="text-2xl font-bold">TMCWD Admin</h1>   
+                    }
+                else if(ViewBag.Role == 2)
+                    {
+                        <h1 class="text-2xl font-bold">TMCWD Customer</h1>
+                    }
             </div>
             
             <nav class="mt-6">
@@ -291,6 +298,13 @@
                     <a href="@Url.Action("Users", "Admin")" class="flex items-center px-6 py-3 hover:bg-blue-800">
                         <i class="fas fa-home mr-3"></i>
                         User
+                    </a>
+                }
+                else if(ViewBag.Role == 2)
+                {
+                    <a href="@Url.Action("Index", "CustomerSupport")" class="flex items-center px-6 py-3 hover:bg-blue-800">
+                        <i class="fas fa-home mr-3"></i>
+                        Customers
                     </a>
                 }
 

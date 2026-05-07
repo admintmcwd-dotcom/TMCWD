@@ -26,7 +26,7 @@ namespace TMCWD.Model.Administrator
         #region properties
 
         [DisplayName("Id")]
-        public decimal Id { get; set; }
+        public int Id { get; set; }
         [DisplayName("Name")]
         public string Name { get; set; }
         [DisplayName("Email")]

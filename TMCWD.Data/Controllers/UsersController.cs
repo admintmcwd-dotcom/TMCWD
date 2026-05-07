@@ -236,11 +236,23 @@ namespace TMCWD.Data.Controllers
             //    return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
             //}
             var userEnt = _dbContext.Users.Where(x => x.Id.Equals(id)).SingleOrDefault();
-            if (userEnt == null) BadRequest($"User with id {id} cannot be found.");
+            if (userEnt == null) NotFound($"User with id {id} cannot be found.");
             userEnt?.Password = newPassword;
             int res = _dbContext.SaveChanges();
             if (res > 0) return Ok(true);
             return Ok(false);
+        }
+
+        [HttpGet("SearchUser")]
+        public ActionResult<IEnumerable<User>> SearchUser(string searchString)
+        {
+            IEnumerable<User> users = new List<User>();
+
+            var usersEnt = _dbContext.Users.Where(x => x.Name.ToLower().Contains(searchString) || x.Email.ToLower().Contains(searchString));
+            if (usersEnt == null || !usersEnt.Any()) return NotFound($"User(s) which name or email contains '{searchString}' is not found");
+            users = usersEnt;
+
+            return Ok(users);
         }
 
     }

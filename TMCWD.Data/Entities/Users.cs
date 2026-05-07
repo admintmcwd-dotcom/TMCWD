@@ -28,7 +28,7 @@ namespace TMCWD.Data.Entities
         [Column("DateVerified")]
         public DateTime DateVerified { get; set; }
 
-        [Required, MaxLength(20), Column("Password")]
+        [Required, MaxLength(100), Column("Password")]
         public string Password { get; set; } = string.Empty;
 
         [Column("RememberToken"), MaxLength(100)]

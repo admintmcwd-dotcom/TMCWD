@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
@@ -11,28 +12,23 @@ namespace TMCWD.Data.Controllers
     public class AccountController : Controller
     {
 
+        private readonly UserDbContext _dbContext;
+
+        public AccountController(UserDbContext context)
+        {
+            this._dbContext = context;
+        }
+
         [HttpPost("SaveUpdate")]
         public ActionResult<bool> SaveUpdate([FromBody] Account account)
         {
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    if (account.Id > 0)
-                        dbContext.Accounts.Update(account);
-                    else
-                        dbContext.Accounts.Add(account);
+            if (account.Id > 0)
+                _dbContext.Accounts.Update(account);
+            else
+                _dbContext.Accounts.Add(account);
 
-                    int res = dbContext.SaveChanges();
-                    if (res > 0) return Ok(true);
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+            int res = _dbContext.SaveChanges();
+            if (res > 0) return Ok(true);
             return Ok(false);
         }
 
@@ -41,20 +37,9 @@ namespace TMCWD.Data.Controllers
         {
             Account account = new();
 
-            try
-            {
-                using (UserDbContext dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Accounts.Where(x => x.Id == id).FirstOrDefault();
-                    if (data == null) return NotFound($"Account with id {id} not found");
-                    account = data;
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+            var data = _dbContext.Accounts.Where(x => x.Id == id).FirstOrDefault();
+            if (data == null) return NotFound($"Account with id {id} not found");
+            account = data;
 
             return Ok(account);
         }
@@ -64,20 +49,9 @@ namespace TMCWD.Data.Controllers
         {
             Account account = new();
 
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Accounts.Where(x => x.AccountNumber.ToLower() == accountNumber.ToLower()).FirstOrDefault();
-                    if (data == null) return NotFound($"Account with account number {accountNumber} not found");
-                    account = data;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+            var data = _dbContext.Accounts.Where(x => x.AccountNumber.ToLower() == accountNumber.ToLower()).FirstOrDefault();
+            if (data == null) return NotFound($"Account with account number {accountNumber} not found");
+            account = data;
 
             return Ok(account);
         }
@@ -87,20 +61,9 @@ namespace TMCWD.Data.Controllers
         {
             IEnumerable<Account> accounts = new List<Account>();
 
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Accounts.Where(x => x.CustomerId == customerId);
-                    if (!data.Any()) return NotFound($"Account(s) with customer id {customerId} not found");
-                    accounts = data;
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+            var data = _dbContext.Accounts.Where(x => x.CustomerId == customerId);
+            if (!data.Any()) return NotFound($"Account(s) with customer id {customerId} not found");
+            accounts = data;
 
             return Ok(accounts);
         }
@@ -109,20 +72,10 @@ namespace TMCWD.Data.Controllers
         public ActionResult<Account> GetByMeterNumber(string meterNumber)
         {
             Account account = new();
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Accounts.Where(x => x.MeterNumber.ToLower().Trim() == meterNumber.ToLower().Trim()).FirstOrDefault();
-                    if (data == null) return NotFound($"Account with meter number {meterNumber} is not found.");
-                    account = data;
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+
+            var data = _dbContext.Accounts.Where(x => x.MeterNumber.ToLower().Trim() == meterNumber.ToLower().Trim()).FirstOrDefault();
+            if (data == null) return NotFound($"Account with meter number {meterNumber} is not found.");
+            account = data;
 
             return Ok(account);
         }

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TMCWD.Administration\TMCWD.Administration.csproj" />
+    <ProjectReference Include="..\TMCWD.CustomerSupport\TMCWD.CustomerSupport.csproj" />
     <ProjectReference Include="..\TMCWD.Model\TMCWD.Model.csproj" />
   </ItemGroup>
 

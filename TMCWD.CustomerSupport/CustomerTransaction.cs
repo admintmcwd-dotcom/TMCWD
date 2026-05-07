@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using TMCWD.Model.CustomerSupport;
 using TMCWD.Utility.Generic;
 using TMCWD.Model.Interfaces;
+using System.Text.Json;
 
 namespace TMCWD.CustomerSupport
 {
@@ -38,8 +39,9 @@ namespace TMCWD.CustomerSupport
                 if (String.IsNullOrEmpty(customer.Lastname.Trim())) throw new Exception("Customer lastname is required");
                 if (String.IsNullOrEmpty(customer.PhoneNumber.Trim())) throw new Exception("Customer phone number is required");
                 if (String.IsNullOrEmpty(customer.Email.Trim())) throw new Exception("Customer email is required");
-                if (customer.Id > 0) customer.DateUpdated = DateTime.Now;
-                else customer.DateCreated = DateTime.Now;
+                if (customer.CreatedBy <= 0) throw new Exception("No current user");
+                if (customer.Id <= 0) customer.DateCreated = DateTime.Now; 
+                customer.DateUpdated = DateTime.Now;
 
                 if (customer == null) return isSuccess;
                 isSuccess = Task.Run(() => SaveUpdateTask(customer)).GetAwaiter().GetResult();
@@ -113,29 +115,12 @@ namespace TMCWD.CustomerSupport
                 using(HttpClient client = new())
                 {
                     client.BaseAddress = new Uri(this.BaseUrl);
-                    Dictionary<string, string> queryParams = new()
-                    {
-                        { "Id", customer.Id.ToString() },
-                        { "Firstname", customer.Firstname },
-                        { "Lastname", customer.Lastname },
-                        { "Middlename", customer.Middlename },
-                        { "PhoneNumber", customer.PhoneNumber },
-                        { "Email", customer.Email },
-                        { "DateCreated", customer.DateCreated.ToString("o") },
-                        { "DateUpdated", customer.DateUpdated.ToString("o") },
-                        { "IsActive", customer.IsActive.ToString() }
-                    };
                     HttpContent content = JsonContent.Create(customer);
                     using(var response = await client.PostAsync(_saveUpdateUrl, content))
                     {
-                        if(!response.IsSuccessStatusCode)
-                        {
-                            Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Failed to save/update customer. Status Code: {response.StatusCode}");
-                        }
-                        else
-                        {
-                            isSuccess = true;
-                        }
+                        var data = await response.Content.ReadAsStringAsync();
+                        if (!response.IsSuccessStatusCode) throw new Exception($"Failed to save/update customer. Status Code: {response.StatusCode}");
+                        return data.Trim().ToLower() == "true";
                     }
                 }
             }
@@ -166,7 +151,8 @@ namespace TMCWD.CustomerSupport
                         else
                         {
                             string jsonResponse = await response.Content.ReadAsStringAsync();
-                            customer = System.Text.Json.JsonSerializer.Deserialize<Customer>(jsonResponse);
+                            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                            customer = System.Text.Json.JsonSerializer.Deserialize<Customer>(jsonResponse, serializeOptions);
                             if(customer == null) throw new Exception($"Customer with ID {id} not found.");
                         }
                     }
@@ -236,7 +222,8 @@ namespace TMCWD.CustomerSupport
                         else
                         {
                             string jsonResponse = await response.Content.ReadAsStringAsync();
-                            customers = System.Text.Json.JsonSerializer.Deserialize<List<Customer>>(jsonResponse);
+                            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                            customers = System.Text.Json.JsonSerializer.Deserialize<List<Customer>>(jsonResponse, serializeOptions);
                             if (customers == null) throw new Exception("No customers found.");
                         }
                     }

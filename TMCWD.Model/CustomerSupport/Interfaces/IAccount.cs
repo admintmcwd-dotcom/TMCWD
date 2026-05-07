@@ -9,9 +9,9 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
 
         #region properties
 
-        public System.Int64 Id { get; set; }
+        public int Id { get; set; }
 
-        public System.Int64 CustomerId { get; set; }
+        public int CustomerId { get; set; }
 
         public string AccountNumber { get; set; }
 
@@ -26,6 +26,10 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
         public DateTime DateUpdated { get; set; }
 
         public bool IsActive { get; set; }
+
+        public int CreatedBy { get; set; }
+
+        public int UpdatedBy { get; set; }
 
         #endregion
 

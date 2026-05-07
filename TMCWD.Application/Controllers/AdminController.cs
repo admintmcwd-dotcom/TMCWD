@@ -4,13 +4,14 @@ using TMCWD.Application.Models;
 using TMCWD.Model.Administrator;
 using TMCWD.Administration;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Cryptography;
 
 namespace TMCWD.Application.Controllers
 {
     public class AdminController : Controller
     {
 
-        public IActionResult Index()
+        public IActionResult Index(string searchString = "")
         {
             User currentUser = new();
             var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
@@ -20,12 +21,13 @@ namespace TMCWD.Application.Controllers
             }
 
             UserTransaction userTransact = new();
-            var userList = userTransact.GetUsers();
+            var userList = userTransact.SearchUser(searchString) ?? userTransact.GetUsers();
 
             AdminViewModel model = new()
             {
                 CurrentUser = currentUser,
-                PagedUserList = userList ?? new List<User>()
+                PagedUserList = userList ?? new List<User>(),
+                SearchString = searchString
             };
 
             ViewBag.Role = currentUser?.Role ?? 0;
@@ -63,10 +65,9 @@ namespace TMCWD.Application.Controllers
                 Password = editUser?.Id > 0 ? editUser.Password : string.Empty
             };
 
-            model.Roles.Add(new SelectListItem(nameof(UserRole.Engineer), ((int)UserRole.Engineer).ToString()));
-            model.Roles.Add(new SelectListItem(nameof(UserRole.SuperAdmin), ((int)UserRole.SuperAdmin).ToString()));
-            model.Roles.Add(new SelectListItem(nameof(UserRole.Guest), ((int)UserRole.Guest).ToString()));
-            model.Roles.Add(new SelectListItem(nameof(UserRole.CustomerRepresentative), ((int)UserRole.CustomerRepresentative).ToString()));
+            UserTransaction userTrans = new();
+
+            model.Roles = userTrans.GetRoles();
 
             ViewBag.Role = currentUser.Role;
             return View(model);
@@ -77,14 +78,27 @@ namespace TMCWD.Application.Controllers
         {
             UserTransaction userTrans = new();
 
-            if (model?.AddEditUser?.Id > 0) userTrans.UpdateUser(model.AddEditUser);
+            if (model?.AddEditUser?.Id > 0)
+            {
+                userTrans.UpdateUser(model.AddEditUser);
+            }
             else
             {
                 if (!string.IsNullOrEmpty(model.Password.Trim())) model.AddEditUser.Password = model.Password;
                 userTrans.SaveUser(model.AddEditUser, model.ConfirmPassword);
             }
 
-            return View("AddEditUser", model);
+            //return View("AddEditUser", model);
+            return RedirectToAction("Index", "Admin");
+        }
+
+        public IActionResult DeactivateUser(int userId)
+        {
+            UserTransaction userTrans = new();
+            var user = userTrans.GetUserById(userId);
+            user?.IsActive = false;
+            userTrans.UpdateUser(user);
+            return RedirectToAction("Index", "Admin");
         }
 
     }

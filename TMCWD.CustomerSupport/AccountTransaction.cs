@@ -150,7 +150,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<Account>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<Account>(data, serializeOptions);
                         if (serialized != null) account = serialized;
                     }
                 }
@@ -177,7 +178,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<Account>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<Account>(data, serializeOptions);
                         if(serialized != null) account = serialized;
                     }
                 }
@@ -204,7 +206,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<List<Account>>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<List<Account>>(data, serializeOptions);
                         if (serialized != null) accounts = serialized;
                     }
                 }
