@@ -1,0 +1,88 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using TMCWD.Administration;
+using TMCWD.Application.Models;
+using TMCWD.Model.Administrator;
+using TMCWD.Model.CustomerSupport;
+using TMCWD.CustomerSupport;
+
+namespace TMCWD.Application.Controllers
+{
+    public class CustomerSupportController : Controller
+    {
+        public IActionResult Index()
+        {
+            CustomerViewModel model = new();
+            User? currentUser = new();
+            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
+
+            CustomerTransaction custTrans = new();
+
+            if (!String.IsNullOrEmpty(jsonCurrentUser?.Trim()))
+            {
+                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
+            }
+
+            model.CurrentUser = currentUser ?? new User();
+            model.PagedCustomerList = custTrans.GetCustomers();
+            ViewBag.Role = model.CurrentUser.Role;
+
+            return View(model);
+        }
+
+        public IActionResult AddEditCustomer(int editCustomerId = 0)
+        {
+            User? currentUser = new();
+            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
+
+            if (!String.IsNullOrEmpty(jsonCurrentUser?.Trim()))
+            {
+                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
+            }
+
+            AccountTransaction acctTrans = new();
+            CustomerTransaction custTrans = new();
+
+            CustomerViewModel model = new()
+            {
+                CurrentUser = currentUser,
+                AddEditCustomer = custTrans.GetById(editCustomerId) ?? new Customer(),
+                CustomerAccounts = editCustomerId > 0 ? acctTrans.GetByCustomerId(editCustomerId) : new List<Account>()
+            };
+
+            ViewBag.Role = currentUser?.Role;
+
+            return View(model);
+        }
+
+        public IActionResult AddEditAccount()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult SaveCustomer(CustomerViewModel model)
+        {
+            CustomerTransaction custTrans = new();
+            model.AddEditCustomer.CreatedBy = model.CurrentUser.Id;
+            custTrans.SaveUpdate(model.AddEditCustomer);
+
+            return RedirectToAction("Index", "CustomerSupport");
+        }
+
+        public IActionResult DeactivateCustomer(int customerId)
+        {
+            CustomerTransaction custTrans = new();
+            var customer = custTrans.GetById(customerId);
+            if(customer != null)
+            {
+                customer.IsActive = false;
+                custTrans.SaveUpdate(customer);
+            }
+
+            return RedirectToAction("Index", "CustomerSupport");
+        }
+
+    }
+}

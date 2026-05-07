@@ -9,21 +9,27 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
 
         #region properties
 
-        public System.Int64 Id { get; set; }
+        public int Id { get; set; }
 
-        public System.Int64 CustomerId { get; set; }
+        public int CustomerId { get; set; }
 
         public string AccountNumber { get; set; }
+
+        public string MeterNumber { get; set; }
 
         public string Address { get; set; }
 
         public bool IsCurrentAddress { get; set; }
         
-        public string DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
 
-        public string DateUpdated { get; set; }
+        public DateTime DateUpdated { get; set; }
 
         public bool IsActive { get; set; }
+
+        public int CreatedBy { get; set; }
+
+        public int UpdatedBy { get; set; }
 
         #endregion
 

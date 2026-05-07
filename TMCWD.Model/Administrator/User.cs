@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using TMCWD.Model.Administrator.Interface;
 
@@ -22,16 +24,27 @@ namespace TMCWD.Model.Administrator
         #endregion
 
         #region properties
-        public decimal Id { get; set; }
+
+        [DisplayName("Id")]
+        public int Id { get; set; }
+        [DisplayName("Name")]
         public string Name { get; set; }
+        [DisplayName("Email")]
         public string Email { get; set; }
+        [DisplayName("Role")]
         public int Role { get; set; }
+        [DisplayName("Date Verified")]
         public DateTime DateVerified { get; set; }
+        [DisplayName("Password")]
         public string Password { get; set; }
+        [DisplayName("Remember Token")]
         public string RememberToken { get; set; }
+        [DisplayName("Created")]
         public DateTime DateCreated { get; set; }
+        [DisplayName("Updated")]
         public DateTime DateUpdated { get; set; }
         public bool IsVerified { get; set; }
+        [DisplayName("Active")]
         public bool IsActive { get; set; }
         #endregion
     }

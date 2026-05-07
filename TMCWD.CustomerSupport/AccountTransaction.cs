@@ -20,6 +20,7 @@ namespace TMCWD.CustomerSupport
         private const string _getByIdUrl = $"{_serviceRoute}GetById";
         private const string _getByAccountNumberUrl = $"{_serviceRoute}GetByAccountNumber";
         private const string _getByCustomerIdUrl = $"{_serviceRoute}GetByCustomerId";
+        private const string _getByMeterNumberUrl = $"{_serviceRoute}GetByMeterNumber";
 
         #endregion
 
@@ -38,6 +39,7 @@ namespace TMCWD.CustomerSupport
             {
                 if (account == null) throw new Exception("Required account fields are not supplied");
                 if (String.IsNullOrEmpty(account.AccountNumber.Trim())) throw new Exception("Äccount number is required");
+                if (String.IsNullOrEmpty(account.MeterNumber.Trim())) throw new Exception("Meter number is required");
                 if (account.CustomerId <= 0) throw new Exception("No customer has been selected for this account");
                 if (String.IsNullOrEmpty(account.Address.Trim())) throw new Exception("Account address is required for account creation");
                 return Task.Run(() => SaveUpdateAccountTask(account)).GetAwaiter().GetResult();
@@ -96,6 +98,14 @@ namespace TMCWD.CustomerSupport
             return new List<Account>();
         }
 
+        public Account GetByMeterNumber(string meterNumber)
+        {
+
+
+
+            return new Account();
+        }
+
         #endregion
 
         #region private methods
@@ -140,7 +150,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<Account>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<Account>(data, serializeOptions);
                         if (serialized != null) account = serialized;
                     }
                 }
@@ -167,7 +178,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<Account>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<Account>(data, serializeOptions);
                         if(serialized != null) account = serialized;
                     }
                 }
@@ -194,7 +206,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<List<Account>>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<List<Account>>(data, serializeOptions);
                         if (serialized != null) accounts = serialized;
                     }
                 }
@@ -205,6 +218,23 @@ namespace TMCWD.CustomerSupport
             }
 
             return accounts;
+        }
+
+        private async Task<Account> GetAccountByMeterNumberTask(string meterNumber)
+        {
+            try
+            {
+                using(HttpClient client = new())
+                {
+                    client.BaseAddress = new Uri(this.BaseUrl);
+                    string url = QueryHelpers.AddQueryString(_getByMeterNumberUrl, "meterNumber", meterNumber);
+                }
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
+            }
+            return new Account();
         }
 
         #endregion

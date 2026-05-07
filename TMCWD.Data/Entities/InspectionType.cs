@@ -19,7 +19,7 @@ namespace TMCWD.Data.Entities
         public decimal Id { get; set; }
 
         [Required, MaxLength(150), Column("Name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required, Column("WithDetail")]
         public bool WidthDetail { get; set; }

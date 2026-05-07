@@ -23,10 +23,10 @@ namespace TMCWD.Data.Entities
         [Required, Column("RequesTypeId")]
         public int RequestTypeId { get; set; }
         [MaxLength(255), Column("InspectionTypeDetail")]
-        public string InspectionTypeDetail { get; set; }
+        public string InspectionTypeDetail { get; set; } = string.Empty;
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
-        [Key, Column("DateUpdated")]
+        [Column("DateUpdated")]
         public DateTime DateUpdated { get; set; }
 
         #endregion
