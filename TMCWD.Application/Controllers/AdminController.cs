@@ -101,5 +101,27 @@ namespace TMCWD.Application.Controllers
             return RedirectToAction("Index", "Admin");
         }
 
+        public IActionResult InspectionTypes()
+        {
+            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
+            InspectionTypeViewModel model = new();
+            User? currentUser = new();
+            if (!String.IsNullOrEmpty(jsonCurrentUser?.Trim()))
+            {
+                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
+                if (currentUser != null)
+                {
+                    model.CurrentUser = currentUser;
+                    ViewBag.Role = currentUser.Role;
+                }
+            }
+
+            InspectionTypeTransaction inspectionTypeTrans = new();
+            var inspectionTypes = inspectionTypeTrans.GetIncidentTypes();
+            if (inspectionTypes != null && inspectionTypes.Any()) model.InspectionTypes = inspectionTypes;
+
+            return View(model);
+        }
+
     }
 }

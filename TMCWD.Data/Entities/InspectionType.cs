@@ -24,11 +24,20 @@ namespace TMCWD.Data.Entities
         [Required, Column("WithDetail")]
         public bool WidthDetail { get; set; }
 
+        [Column("IsActive")]
+        public bool IsActive { get; set; }
+
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
 
+        [Required, Column("CreatedBy")]
+        public System.Int64 CreatedBy { get; set; }
+
         [Column("DateUpdated")]
         public DateTime DateUpdated { get; set; }
+
+        [Column("UpdatedBy")]
+        public System.Int64 UpdatedBy { get; set; }
 
         #endregion
     }
