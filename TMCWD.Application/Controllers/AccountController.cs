@@ -3,6 +3,7 @@ using System.Text.Json;
 using TMCWD.Application.Models;
 using TMCWD.CustomerSupport;
 using TMCWD.Model.Administrator;
+using TMCWD.Model.CustomerSupport;
 
 namespace TMCWD.Application.Controllers
 {
@@ -57,6 +58,19 @@ namespace TMCWD.Application.Controllers
             AccountTransaction acctTrans = new();
             acctTrans.SaveUpdate(model.AddEditAccount);
             return RedirectToAction("Index", "Account", new { customerId = model.AddEditAccount.CustomerId });
+        }
+
+        public IActionResult DeactivateAccount(int accountId)
+        {
+            AccountTransaction acctTrans = new();
+            Account acct = new();
+            acct =  acctTrans.GetById(accountId);
+            if(acct != null)
+            {
+                acct.IsActive = false;
+                acctTrans.SaveUpdate(acct);
+            }
+            return RedirectToAction("Index", "Account", new { customerId = acct.CustomerId });
         }
 
     }

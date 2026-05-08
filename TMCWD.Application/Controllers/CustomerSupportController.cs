@@ -74,14 +74,31 @@ namespace TMCWD.Application.Controllers
         public IActionResult DeactivateCustomer(int customerId)
         {
             CustomerTransaction custTrans = new();
-            var customer = custTrans.GetById(customerId);
-            if(customer != null)
+            Customer cust = new();
+            cust = custTrans.GetById(customerId);
+
+            if(cust != null)
             {
-                customer.IsActive = false;
-                custTrans.SaveUpdate(customer);
+                cust.IsActive = false;
+                custTrans.SaveUpdate(cust);
             }
 
             return RedirectToAction("Index", "CustomerSupport");
+        }
+
+        public IActionResult DeactivateAccount(int accountId)
+        {
+            AccountTransaction acctTrans = new();
+            Account acct = new();
+            acct = acctTrans.GetById(accountId);
+
+            if(acct != null)
+            {
+                acct.IsActive = false;
+                acctTrans.SaveUpdate(acct);
+            }
+
+            return RedirectToAction("AddEditCustomer", "CustomerSupport", new { editCustomerId = acct.CustomerId });
         }
 
     }
