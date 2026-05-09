@@ -27,11 +27,11 @@
                 @Html.TextAreaFor(x => x.AddEditAccount.Address, new { id = "txtAddress", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Address" })
             </div>
             <div class="flex items-center mb-4">
-                    @Html.CheckBoxFor(x => x.AddEditAccount.IsCurrentAddress, new { id = "chkIsCurrentAddress", @class = "w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft" })
+                @Html.CheckBoxFor(x => x.AddEditAccount.IsCurrentAddress, new { id = "chkIsCurrentAddress", @class = "w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft" })
                 @Html.LabelFor(x => x.AddEditAccount.IsCurrentAddress, new { @class = "select-none ms-2 text-sm font-medium text-heading" })
             </div>
             <div class="flex items-center mb-4">
-                    @Html.CheckBoxFor(x => x.AddEditAccount.IsActive, new { id = "chkIsActive", @class = "w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft" })
+                @Html.CheckBoxFor(x => x.AddEditAccount.IsActive, new { id = "chkIsActive", @class = "w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft" })
                 @Html.LabelFor(x => x.AddEditAccount.IsActive, new { @class = "select-none ms-2 text-sm font-medium text-heading" })
             </div>
         </div>

@@ -123,5 +123,46 @@ namespace TMCWD.Application.Controllers
             return View(model);
         }
 
+        public IActionResult AddEditInspectionType(int inspectionTypeId = 0)
+        {
+            InspectionTypeViewModel model = new();
+
+            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
+
+            if (!String.IsNullOrEmpty(jsonCurrentUser.Trim()))
+            {
+                model.CurrentUser = new();
+                model.CurrentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
+                ViewBag.Role = model.CurrentUser.Role;
+            }
+
+            model.AddEditInspectionType = new();
+            if (inspectionTypeId > 0)
+            {
+                InspectionTypeTransaction inspectionTypeTrans = new();
+                model.AddEditInspectionType = inspectionTypeTrans.GetInspectionTypeById(inspectionTypeId);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult SaveUpdateInspectionType(InspectionTypeViewModel model)
+        {
+            InspectionTypeTransaction inspTrans = new();
+            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
+            User currentUser = new();
+            if (!string.IsNullOrEmpty(jsonCurrentUser.Trim())){
+                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
+            }
+            if(model.AddEditInspectionType.Id <= 0)
+            {
+                model.AddEditInspectionType.CreatedBy = currentUser.Id;
+                model.AddEditInspectionType.DateCreated = DateTime.Now;
+            }
+            inspTrans.SaveUpdateInspectionType(model.AddEditInspectionType);
+            return RedirectToAction("InspectionTypes", "Admin");
+        }
+
     }
 }

@@ -16,7 +16,7 @@ namespace TMCWD.Data.Entities
         #region properties
 
         [Key, Column("Id")]
-        public decimal Id { get; set; }
+        public System.Int64 Id { get; set; }
 
         [Required, MaxLength(150), Column("Name")]
         public string Name { get; set; } = string.Empty;

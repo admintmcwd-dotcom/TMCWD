@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
 using TMCWD.Utility.Generic;
@@ -9,24 +10,21 @@ namespace TMCWD.Data.Controllers
     [Route("api/[controller]")]
     public class InspectionTypeController : Controller
     {
+
+        private readonly UserDbContext _dbContext;
+
+        public InspectionTypeController(UserDbContext context)
+        {
+            this._dbContext = context;
+        }
+
         [HttpGet("GetTypes")]
         public ActionResult<IEnumerable<InspectionType>> GetTypes()
         {
             IEnumerable<InspectionType> types = new List<InspectionType>();
 
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    types = dbContext.InspectionTypes;
-                    if (!types.Any()) return NotFound("No incident type found");
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+            types = _dbContext.InspectionTypes;
+            if (types == null || !types.Any()) return NotFound("No incident type found");
 
             return Ok(types);
         }
@@ -36,24 +34,9 @@ namespace TMCWD.Data.Controllers
         {
             InspectionType type = new();
 
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    var res = dbContext.InspectionTypes.Where(x => x.Id == id).FirstOrDefault();
-                    if (res == null) return NotFound($"Incident type id {id} not found");
-
-                    type.Id = res.Id;
-                    type.Name = res.Name;
-                    type.DateCreated = res.DateCreated;
-                    type.DateUpdated = res.DateUpdated;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+            var res = _dbContext.InspectionTypes.Where(x => x.Id == id).FirstOrDefault();
+            if (res == null) return NotFound($"Incident type id {id} not found");
+            type = res;
 
             return Ok(type);
         }
@@ -61,29 +44,19 @@ namespace TMCWD.Data.Controllers
         [HttpPost("SaveUpdate")]
         public ActionResult<bool> SaveUpdate([FromBody] InspectionType type)
         {
-            try
+            if (type.Id == 0)
             {
-                using(var dbContext = new UserDbContext())
-                {
-                    if (type.Id == 0)
-                    {
-                        dbContext.InspectionTypes.Add(type);
-                    }
-                    else
-                    {
-                        dbContext.InspectionTypes.Update(type);
-                    }
-                    int res = dbContext.SaveChanges();
-                    if(res > 0) return Ok(true);
-                }
+                _dbContext.InspectionTypes.Add(type);
             }
-            catch (Exception ex)
+            else
             {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
+                _dbContext.InspectionTypes.Update(type);
             }
+            int res = _dbContext.SaveChanges();
+            if (res > 0) return Ok(true);
 
             return Ok(false);
         }
+
     }
 }

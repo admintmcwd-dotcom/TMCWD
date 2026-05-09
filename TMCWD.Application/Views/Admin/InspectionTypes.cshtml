@@ -25,7 +25,7 @@
                 </button>
                 <button class="rounded-md bg-blue-900 p-2 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-blue-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                         type="button"
-                        onclick="location.href='@Url.Action("AddEditUser", "Admin", new { currentUserId = Model.CurrentUser.Id })'">
+                        onclick="location.href='@Url.Action("AddEditInspectionType", "Admin")'">
                     <svg width="20px" height="20px" viewBox="0 0 0.6 0.6" id="plus" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color">
                         <path id="primary" d="M0.3 0.5a0.025 0.025 0 0 1 -0.025 -0.025v-0.15H0.125a0.025 0.025 0 0 1 0 -0.05h0.15V0.125a0.025 0.025 0 0 1 0.05 0v0.15h0.15a0.025 0.025 0 0 1 0 0.05h-0.15v0.15a0.025 0.025 0 0 1 -0.025 0.025" style="fill: rgb(255, 255, 255);" />
                     </svg>
@@ -48,6 +48,7 @@
                     <th class="border border-gray-300 p-3 ...">Id #</th>
                     <th class="border border-gray-300 p-3 ...">Name</th>
                     <th class="border border-gray-300 p-3 ...">Date Enrolled</th>
+                    <th class="border border-gray-300 p-3 ...">With Detail</th>
                     <th class="border border-gray-300 p-3 ...">Active</th>
                     <th class="border border-gray-300 p-3 ..."></th>
                 </tr>
@@ -67,7 +68,9 @@
                             <td class="border border-gray-300 p-2 ...">@inspectionType.Id</td>
                             <td class="border border-gray-300 p-2 ...">@inspectionType.Name</td>
                             <td class="border border-gray-300 p-2 ...">@inspectionType.DateCreated</td>
-                            <td class="border border-gray-300 p-2 ...">@inspectionType.IsActive ? "Yes" : "No"</td>
+                            <td class="border border-gray-300 p-2 ...">@(inspectionType.WithDetail ? "Yes" : "No")</td>
+                            <td class="border border-gray-300 p-2 ...">@(inspectionType.IsActive ? "Yes" : "No")</td>
+                            <td class="border border-gray-300 p-2 ..."></td>
                         </tr>
                     } 
                 }

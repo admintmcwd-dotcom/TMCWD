@@ -94,11 +94,11 @@ namespace TMCWD.Administration
                 client.BaseAddress = new Uri(this.BaseUrl);
                 using (var response = await client.GetAsync(_getTypesUrl))
                 {
+                    var data = await response.Content.ReadAsStringAsync();
                     if (response.IsSuccessStatusCode)
                     {
-                        var data = await response.Content.ReadAsStringAsync();
-
-                        return JsonSerializer.Deserialize<List<InspectionType>>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        return JsonSerializer.Deserialize<List<InspectionType>>(data, serializeOptions);
                     }
                     else
                     {
@@ -155,7 +155,8 @@ namespace TMCWD.Administration
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        return JsonSerializer.Deserialize<InspectionType>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        return JsonSerializer.Deserialize<InspectionType>(data, serializeOptions);
                     }
                 }
             }
