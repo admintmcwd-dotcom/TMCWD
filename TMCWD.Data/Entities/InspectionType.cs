@@ -22,7 +22,7 @@ namespace TMCWD.Data.Entities
         public string Name { get; set; } = string.Empty;
 
         [Required, Column("WithDetail")]
-        public bool WidthDetail { get; set; }
+        public bool WithDetail { get; set; }
 
         [Column("IsActive")]
         public bool IsActive { get; set; }
