@@ -160,7 +160,27 @@ namespace TMCWD.Application.Controllers
                 model.AddEditInspectionType.CreatedBy = currentUser.Id;
                 model.AddEditInspectionType.DateCreated = DateTime.Now;
             }
+            else
+            {
+                model.AddEditInspectionType.DateUpdated = DateTime.Now;
+                model.AddEditInspectionType.UpdatedBy = currentUser.Id;
+            }
             inspTrans.SaveUpdateInspectionType(model.AddEditInspectionType);
+            return RedirectToAction("InspectionTypes", "Admin");
+        }
+
+        public IActionResult DeactivateInspectionType(int inspectionTypeId, int currentUserId)
+        {
+            InspectionTypeTransaction inspTrans = new();
+            InspectionType inspType = new();
+            inspType = inspTrans.GetInspectionTypeById(inspectionTypeId);
+            if (inspType != null)
+            {
+                inspType.IsActive = false;
+                inspType.UpdatedBy = currentUserId;
+                inspType.DateUpdated = DateTime.Now;
+                inspTrans.SaveUpdateInspectionType(inspType);
+            }
             return RedirectToAction("InspectionTypes", "Admin");
         }
 

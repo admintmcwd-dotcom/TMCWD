@@ -27,9 +27,10 @@ namespace TMCWD.Application.Controllers
                 {
                     case (int)UserRole.CustomerRepresentative:
                         return RedirectToAction("Index", "CustomerSupport");
-                        //break;
                     case (int)UserRole.SuperAdmin:
                         return RedirectToAction("Index", "Admin");
+                    case (int)UserRole.Engineer:
+                        return RedirectToAction("Inventory", "Engineering");
                 }
             }
             return View("Index", new LoginViewModel() { Email = string.Empty, Password = string.Empty });

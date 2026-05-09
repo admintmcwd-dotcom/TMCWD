@@ -7,7 +7,7 @@ namespace TMCWD.Data.Entities
     public class Inventory
     {
         [Key, Column("Id")]
-        public decimal Id { get; set; }
+        public System.Int64 Id { get; set; }
 
         [Required, MaxLength(255), Column("Name")]
         public string Name { get; set; } = string.Empty;
@@ -24,10 +24,19 @@ namespace TMCWD.Data.Entities
         [Required, Column("UnitCost")]
         public decimal UnitCost { get; set; }
 
+        [Column("IsActive")]
+        public bool IsActive { get; set; }
+
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
 
+        [Column("CreatedBy")]
+        public System.Int64 CreatedBy { get; set; }
+
         [Column("DateUpdated")]
         public DateTime DateUpdated { get; set; }
+
+        [Column("UpdatedBy")]
+        public System.Int64 UpdatedBy { get; set; }
     }
 }

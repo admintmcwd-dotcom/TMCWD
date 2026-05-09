@@ -1,0 +1,81 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_insideLayout";
+}
+
+@model TMCWD.Application.Models.InventoryViewModel
+
+<!-- Search and Action Button -->
+<div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
+    <p class="text-gray-700">
+        <div class="grid grid-cols-3 gap-4">
+            <div class="col-span-2">
+                @Html.TextBoxFor(x => x.SearchString, new { id = "txtSearchString", @class = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600", })
+                @* <input id="txtSearchString" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" /> *@
+            </div>
+            <div class="grid-column">
+                        
+                <button class="rounded-md bg-blue-900 p-2 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-blue-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        type="button" id="btnSeachUser">
+                    <svg width="20px" height="20px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.545 15.467l-3.779-3.779a6.15 6.15 0 0 0 .898-3.21c0-3.417-2.961-6.377-6.378-6.377A6.185 6.185 0 0 0 2.1 8.287c0 3.416 2.961 6.377 6.377 6.377a6.15 6.15 0 0 0 3.115-.844l3.799 3.801a.953.953 0 0 0 1.346 0l.943-.943c.371-.371.236-.84-.135-1.211zM4.004 8.287a4.282 4.282 0 0 1 4.282-4.283c2.366 0 4.474 2.107 4.474 4.474a4.284 4.284 0 0 1-4.283 4.283c-2.366-.001-4.473-2.109-4.473-4.474z" style="fill:rgb(255, 255, 255)" />
+                    </svg>
+                </button>
+                <button class="rounded-md bg-blue-900 p-2 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-blue-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        type="button"
+                        onclick="location.href='@Url.Action("AddEditInspectionType", "Admin")'">
+                    <svg width="20px" height="20px" viewBox="0 0 0.6 0.6" id="plus" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color">
+                        <path id="primary" d="M0.3 0.5a0.025 0.025 0 0 1 -0.025 -0.025v-0.15H0.125a0.025 0.025 0 0 1 0 -0.05h0.15V0.125a0.025 0.025 0 0 1 0.05 0v0.15h0.15a0.025 0.025 0 0 1 0 0.05h-0.15v0.15a0.025 0.025 0 0 1 -0.025 0.025" style="fill: rgb(255, 255, 255);" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </p>
+</div>
+<!-- End Search and Action Buttons -->
+
+<div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
+    <h5 class="mb-2 text-2xl font-bold text-gray-900">Inventory</h5>
+    <p class="text-gray-700">
+        <!-- Inventory Table -->
+        <table class="border-collapse border border-gray-full w-full ...">
+            <thead>
+                <tr>
+                    <th class="border border-gray-300 p-3 ...">Id #</th>
+                    <th class="border border-gray-300 p-3 ...">Item Name</th>
+                    <th class="border border-gray-300 p-3 ...">Unit</th>
+                    <th class="border border-gray-300 p-3 ...">Unit Cost</th>
+                    <th class="border border-gray-300 p-3 ...">Quantity</th>
+                    <th class="border border-gray-300 p-3 ...">Active</th>
+                    <th class="border border-gray-300 p-3 ..."></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(Model.Inventory == null || Model.Inventory.Count <= 0)
+                {
+                    <tr>
+                        <td colspan="7" class="text-center border border-gray-300 p-2 ...">No record(s) found . . .</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach(var item in Model.Inventory)
+                    {
+                        <tr>
+                            <td class="border border-gray-300 p-2 ...">@item.Id</td>
+                            <td class="border border-gray-300 p-2 ...">@item.Name</td>
+                            <td class="border border-gray-300 p-2 ...">@item.Unit</td>
+                            <td class="border border-gray-300 p-2 ...">@item.UnitCost</td>
+                            <td class="border border-gray-300 p-2 ...">@item.Quantity</td>
+                            <td class="border border-gray-300 p-2 ...">@(item.IsActive ? "Yes" : "No")</td>
+                            <td class="border border-gray-300 p-2 ..."></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <!-- End Inventory Table -->
+    </p>
+</div>

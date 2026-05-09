@@ -141,7 +141,8 @@ namespace TMCWD.Engineering
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode || data == null) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<Inventory>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<Inventory>(data, serializeOptions);
                         if(serialized != null) inventory = serialized;
                     }
                 }
@@ -167,7 +168,8 @@ namespace TMCWD.Engineering
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<List<Inventory>>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<List<Inventory>>(data, serializeOptions);
                         if(serialized != null) inventories = serialized;
                     }
                 }
@@ -194,7 +196,8 @@ namespace TMCWD.Engineering
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<List<Inventory>>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<List<Inventory>>(data, serializeOptions);
                         if (serialized != null) inventories = serialized;
                     }
                 }

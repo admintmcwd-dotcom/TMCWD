@@ -290,6 +290,9 @@
                         case 2:
                             <h1 class="text-2xl font-bold">TMCWD Customer</h1>
                             break;
+                        case 3:
+                            <h1 class="text-2xl font-bold">TMCWD Engineering</h1>
+                            break;
                     }
             </div>
             
@@ -307,6 +310,11 @@
                         case 2:
                             <a href="@Url.Action("Index", "CustomerSupport")" class="flex items-center px-6 py-3 hover:bg-blue-800">
                                 <i class="fas fa-home mr-3"></i>Customers
+                            </a>
+                            break;
+                        case 3:
+                            <a href="@Url.Action("Inventory", "Engineering")" class="flex items-center px-6 py-3 hover:bg-blue-800">
+                                <i class="fas fa-home mr-3"></i>Inventory
                             </a>
                             break;
                     }
