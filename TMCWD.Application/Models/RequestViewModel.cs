@@ -15,5 +15,9 @@ namespace TMCWD.Application.Models
 
         public List<InspectionType> InspectionTypes { get; set; } = new List<InspectionType>();
 
+        public Customer CurrentCustomer { get; set; } = new Customer();
+
+        public Account CurrentAccount { get; set; } = new Account();
+
     }
 }

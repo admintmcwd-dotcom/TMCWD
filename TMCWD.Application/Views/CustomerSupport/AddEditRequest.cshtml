@@ -19,14 +19,75 @@
 
             <div class="grid gap-6 mb-6 md:grid-cols-2">
                 <div>
-                    <el-autocomplete class="relative mt-2 block" style="--button-width: 36px; --input-width: 320px;">
-                        <input id="combobox" type="text" class="block w-full border-gray-600 rounded-md bg-whitepy-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="autocomplete-listbox-1" aria-activedescendant="" autocomplete="off">
-                        <button type="button" class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden" id="autocomplete-button-0" aria-haspopup="listbox" aria-controls="autocomplete-listbox-1" aria-expanded="false" tabindex="-1" popovertarget="autocomplete-listbox-1">
-                            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 text-gray-400">
-                                <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd"></path>
-                            </svg>
-                        </button>
-                    </el-autocomplete>
+                    <label for="pControlNumber" class="block mb-2.5 text-sm font-medium text-heading">Control No.</label>
+                    @if(Model.AddEditRequest.Id > 0){
+                        <p id="pControlNumber" class="mb-3 text-body">@Model.AddEditRequest.ControlNumber</p>
+                    }
+                    else
+                    {
+                        <p id="pControlNumber" class="mb-3 text-body">Not yet created</p>
+                    }
+                </div>
+                <div>
+                    <label for="pDate" class="block mb-2.5 text-sm font-medium text-heading">Date</label>
+                    @if(Model.AddEditRequest.Id > 0){
+                        <p id="pDate" class="mb-3 text-body">@Model.AddEditRequest.DateCreated.ToString("dd MMM yyyy")</p>
+                    }
+                    else
+                    {
+                        <p id="pDate" class="mb-3 text-body">@DateTime.Now.ToString("dd MMM yyyy")</p>
+                    }
+                </div>
+                <div>
+                    @if(Model.CurrentCustomer.Id > 0)
+                    {
+                        <label for="pAccountName" class="block mb-2.5 text-sm font-medium text-heading">Account Name</label>
+                        <p id="pAccountName" class="mb-3 text-body">@(Model.CurrentCustomer.Lastname + ", " + Model.CurrentCustomer.Firstname)</p>
+                    }
+                    else
+                    {
+                        @Html.LabelFor(x => x.CurrentCustomer.Firstname, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
+                        @Html.TextBoxFor(x => x.CurrentCustomer.Firstname, new { id = "txtAccountName", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
+                    }
+                </div>
+                <div>
+                    @if (Model.CurrentAccount.Id > 0)
+                    {
+                        <label for="pAccountNo" class="block mb-2.5 text-sm font-medium text-heading">Account No</label>
+                        <p id="pAccountNo" class="mb-3 text-body">@(Model.CurrentAccount.AccountNumber)</p>
+                    }
+                    else
+                    {
+                        @Html.LabelFor(x => x.CurrentAccount.AccountNumber, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
+                        @Html.TextBoxFor(x => x.CurrentAccount.AccountNumber, new { id = "txtAccountNo", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
+                    }
+                </div>
+                <div>
+                    @if (Model.CurrentAccount.Id > 0)
+                    {
+                        <label for="pAddress" class="block mb-2.5 text-sm font-medium text-heading">Service Address</label>
+                        <p id="pAddress" class="mb-3 text-body">@(Model.CurrentAccount.Address)</p>
+                    }
+                    else
+                    {
+                        @Html.LabelFor(x => x.CurrentAccount.Address, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
+                        @Html.TextBoxFor(x => x.CurrentAccount.Address, new { id = "txtAddress", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
+                    }
+                </div>
+                <div>
+                    @if (Model.CurrentCustomer.Id > 0)
+                    {
+                        <label for="pPhone" class="block mb-2.5 text-sm font-medium text-heading">Contact No.</label>
+                        <p id="pPhone" class="mb-3 text-body">@(Model.CurrentCustomer.PhoneNumber)</p>
+                    }
+                    else
+                    {
+                        @Html.LabelFor(x => x.CurrentCustomer.PhoneNumber, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
+                        @Html.TextBoxFor(x => x.CurrentCustomer.PhoneNumber, new { id = "txtPhone", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
+                    }
+                </div>
+                <div class="border border-gray-200 grid col-span-2 gap-6">
+
                 </div>
             </div>
             <div>

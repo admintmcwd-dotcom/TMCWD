@@ -12,7 +12,7 @@ namespace TMCWD.Model.CustomerSupport
         public int Id { get; set; }
         [DisplayName("Customer Id")]
         public int CustomerId { get; set; }
-        [DisplayName("Customer Number")]
+        [DisplayName("Account Number")]
         public string AccountNumber { get; set; } = string.Empty;
         [DisplayName("Meter Number")]
         public string MeterNumber { get; set; } = string.Empty;
