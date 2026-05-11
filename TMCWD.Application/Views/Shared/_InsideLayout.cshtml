@@ -281,54 +281,57 @@
     <div class="flex h-screen">
 
         <aside class="w-64 bg-blue-900 text-white">
-            <div class="p-6">
-                @switch (ViewBag.Role)
-                    {
-                        case 1:
-                            <h1 class="text-2xl font-bold">TMCWD Admin</h1>
-                            break;
-                        case 2:
-                            <h1 class="text-2xl font-bold">TMCWD Customer</h1>
-                            break;
-                        case 3:
-                            <h1 class="text-2xl font-bold">TMCWD Engineering</h1>
-                            break;
-                    }
-            </div>
+                    <div class="p-6">
+                        @switch (ViewBag.Role)
+                            {
+                                case 1:
+                                    <h1 class="text-2xl font-bold">TMCWD Admin</h1>
+                                    break;
+                                case 2:
+                                    <h1 class="text-2xl font-bold">TMCWD Customer</h1>
+                                    break;
+                                case 3:
+                                    <h1 class="text-2xl font-bold">TMCWD Engineering</h1>
+                                    break;
+                            }
+                    </div>
             
-            <nav class="mt-6">
-                    @switch (ViewBag.Role)
-                    {
-                        case 1:
-                            <a href="@Url.Action("Index", "Admin")" class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                <i class="fas fa-home mr-3"></i>User
-                            </a>
-                            <a href="@Url.Action("InspectionTypes", "Admin")" class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                <i class="fas fa-home mr-3"></i>Inspection Type
-                            </a>
-                            break;
-                        case 2:
-                            <a href="@Url.Action("Index", "CustomerSupport")" class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                <i class="fas fa-home mr-3"></i>Customers
-                            </a>
-                            break;
-                        case 3:
-                            <a href="@Url.Action("Inventory", "Engineering")" class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                <i class="fas fa-home mr-3"></i>Inventory
-                            </a>
-                            break;
-                    }
-                <div class="border-t border-blue-800 my-4"></div>
-                <form method="POST" action="{{ route('admin.logout') }}">
-                    @* @csrf *@
-                    <input type="hidden" name="token" value="{{ session('admin_auth_token') ?? request('token') }}">
-                    <button type="submit" class="w-full flex items-center px-6 py-3 hover:bg-blue-800 text-left">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        Logout
-                    </button>
-                </form>
-            </nav>
-</aside>
+                    <nav class="mt-6">
+                            @switch (ViewBag.Role)
+                            {
+                                case 1:
+                                    <a href="@Url.Action("Index", "Admin")" class="flex items-center px-6 py-3 hover:bg-blue-800">
+                                        <i class="fas fa-home mr-3"></i>User
+                                    </a>
+                                    <a href="@Url.Action("InspectionTypes", "Admin")" class="flex items-center px-6 py-3 hover:bg-blue-800">
+                                        <i class="fas fa-home mr-3"></i>Inspection Type
+                                    </a>
+                                    break;
+                                case 2:
+                                    <a href="@Url.Action("Index", "CustomerSupport")" class="flex items-center px-6 py-3 hover:bg-blue-800">
+                                        <i class="fas fa-home mr-3"></i>Customers
+                                    </a>
+                                    <a href='@Url.Action("Requests", "CustomerSupport")' class="flex items-center px-6 py-3 hover:bg-blue-800">
+                                        <i class="fa fa-ticket mr-3" aria-hidden="true"></i>Requests
+                                    </a>
+                                    break;
+                                case 3:
+                                    <a href="@Url.Action("Inventory", "Engineering")" class="flex items-center px-6 py-3 hover:bg-blue-800">
+                                        <i class="fas fa-home mr-3"></i>Inventory
+                                    </a>
+                                    break;
+                            }
+                        <div class="border-t border-blue-800 my-4"></div>
+                        <form method="POST" action="{{ route('admin.logout') }}">
+                            @* @csrf *@
+                            <input type="hidden" name="token" value="{{ session('admin_auth_token') ?? request('token') }}">
+                            <button type="submit" class="w-full flex items-center px-6 py-3 hover:bg-blue-800 text-left">
+                                <i class="fas fa-sign-out-alt mr-3"></i>
+                                Logout
+                            </button>
+                        </form>
+                    </nav>
+        </aside>
 
         <!-- Main Content -->
         <div class="flex-1 overflow-y-auto">
@@ -343,21 +346,126 @@
             </header>
             <main class="p-8">
                 <div id="infoAlert" class="hidden p-4 mb-4 text-sm text-fg-brand-strong rounded-lg bg-blue-100" role="alert">
-                  <span class="font-medium">Info alert!</span>
+                    <span class="font-medium">Info alert!</span>
                 </div>
                 <div id="errorAlert" class="hidden p-4 mb-4 text-sm text-fg-danger-strong rounded-lg bg-red-100" role="alert">
-                  <span class="font-medium">Danger alert!</span>
+                    <span class="font-medium">Danger alert!</span>
                 </div>
                 <div id="successAlert" class="hidden p-4 mb-4 text-sm text-fg-success-strong rounded-lg bg-green-100" role="alert">
-                  <span class="font-medium">alert!</span>
+                    <span class="font-medium">alert!</span>
                 </div>
                 <div id="warningAlert" class="hidden p-4 mb-4 text-sm text-fg-warning rounded-lg bg-amber-100" role="alert">
-                  <span class="font-medium">Warning alert!</span>
+                    <span class="font-medium">Warning alert!</span>
                 </div>
                 @RenderBody()
+
+                <!-- Deactivate Modal Window -->
+
+                <el-dialog>
+                    <dialog id="deactivateModal" aria-labelledby="dialogDeactivateTitle" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+                        <el-dialog-backdrop class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
+
+                        <div tabindex="0" class="flex min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
+                            <el-dialog-panel class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
+                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                    <div class="sm:flex sm:items-start">
+                                        <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 text-red-600">
+                                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                            <h3 id="dialogDeactivateTitle" class="text-base font-semibold text-gray-900">Deactivate account</h3>
+                                            <div class="mt-2">
+                                                <p id="dialogDeactivateContent" class="text-sm text-gray-500">Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                    <button id="btnSubmitDeactivateDialog" type="button" command="close" commandfor="dialog" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto">Deactivate</button>
+                                    <button id="btnCancelDeactivateDialog" type="button" command="close" commandfor="dialog" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                                </div>
+                            </el-dialog-panel>
+                        </div>
+                    </dialog>
+                </el-dialog>
+
+                <!-- End Deactivate Modal Window -->
+
+                <!-- Success Modal Dialog -->
+
+                <el-dialog>
+                    <dialog id="successModal" aria-labelledby="dialogSuccessTitle" class="abcx abcz abdj abdl abdo abdv abei abfp" style="right: var(--el-top-layer-scrollbar-offset, 0px);">
+                        <el-dialog-backdrop class="abcx abcz abdz abfn abgb abgc abgd abge abgf" inert=""></el-dialog-backdrop>
+
+                        <div tabindex="0" class="abde abdm abds abdt abel abet abfu abgl abgm">
+                        <el-dialog-panel class="abcy abdp abdu abdx abej abeo aber abes abeu abff abfm abga abgb abgc abgd abge abgf abgg abgj abgk abgn abgo abgp">
+                            <div>
+                                <div class="abda abde abdi abdr abdt abdw abee">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="abdh abfc">
+                                    <path d="m4.5 12.75 6 6 9-13.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </div>
+                                <div class="abdc abet abgh">
+                                    <h3 id="dialogSuccessTitle" class="abev abex abfa">Payment successful</h3>
+                                    <div class="abdb">
+                                    <p id="dialogSuccessContent" class="abew abez">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="abdd abgi">
+                            <button id="btnCloseSuccessModal" type="button" command="close" commandfor="dialog" class="abdg abdn abdt abdy abeh aben abeq abew abex abfd abfg abfs abfv abfw abfy" aria-expanded="true">Go back to dashboard</button>
+                            </div>
+                        </el-dialog-panel>
+                        </div>
+                    </dialog>
+                </el-dialog>
+
+                <!-- End Success Modal Dialog -->
+
+                <!-- Number Model Dialog -->
+
+                <el-dialog>
+                    <dialog id="numberModal" aria-labelledby="dialogNumberTitle" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+                        <el-dialog-backdrop class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
+
+                        <div tabindex="0" class="flex min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
+                            <el-dialog-panel class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
+                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                    <div class="sm:flex sm:items-start">
+                                        @* <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 text-red-600">
+                                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div> *@
+                                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                            <h3 id="dialogNumberTitle" class="text-base font-semibold text-gray-900">Deactivate account</h3>
+                                            <hr class="h-px my-8 bg-gray-600 border-0">
+                                            <div class="mt-2">
+                                                <p id="dialogNumberContent" class="text-sm text-gray-500">Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.</p>
+                                                <p class="text-sm text-gray-500">
+                                                    <label for="txtQuantity" class="block mb-2.5 text-sm font-medium text-heading">New Value</label>
+                                                    <input id="txtQuantity" type="number" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" required />
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                    <button id="btnSubmitNumberDialog" type="button" command="close" commandfor="dialog" class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-500 sm:ml-3 sm:w-auto">Submit</button>
+                                    <button id="btnCancelNumberDialog" type="button" command="close" commandfor="dialog" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                                </div>
+                            </el-dialog-panel>
+                        </div>
+                    </dialog>
+                </el-dialog>
+
+                <!-- End Number Modal Dialog -->
+
             </main>
         </div>
-    </div>
+</div>
     <script type="text/javascript">
 
         const infoAlert = document.getElementById("infoAlert");
@@ -365,49 +473,103 @@
         const successAlert = document.getElementById("successAlert");
         const warningAlert = document.getElementById("warningAlert");
 
-        var showInfoAlert = function(content, autoHide = false){
-            const span = document.querySelector("#infoAlert span");
-            span.innerText = content;
-            infoAlert.classList.remove("hidden");
-            if(autoHide) setTimeout(closeInfoAlert(), 3000);
+        var showAlert = function(options){
+            if(options){
+                const alertWindow = document.getElementById(options.type + 'Alert');
+                var alertSpan = document.querySelector('#' + options.type + 'Alert span');
+                alertSpan.innerText = options.content;
+                alertWindow.classList.remove('hidden');
+                if(options.autoHide){
+                    setTimeout((elem) => {
+                        elem.classList.add('hidden');
+                    }, 3000, alertWindow);
+                }
+            }
+        };
+        //end alert dialogs
+
+        //confirm dialogs
+
+        //parameters are type, submitUrl, title, content
+        var showModalDialog = function(options){
+            var returnValue;
+            switch(options.type){
+                case 'deactivate':
+                    if(options){
+                        const deactivateDialog = document.getElementById("deactivateModal");
+                        const btnSubmitDeactivateDialog = document.getElementById("btnSubmitDeactivateDialog");
+                        const btnCancelDeactivateDialog = document.getElementById("btnCancelDeactivateDialog");
+                        const dialogDeactivateContent = document.getElementById("dialogDeactivateContent");
+                        const dialogDeactivateTitle = document.getElementById("dialogDeactivateTitle");
+
+                        if(options.title) dialogDeactivateTitle.innerText = options.title;
+                        if(options.content) dialogDeactivateContent.innerText = options.content;
+                        deactivateDialog.showModal();
+                        btnSubmitDeactivateDialog.addEventListener("click", (evt) => {
+                            evt.preventDefault();
+                            if(options.submitUrl) window.location.href = options.submitUrl;
+                        }, { once: true });
+
+                        btnCancelDeactivateDialog.addEventListener("click", (evt) => {
+                            deactivateDialog.close();
+                        }, { once: true });
+                    }
+                    break;
+                case 'success':
+                    if(options){
+                        const successDialog = document.getElementById("successModal");
+                        const btnCloseSuccessModal = document.getElementById("btnCloseSuccessModal");
+                        const dialogSuccessTitle = document.getElementById("dialogSuccessTitle");
+                        const dialogSuccessContent = document.getElementById("dialogSuccessContent");
+
+                        if(options.title) dialogSuccessTitle.innerText = options.title;
+                        if(options.content) dialogSuccessContent.innerText = options.content;
+                        successDialog.showModal();
+
+                        btnCloseSuccessModal.addEventListener("click", (evt) => {
+                            evt.preventDefault();
+                            successDialog.close();
+                        }, { once: true });
+                    }
+                    break;
+                case 'quantity':
+
+                    if(options){
+                        const numberDialog = document.getElementById("numberModal");
+                        const dialogNumberTitle = document.getElementById("dialogNumberTitle");
+                        const dialogNumberContent = document.getElementById("dialogNumberContent");
+                        const txtQuantity = document.getElementById("txtQuantity");
+                        const btnSubmitNumberDialog = document.getElementById("btnSubmitNumberDialog");
+                        const btnCancelNumberDialog = document.getElementById("btnCancelNumberDialog");
+
+                        if(options.title) dialogNumberTitle.innerText = options.title;
+                        if(options.content) dialogNumberContent.innerText = options.content;
+                        if(options.currentValueForInputText) txtQuantity.value = options.currentValueForInputText;
+
+                        numberDialog.showModal();
+
+                        btnSubmitNumberDialog.addEventListener("click", (evt) => {
+                            evt.preventDefault();
+                            if(options.submitUrl) window.location.href = submitUrl;
+                            if(options.submitCallBack){
+                                var intValue = txtQuantity.value;
+                                options.submitCallBack(intValue);
+                            }
+                        }, { once: true });
+
+                        btnCancelNumberDialog.addEventListener("click", (evt) => {
+                            evt.preventDefault();
+                            numberDialog.close();
+                        }, { once: true });
+
+                    }
+                    break;
+                default:
+                    break;
+            }
         };
 
-        var closeInfoAlert = function(){
-            infoAlert.classList.add("hidden");
-        };
-
-        var showErrorAlert = function(content, autoHide = false){
-            const span = document.querySelector("#errorAlert span");
-            span.innerText = content;
-            errorAlert.classList.remove("hidden");
-            if(autoHide) setTimeout(closeErrorAlert(), 3000);
-        };
-
-        var closeErrorAlert = function(){
-            errorAlert.classList.add("hidden");
-        };
-
-        var showSuccessAlert = function(content, autoHide = false){
-            const span = document.querySelector("#successAlert span");
-            span.innerText = content;
-            successAlert.classList.remove("hidden");
-            if(autoHide) setTimeout(closeSuccessAlert(), 3000);
-        };
-
-        var closeSuccessAlert = function(){
-            successAlert.classList.add("hidden");
-        };
-
-        var showWarningAlert = function(content, autoHide = false){
-            const span = document.querySelector("#warningAlert span");
-            span.innerText = content;
-            warningAlert.classList.remove("hidden");
-            if(autoHide) setTimeout(closeWarningAlert, 3000);
-        };
-
-        var closeWarningAlert = function(){
-            warningAlert.classList.add("hidden");
-        };
+        //end confirm dialogs
 
     </script>
 </body>

@@ -1,0 +1,42 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_insideLayout";
+}
+
+@model TMCWD.Application.Models.RequestViewModel
+
+<div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
+    <h5 class="mb-2 text-2xl font-bold text-gray-900">Request Details</h5>
+    <p class="text-gray-700">
+        @using(Html.BeginForm("SaveRequest", "CustomerSupport"))
+        {
+            @Html.HiddenFor(x => x.CurrentUser.Id)
+            @Html.HiddenFor(x => x.AddEditRequest.Id)
+            @Html.HiddenFor(x => x.AddEditRequest.DateCreated)
+            @Html.HiddenFor(x => x.AddEditRequest.CreatedBy)
+
+            <div class="grid gap-6 mb-6 md:grid-cols-2">
+                <div>
+                    <el-autocomplete class="relative mt-2 block" style="--button-width: 36px; --input-width: 320px;">
+                        <input id="combobox" type="text" class="block w-full border-gray-600 rounded-md bg-whitepy-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="autocomplete-listbox-1" aria-activedescendant="" autocomplete="off">
+                        <button type="button" class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden" id="autocomplete-button-0" aria-haspopup="listbox" aria-controls="autocomplete-listbox-1" aria-expanded="false" tabindex="-1" popovertarget="autocomplete-listbox-1">
+                            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 text-gray-400">
+                                <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </el-autocomplete>
+                </div>
+            </div>
+            <div>
+                <button type"submit" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-150">
+                    Save
+                </button>
+                <button type="button" class="px-4 py-2 bg-orange-600 text-black font-semibold rounded-md hover:bg-gray-700 transition duration-150" onclick="location.href='@Url.Action("Index", "Admin")'">
+                    Cancel
+                </button>
+            </div>
+        }
+    </p>
+</div>

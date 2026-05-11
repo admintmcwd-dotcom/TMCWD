@@ -122,33 +122,21 @@
 <script type="text/javascript">
 
     var deactivateLinks = document.getElementsByClassName("deactivateLink");
-    var dataId = 0;
         
     [...deactivateLinks].forEach((link) => {
         link.addEventListener("click", (event) => {
             event.preventDefault();
             var currentLink = event.target.parentElement;
-            dataId = currentLink.dataset.id;
-            console.log(dataId);
-            document.getElementById("deactivateModal").showModal();
+            var dataId = currentLink.dataset.id;
+            var deactivateUrl = "@Url.Action("DeactivateUser", "Admin")" + "?userId=" + dataId;
+
+            showModalDialog({
+                type: "deactivate",
+                submitUrl: deactivateUrl,
+                title: "Deactivate User",
+                content: "Are you sure you want to deactivate user? All of the user data will be permanently removed. This action cannot be undone."
+            });
         });
     });
-
-    var btnSubmitDeactivateDialog = document.getElementById("btnSubmitDeactivateDialog");
-    btnSubmitDeactivateDialog.onclick = function(){
-        window.location.href = "@Url.Action("DeactivateUser", "Admin")" + "?userId=" + dataId;
-    }
-
-    var btnCancelDeactivateDialog = document.getElementById("btnCancelDeactivateDialog");
-    btnCancelDeactivateDialog.onclick = function(){
-        document.getElementById("deactivateModal").close();
-    };
-
-    var btnSearchUser = document.getElementById("btnSeachUser");
-    btnSearchUser.onclick = function(){
-        var searchString = document.getElementById("txtSearchString").value;
-        console.log("Search String : " + searchString);
-        window.location.href = "@Url.Action("Index", "Admin")" + "?searchString=" + searchString;
-    };
 
 </script>

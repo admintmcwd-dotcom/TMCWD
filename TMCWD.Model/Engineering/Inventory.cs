@@ -15,8 +15,8 @@ namespace TMCWD.Model.Engineering
         public string Name { get; set; } = string.Empty;
         [DisplayName("Division")]
         public int Division { get; set; }
-        [DisplayName("Unit")]
-        public string Unit { get; set; } = string.Empty;
+        [DisplayName("Unit of Measure")]
+        public string UOM { get; set; } = string.Empty;
         [DisplayName("Quantity")]
         public decimal Quantity { get; set; }
         [DisplayName("Unit Cost")]

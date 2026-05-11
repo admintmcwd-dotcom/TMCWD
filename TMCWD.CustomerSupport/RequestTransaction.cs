@@ -131,7 +131,7 @@ namespace TMCWD.CustomerSupport
                 if (detail.RequestTypeId <= 0) throw new Exception("Select at least one inspection type to be performed");
                 if (detail.RequestId <= 0) throw new Exception("Request for detail is not found");
 
-                return Task.Run(() => SaveUpdateRequestDetail(detail)).GetAwaiter().GetResult();
+                return Task.Run(() => SaveUpdateRequestDetailTask(detail)).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -156,7 +156,7 @@ namespace TMCWD.CustomerSupport
                 if (noInspectionType == null || !noInspectionType.Any()) throw new Exception("One of the request detail is missing the required inspection type");
                 if (noRequestId == null || !noRequestId.Any()) throw new Exception("One of the request detail is missing the request");
 
-                return Task.Run(() => SaveMulipleRequestDetail(details)).GetAwaiter().GetResult();
+                return Task.Run(() => SaveMultipleRequestDetailTask(details)).GetAwaiter().GetResult();
 
             }
             catch (Exception ex)
@@ -210,7 +210,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await respons.Content.ReadAsStringAsync();
                         if (!respons.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<Request>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<Request>(data, serializeOptions);
                         if (serialized != null) return serialized;
                     }
                 }
@@ -235,7 +236,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<List<Request>>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<List<Request>>(data, serializeOptions);
                         if(serialized != null) return serialized;
                     }
                 }
@@ -261,7 +263,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<List<Request>>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<List<Request>>(data, serializeOptions);
                         if(serialized != null) return serialized;
                     }
                 }
@@ -287,7 +290,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<List<Request>>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<List<Request>>(data, serializeOptions);
                         if(serialized != null) return serialized;
                     }
                 }
@@ -362,7 +366,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<List<RequestDetail>>(data);
+                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                        var serialized = JsonSerializer.Deserialize<List<RequestDetail>>(data, serializeOptions);
                         if (serialized != null) return serialized;
                     }
                 }

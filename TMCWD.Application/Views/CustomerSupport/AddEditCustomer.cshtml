@@ -147,28 +147,19 @@
 <script type="text/javascript">
 
     var deactivateLinks = document.getElementsByClassName("deactivateLink");
-    var accountId = 0;
 
     [...deactivateLinks].forEach((link) => {
         link.addEventListener("click", (evt) => {
-            accountId = evt.target.parentElement.dataset.id;
-            var dlgDeactivateCustomer = document.getElementById("deactivateModal");
-            dlgDeactivateCustomer.showModal();
+            var accountId = evt.target.parentElement.dataset.id;
+
+            showModalDialog({
+                type: 'deactivate',
+                submitUrl: '@Url.Action("DeactivateAccount", "CustomerSupport")' + "?accountId=" + accountId,
+                title: 'Deactivate Customer',
+                content: 'Are you sure you want to deactivate customer? All of customer data will be permanently removed. This action cannot be undone.'
+            });
         });
     });
-
-    var btnSubmitDeactivateDialog = document.getElementById("btnSubmitDeactivateDialog");
-    btnSubmitDeactivateDialog.onclick = function(evt){
-        evt.preventDefault();
-        window.location.href = '@Url.Action("DeactivateAccount", "CustomerSupport")' + "?accountId=" + accountId;
-    };
-
-    var btnCancelDeactivateDialog = document.getElementById("btnCancelDeactivateDialog");
-    btnCancelDeactivateDialog.onclick = function(evt){
-        evt.preventDefault();
-        var dlgDeactivateCustomer = document.getElementById("deactivateModal");
-        dlgDeactivateCustomer.close();
-    };
 
     var lnkAddAccount = document.getElementById("lnkAddAccount");
     lnkAddAccount.onclick = function(evt){
@@ -177,10 +168,10 @@
         if(@(Model.AddEditCustomer.Id) > 0)
             window.location.href = '@Url.Action("Index", "Account", new { customerId = Model.AddEditCustomer.Id })';
         else
-            showWarningAlert("You have to create customer first before adding account(s)");
+            showAlert({
+                type: 'warning',
+                content: 'You have to create customer first before adding account(s)'
+            });
 
     };
-
-    //@Url.Action("Index", "Account", new { customerId = Model.AddEditCustomer.Id })
-
 </script>

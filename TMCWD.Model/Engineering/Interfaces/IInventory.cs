@@ -14,7 +14,7 @@ namespace TMCWD.Model.Engineering.Interfaces
 
         public int Division { get; set; }
 
-        public string Unit { get; set; }
+        public string UOM { get; set; }
 
         public decimal Quantity { get; set; }
 

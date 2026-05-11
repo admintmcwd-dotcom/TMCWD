@@ -35,9 +35,11 @@ namespace TMCWD.Engineering
             {
                 if (inventory == null) throw new Exception("Inventory data is null");
                 if (inventory.Division <= 0) throw new Exception("Please specify which division");
-                if (String.IsNullOrEmpty(inventory.Unit.Trim())) throw new Exception("Please specify the item unit");
+                if (String.IsNullOrEmpty(inventory.UOM.Trim())) throw new Exception("Please specify the item unit");
                 if (String.IsNullOrEmpty(inventory.Name.Trim())) throw new Exception("Please specify the item name");
                 if (inventory.UnitCost <= 0) throw new Exception("Please specify the unit cost");
+                if (inventory.Id > 0) inventory.DateUpdated = DateTime.Now;
+                else inventory.DateCreated = DateTime.Now;
 
                 return Task.Run(() => SaveUpdateTask(inventory)).GetAwaiter().GetResult();
             }

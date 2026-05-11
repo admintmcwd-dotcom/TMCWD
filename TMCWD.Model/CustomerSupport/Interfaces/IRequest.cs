@@ -14,14 +14,15 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
         public int CustomerId { get; set; }
 
         public int AccountId { get; set; }
+        public RequestStatus Status { get; set; }
 
-        public int UserId { get; set; }
+        public int CreatedBy { get; set; }
 
         public DateTime DateCreated { get; set; }
 
-        public DateTime DateUpdated { get; set; }
+        public int UpdatedBy { get; set; }
 
-        protected string CreateControlNumber();
+        public DateTime DateUpdated { get; set; }
 
     }
 }

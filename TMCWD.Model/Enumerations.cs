@@ -20,3 +20,9 @@ public enum ErrorModule
     Data = 4,
     Engineering = 5
 }
+
+public enum RequestStatus
+{
+    InProgress = 1,
+    Completed = 2
+}

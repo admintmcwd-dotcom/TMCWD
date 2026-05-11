@@ -134,22 +134,13 @@
         lnk.addEventListener("click", (evt) => {
             evt.preventDefault();
             inspectionTypeId = evt.target.parentElement.dataset.id;
-            const dlgDeactivate = document.getElementById("deactivateModal");
-            dlgDeactivate.showModal();
-
+            showModalDialog({
+                type: 'deactivate',
+                submitUrl: '@Url.Action("DeactivateInspectionType", "Admin")' + "?inspectionTypeId=" + inspectionTypeId + "&currentUserId=" + "@Model.CurrentUser.Id",
+                title: 'Deactivate Type',
+                content: 'Are you sure you want to deactivate inspection type? All of inspection type data will be permanently removed. This action cannot be undone.'
+            });
         });
-    });
-
-    btnSubmitDeactivateDialog.addEventListener("click", (evt) => {
-        evt.preventDefault();
-        window.location.href = '@Url.Action("DeactivateInspectionType", "Admin")' + "?inspectionTypeId=" + inspectionTypeId + "&currentUserId=" + "@Model.CurrentUser.Id";
-    });
-
-    btnCancelDeactivateDialog.addEventListener("click", (evt) => {
-        evt.preventDefault();
-        console.log("Cancel button was clicked");
-        const dlgDeactivate = document.getElementById("deactivateModal");
-        dlgDeactivate.close();
     });
 
 </script>

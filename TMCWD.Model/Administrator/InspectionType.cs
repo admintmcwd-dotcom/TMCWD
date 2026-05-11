@@ -15,6 +15,8 @@ namespace TMCWD.Model.Administrator
         public string Name { get; set; } = string.Empty;
         [DisplayName("With Detail")]
         public bool WithDetail { get; set; }
+        [DisplayName("Required Account")]
+        public bool IsRequiredAccount { get; set; }
         [DisplayName("Active")]
         public bool IsActive { get; set; }
         [DisplayName("Date Enrolled")]

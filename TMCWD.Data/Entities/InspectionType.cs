@@ -24,6 +24,9 @@ namespace TMCWD.Data.Entities
         [Required, Column("WithDetail")]
         public bool WithDetail { get; set; }
 
+        [Column("IsRequiredAccount")]
+        public bool IsRequiredAccount { get; set; }
+
         [Column("IsActive")]
         public bool IsActive { get; set; }
 

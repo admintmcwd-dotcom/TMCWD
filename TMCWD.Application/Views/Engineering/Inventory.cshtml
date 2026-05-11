@@ -25,7 +25,7 @@
                 </button>
                 <button class="rounded-md bg-blue-900 p-2 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-blue-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                         type="button"
-                        onclick="location.href='@Url.Action("AddEditInspectionType", "Admin")'">
+                        onclick="location.href='@Url.Action("AddEditInventory", "Engineering")'">
                     <svg width="20px" height="20px" viewBox="0 0 0.6 0.6" id="plus" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color">
                         <path id="primary" d="M0.3 0.5a0.025 0.025 0 0 1 -0.025 -0.025v-0.15H0.125a0.025 0.025 0 0 1 0 -0.05h0.15V0.125a0.025 0.025 0 0 1 0.05 0v0.15h0.15a0.025 0.025 0 0 1 0 0.05h-0.15v0.15a0.025 0.025 0 0 1 -0.025 0.025" style="fill: rgb(255, 255, 255);" />
                     </svg>
@@ -66,11 +66,21 @@
                         <tr>
                             <td class="border border-gray-300 p-2 ...">@item.Id</td>
                             <td class="border border-gray-300 p-2 ...">@item.Name</td>
-                            <td class="border border-gray-300 p-2 ...">@item.Unit</td>
+                            <td class="border border-gray-300 p-2 ...">@item.UOM</td>
                             <td class="border border-gray-300 p-2 ...">@item.UnitCost</td>
                             <td class="border border-gray-300 p-2 ...">@item.Quantity</td>
                             <td class="border border-gray-300 p-2 ...">@(item.IsActive ? "Yes" : "No")</td>
-                            <td class="border border-gray-300 p-2 ..."></td>
+                            <td class="border border-gray-300 p-2 ...">
+                                <a href="@Url.Action("AddEditInventory", "Engineering", new { inventoryId = item.Id })" class="text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                </a>
+                                <a data-id="@item.Id" data-quantity="@item.Quantity" data-itemname="@item.Name" href="#" class="add-quantity text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </a>
+                                <a id="lnkShowModal" command="show-modal" data-id="@item.Id" commandfor="deactivateModal" href="#" class="lnkDeactivate deactivateLink text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </a>
+                            </td>
                         </tr>
                     }
                 }
@@ -79,3 +89,71 @@
         <!-- End Inventory Table -->
     </p>
 </div>
+
+
+<!-- Update Quantity Modal -->
+@* <div id="quantityModal" data-dialog-backdrop="modal" data-dialog-backdrop-close="true" class="pointer-events-none fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300">
+    <div data-dialog="modal" class="relative m-4 p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm">
+        <div class="flex shrink-0 items-center pb-4 text-xl font-medium text-slate-800">
+            <p id="pItemName"></p>
+        </div>
+        <div class="relative border-t border-slate-200 py-4 leading-normal text-slate-600 font-light">
+            Current Quantity: <p id="pCurrentQuantity"></p>
+            <label for="txtQuantity">Quantity:</label>
+            <input type="number" id="txtQuantity" placeholder="Quantity" />
+        </div>
+        <div class="flex shrink-0 flex-wrap items-center pt-4 justify-end">
+            <button id="btnCancelQuantityModal" data-dialog-close="true" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                Cancel
+            </button>
+            <button id="btnSubmitQuantityModal" data-dialog-close="true" class="rounded-md bg-green-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-green-700 focus:shadow-none active:bg-green-700 hover:bg-green-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                Confirm
+            </button>
+        </div>
+    </div>
+</div> *@
+
+<!-- End Update Quantity Modal -->
+
+<script type="text/javascript">
+
+    var deactivateLinks = document.getElementsByClassName("lnkDeactivate");
+    var addQuantityLinks = document.getElementsByClassName("add-quantity");
+
+    [...deactivateLinks].forEach((link) => {
+        link.addEventListener("click", (evt) => {
+            evt.preventDefault();
+            var id = evt.target.parentElement.dataset.id;
+            
+            showModalDialog({
+                type: 'deactivate',
+                submitUrl: '@Url.Action("DeactivateInventory", "Engineering")' + '?inventoryId=' + id + '&userId=' + '@Model.CurrentUser.Id',
+                title: 'Deactivate Inventory',
+                content: 'Are you sure you want to deactivate inventory? All of inventory data will be permanently removed. This action cannot be undone.'
+            });
+        });
+    });
+
+    [...addQuantityLinks].forEach((link) => {
+        link.addEventListener("click", (evt) => {
+            evt.preventDefault();
+            var itemId = evt.target.parentElement.dataset.id;
+            var itemName = evt.target.parentElement.dataset.itemname;
+            var quantity = evt.target.parentElement.dataset.quantity;
+            var content = 'Current Quantity: ' + quantity;
+
+            showModalDialog({
+                type: 'quantity',
+                title: itemName,
+                content: content,
+                currentValueForInputText: quantity,
+                submitCallBack: ((newQuantity) => {
+                    var currentUserId = '@Model.CurrentUser.Id';
+                    window.location.href = '@Url.Action("UpdateInventoryQuantity", "Engineering")' + '?itemId=' + itemId + '&newQuantity=' + newQuantity + '&currentUserId=' + currentUserId;
+                })
+            });
+
+        });
+    });
+
+</script>

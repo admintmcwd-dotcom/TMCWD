@@ -101,5 +101,69 @@ namespace TMCWD.Application.Controllers
             return RedirectToAction("AddEditCustomer", "CustomerSupport", new { editCustomerId = acct.CustomerId });
         }
 
+        public IActionResult Requests()
+        {
+            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
+            User currentUser = new();
+
+            UserTransaction trans = new();
+            RequestTransaction requestTrans = new();
+            RequestViewModel model = new();
+            if (!String.IsNullOrEmpty(jsonCurrentUser.Trim()))
+            {
+                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
+                model.CurrentUser = currentUser;
+                ViewBag.Role = currentUser.Role;
+            }
+
+            model.Requests = requestTrans.GetRequests();
+
+            return View(model);
+        }
+
+        public IActionResult AddEditRequest(int requestId = 0)
+        {
+            string jsonCurrentUser = HttpContext.Session.GetString("currentUser");
+            User currentUser = new();
+            RequestViewModel model = new();
+            if (!String.IsNullOrEmpty(jsonCurrentUser.Trim()))
+            {
+                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
+                model.CurrentUser = currentUser;
+                ViewBag.Role = currentUser?.Role;
+            }
+
+            if(requestId > 0)
+            {
+                RequestTransaction requestTrans = new();
+                model.AddEditRequest = requestTrans.GetById(requestId);
+            }
+
+            InspectionTypeTransaction inspTrans = new();
+            model.InspectionTypes = inspTrans.GetIncidentTypes() ?? new();
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCustomerById(int customerId)
+        {
+
+            CustomerTransaction custTrans = new();
+            Customer customer = new();
+            customer = custTrans.GetById(customerId);
+
+            return View(customer);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserById(int userId)
+        {
+            UserTransaction userTrans = new();
+            User user = new();
+            user = userTrans.GetUserById(userId);
+            return View(user);
+        }
+
     }
 }

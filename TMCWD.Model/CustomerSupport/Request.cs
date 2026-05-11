@@ -21,12 +21,12 @@ namespace TMCWD.Model.CustomerSupport
         public string ControlNumber { get; set; }
         public int CustomerId { get; set; }
         public int AccountId { get; set; }
-        public int UserId { get; set; }
+        public RequestStatus Status { get; set; }
+        public int CreatedBy { get; set; }
         public DateTime DateCreated { get; set; }
+        public int UpdatedeBy { get; set; }
         public DateTime DateUpdated { get; set; }
-        public string CreateControlNumber()
-        {
-            throw new NotImplementedException();
-        }
+        public int UpdatedBy { get; set; }
+
     }
 }

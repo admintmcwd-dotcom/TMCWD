@@ -149,20 +149,13 @@
         link.addEventListener("click", (evt) => {
             evt.preventDefault();
             customerId = evt.target.parentElement.dataset.id;
-            document.getElementById("deactivateModal").showModal();
+
+            showModalDialog({
+                type: 'deactivate',
+                submitUrl: 'Url.Action("DeactivateCustomer", "CustomerSupport")' + '?customerId=' + customerId,
+                title: 'Deactivate Customer',
+                content: 'Are you sure you want to deactivate customer? All of customer data will be permanently removed. This action cannot be undone.'
+            });
         });
     });
-
-    var btnDeactivateCancel = document.getElementById("btnCancelDeactivateDialog");
-    btnDeactivateCancel.onclick = function(evt){
-        evt.preventDefault();
-        document.getElementById("deactivateModal").close();
-    };
-
-    var btnDeactivateSubmit = document.getElementById("btnSubmitDeactivateDialog");
-    btnDeactivateSubmit.onclick = function(evt){
-        evt.preventDefault();
-        window.location.href = "@Url.Action("DeactivateCustomer", "CustomerSupport")" + "?customerId=" + customerId;
-    }
-
 </script>

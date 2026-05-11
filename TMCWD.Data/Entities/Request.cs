@@ -26,13 +26,19 @@ namespace TMCWD.Data.Entities
         public int CustomerId { get; set; }
 
         [Required, Column("AccountId")]
-        public int AccountId { get; set; }
+        public System.Int64 AccountId { get; set; }
 
-        [Required, Column("UserId")]
-        public int UserId { get; set; }
+        [Column("Status")]
+        public int Status { get; set; }
+
+        [Required, Column("CreatedBy")]
+        public System.Int64 CreatedBy { get; set; }
 
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
+
+        [Column("UpdatedBy")]
+        public System.Int64 UpdatedBy { get; set;  }
 
         [Column("DateUpdated")]
         public DateTime DateUpdated { get; set; }
