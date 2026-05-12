@@ -25,7 +25,7 @@ namespace TMCWD.Data.Entities
         [Required, Column("CustomerId")]
         public int CustomerId { get; set; }
 
-        [Required, Column("AccountId")]
+        [Column("AccountId")]
         public System.Int64 AccountId { get; set; }
 
         [Column("Status")]

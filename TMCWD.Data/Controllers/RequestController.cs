@@ -19,15 +19,32 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPost("SaveUpdate")]
-        public ActionResult<bool> SaveUpdate([FromBody] Request request)
+        public ActionResult<int> SaveUpdate([FromBody] Request request)
         {
             if (request.Id > 0) _dbContext.Requests.Update(request);
-            else _dbContext.Requests.Add(request);
+            else
+            {
+                var lastRequest = _dbContext.Requests.Where(x => x.DateCreated.Year == DateTime.Now.Year && x.DateCreated.Month == DateTime.Now.Month).OrderByDescending(x => x.ControlNumber).FirstOrDefault();
+                if(lastRequest != null)
+                {
+                    int.TryParse(lastRequest.ControlNumber.Split('-')[^1].Trim(), out int lastCount);
+                    if (lastCount > 0)
+                    {
+                        lastCount = lastCount + 1;
+                        request.ControlNumber = $"TKT{request.DateCreated.ToString("yyyy")}-{request.DateCreated.ToString("MM")}-{(lastCount).ToString().PadLeft(4, '0')}";
+                    }
+                }
+
+                if(String.IsNullOrEmpty(request.ControlNumber.Trim()))
+                    request.ControlNumber = $"TKT{request.DateCreated.ToString("yyyy")}-{request.DateCreated.ToString("MM")}-{10.ToString().PadLeft(4, '0')}";
+
+                _dbContext.Requests.Add(request);
+            }
 
             int res = _dbContext.SaveChanges();
-            if (res > 0) return Ok(true);
+            if (res > 0) return Ok(request.Id);
 
-            return Ok(false);
+            return Ok(0);
         }
 
         [HttpGet("GetById")]

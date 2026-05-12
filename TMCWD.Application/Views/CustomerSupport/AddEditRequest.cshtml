@@ -10,94 +10,214 @@
 <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
     <h5 class="mb-2 text-2xl font-bold text-gray-900">Request Details</h5>
     <p class="text-gray-700">
-        @using(Html.BeginForm("SaveRequest", "CustomerSupport"))
-        {
-            @Html.HiddenFor(x => x.CurrentUser.Id)
-            @Html.HiddenFor(x => x.AddEditRequest.Id)
-            @Html.HiddenFor(x => x.AddEditRequest.DateCreated)
-            @Html.HiddenFor(x => x.AddEditRequest.CreatedBy)
+        @Html.HiddenFor(x => x.CurrentUser.Id, new { id = "hdCurrentUserId" })
+        @Html.HiddenFor(x => x.AddEditRequest.Id, new { id = "hdRequestId" })
+        @Html.HiddenFor(x => x.CurrentCustomer.Id, new { id = "hdCustomerId" })
+        @Html.HiddenFor(x => x.AddEditRequest.DateCreated, new { id = "hdDateCreated" })
+        @Html.HiddenFor(x => x.AddEditRequest.CreatedBy, new { id = "hdCreatedBy" })
+        @Html.HiddenFor(x => x.AddEditRequest.AccountId, new { id = "hdAccountId" })
 
-            <div class="grid gap-6 mb-6 md:grid-cols-2">
-                <div>
-                    <label for="pControlNumber" class="block mb-2.5 text-sm font-medium text-heading">Control No.</label>
-                    @if(Model.AddEditRequest.Id > 0){
-                        <p id="pControlNumber" class="mb-3 text-body">@Model.AddEditRequest.ControlNumber</p>
-                    }
-                    else
-                    {
-                        <p id="pControlNumber" class="mb-3 text-body">Not yet created</p>
-                    }
-                </div>
-                <div>
-                    <label for="pDate" class="block mb-2.5 text-sm font-medium text-heading">Date</label>
-                    @if(Model.AddEditRequest.Id > 0){
-                        <p id="pDate" class="mb-3 text-body">@Model.AddEditRequest.DateCreated.ToString("dd MMM yyyy")</p>
-                    }
-                    else
-                    {
-                        <p id="pDate" class="mb-3 text-body">@DateTime.Now.ToString("dd MMM yyyy")</p>
-                    }
-                </div>
-                <div>
-                    @if(Model.CurrentCustomer.Id > 0)
-                    {
-                        <label for="pAccountName" class="block mb-2.5 text-sm font-medium text-heading">Account Name</label>
-                        <p id="pAccountName" class="mb-3 text-body">@(Model.CurrentCustomer.Lastname + ", " + Model.CurrentCustomer.Firstname)</p>
-                    }
-                    else
-                    {
-                        @Html.LabelFor(x => x.CurrentCustomer.Firstname, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
-                        @Html.TextBoxFor(x => x.CurrentCustomer.Firstname, new { id = "txtAccountName", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
-                    }
-                </div>
-                <div>
-                    @if (Model.CurrentAccount.Id > 0)
-                    {
-                        <label for="pAccountNo" class="block mb-2.5 text-sm font-medium text-heading">Account No</label>
-                        <p id="pAccountNo" class="mb-3 text-body">@(Model.CurrentAccount.AccountNumber)</p>
-                    }
-                    else
-                    {
-                        @Html.LabelFor(x => x.CurrentAccount.AccountNumber, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
-                        @Html.TextBoxFor(x => x.CurrentAccount.AccountNumber, new { id = "txtAccountNo", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
-                    }
-                </div>
-                <div>
-                    @if (Model.CurrentAccount.Id > 0)
-                    {
-                        <label for="pAddress" class="block mb-2.5 text-sm font-medium text-heading">Service Address</label>
-                        <p id="pAddress" class="mb-3 text-body">@(Model.CurrentAccount.Address)</p>
-                    }
-                    else
-                    {
-                        @Html.LabelFor(x => x.CurrentAccount.Address, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
-                        @Html.TextBoxFor(x => x.CurrentAccount.Address, new { id = "txtAddress", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
-                    }
-                </div>
-                <div>
-                    @if (Model.CurrentCustomer.Id > 0)
-                    {
-                        <label for="pPhone" class="block mb-2.5 text-sm font-medium text-heading">Contact No.</label>
-                        <p id="pPhone" class="mb-3 text-body">@(Model.CurrentCustomer.PhoneNumber)</p>
-                    }
-                    else
-                    {
-                        @Html.LabelFor(x => x.CurrentCustomer.PhoneNumber, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
-                        @Html.TextBoxFor(x => x.CurrentCustomer.PhoneNumber, new { id = "txtPhone", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
-                    }
-                </div>
-                <div class="border border-gray-200 grid col-span-2 gap-6">
-
-                </div>
+        <div class="grid gap-6 mb-6 md:grid-cols-2">
+            <div>
+                <label for="pControlNumber" class="block mb-2.5 text-sm font-medium text-heading">Control No.</label>
+                @if(Model.AddEditRequest.Id > 0){
+                    <p id="pControlNumber" class="mb-3 text-body">@Model.AddEditRequest.ControlNumber</p>
+                }
+                else
+                {
+                    <p id="pControlNumber" class="mb-3 text-body">Not yet created</p>
+                }
             </div>
             <div>
-                <button type"submit" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-150">
-                    Save
-                </button>
-                <button type="button" class="px-4 py-2 bg-orange-600 text-black font-semibold rounded-md hover:bg-gray-700 transition duration-150" onclick="location.href='@Url.Action("Index", "Admin")'">
-                    Cancel
-                </button>
+                <label for="pDate" class="block mb-2.5 text-sm font-medium text-heading">Date</label>
+                @if(Model.AddEditRequest.Id > 0){
+                    <p id="pDate" class="mb-3 text-body">@Model.AddEditRequest.DateCreated.ToString("dd MMM yyyy")</p>
+                }
+                else
+                {
+                    <p id="pDate" class="mb-3 text-body">@DateTime.Now.ToString("dd MMM yyyy")</p>
+                }
             </div>
-        }
+            <div>
+                @if(Model.CurrentCustomer.Id > 0)
+                {
+                    <label for="pAccountName" class="block mb-2.5 text-sm font-medium text-heading">Account Name</label>
+                    <p id="pAccountName" class="mb-3 text-body">@(Model.CurrentCustomer.Lastname + ", " + Model.CurrentCustomer.Firstname)</p>
+                }
+                else
+                {
+                    @Html.LabelFor(x => x.CurrentCustomer.Firstname, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
+                    @Html.TextBoxFor(x => x.CurrentCustomer.Firstname, new { id = "txtAccountName", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
+                }
+            </div>
+            <div>
+                @if (Model.CurrentAccount.Id > 0)
+                {
+                    <label for="pAccountNo" class="block mb-2.5 text-sm font-medium text-heading">Account No</label>
+                    <p id="pAccountNo" class="mb-3 text-body">@(Model.CurrentAccount.AccountNumber)</p>
+                }
+                else
+                {
+                    @Html.LabelFor(x => x.CurrentAccount.AccountNumber, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
+                    @Html.TextBoxFor(x => x.CurrentAccount.AccountNumber, new { id = "txtAccountNo", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
+                }
+            </div>
+            <div>
+                @if (Model.CurrentAccount.Id > 0)
+                {
+                    <label for="pAddress" class="block mb-2.5 text-sm font-medium text-heading">Service Address</label>
+                    <p id="pAddress" class="mb-3 text-body">@(Model.CurrentAccount.Address)</p>
+                }
+                else
+                {
+                    @Html.LabelFor(x => x.CurrentAccount.Address, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
+                    @Html.TextBoxFor(x => x.CurrentAccount.Address, new { id = "txtAddress", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
+                }
+            </div>
+            <div>
+                @if (Model.CurrentCustomer.Id > 0)
+                {
+                    <label for="pPhone" class="block mb-2.5 text-sm font-medium text-heading">Contact No.</label>
+                    <p id="pPhone" class="mb-3 text-body">@(Model.CurrentCustomer.PhoneNumber)</p>
+                }
+                else
+                {
+                    @Html.LabelFor(x => x.CurrentCustomer.PhoneNumber, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
+                    @Html.TextBoxFor(x => x.CurrentCustomer.PhoneNumber, new { id = "txtPhone", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
+                }
+            </div>
+            <div class="grid col-span-2 gap-6">
+                <div class="grid gap-4 mb-6 md:grid-cols-4">
+                    @foreach(var inspectionType in Model.InspectionTypes)
+                    {
+                        <div class="group flex items-center ps-4 pr-4 bg-neutral-primary-soft border border-default rounded-lg shadow-xs hover:bg-blue-900 hover:text-white hover:cursor-pointer">
+                            <input id='@("border-checkbox-" + inspectionType.Id)' data-id="@inspectionType.Id" data-withdetail="@inspectionType.WithDetail" data-requiredaccount="@inspectionType.IsRequiredAccount" type="checkbox" value="" name="bordered-checkbox" class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft hover:cursor-pointer">
+                            @if(inspectionType.WithDetail){
+                                <label for='@("border-checkbox-" + inspectionType.Id)' class="select-none w-1/2 py-4 ms-2 text-sm font-medium text-heading hover:cursor-pointer">@inspectionType.Name</label>
+                                <input id='@("txtDetail-" + inspectionType.Id)' type="text"
+                                        placeholder="Detail here..."
+                                        class="bg-transparent border-none focus:ring-0 text-gray-700 w-full outline-none group-hover:text-white" />
+                            }
+                            else
+                            {
+                                <label for='@("border-checkbox-" + inspectionType.Id)' class="select-none w-full py-4 ms-2 text-sm font-medium text-heading hover:cursor-pointer">@inspectionType.Name</label>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div>
+            <button id="btnSubmit" type"button" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-150">
+                Save
+            </button>
+            <button type="button" class="px-4 py-2 bg-orange-600 text-black font-semibold rounded-md hover:bg-gray-700 transition duration-150" onclick="location.href='@Url.Action("Index", "Admin")'">
+                Cancel
+            </button>
+        </div>
     </p>
 </div>
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+        var checkBoxes = document.querySelectorAll('input[type="checkbox"]');
+
+        [...checkBoxes].forEach((checkbox) => {
+            checkbox.addEventListener("change", (evt) => {
+                evt.preventDefault();
+                var targetId = evt.target.id;
+                var typeId = evt.target.dataset.id;
+                var withDetail = evt.target.dataset.withdetail;
+                var requiredAccount = evt.target.dataset.requiredaccount;
+                if(requiredAccount == 'False'){
+                    [...checkBoxes].forEach((checkbox) => {
+                        if(checkbox.id != targetId){
+                            checkbox.checked = false;
+                        }
+                    });
+                }
+                else{
+                    var checkBoxesNoAccount = document.querySelectorAll('[data-requiredaccount="False"]');
+                    [...checkBoxesNoAccount].forEach((checkbox) => {
+                        checkbox.checked = false;
+                    });
+                }
+            });
+        });
+
+        const btnSubmit = document.getElementById("btnSubmit");
+        btnSubmit.addEventListener("click", (evt) => {
+            evt.preventDefault();
+            
+            var postUrl = '@Url.Action("SaveRequest", "CustomerSupport")';
+            const requestId = document.getElementById("hdRequestId").value;
+            const customerId = document.getElementById("hdCustomerId").value;
+            const userId = document.getElementById("hdCurrentUserId").value;
+            const dateCreated = document.getElementById("hdDateCreated").value;
+            const accountId = document.getElementById("hdAccountId").value;
+
+            var requestDetails = [];
+
+            const serviceCheckBoxes = document.querySelectorAll('input[type="checkbox"]');
+
+            [...serviceCheckBoxes].forEach((checkbox) => {
+                if(checkbox.checked){
+                    var id = + checkbox.dataset.id;
+                    var typeDetailId = "txtDetail-" + id;
+                    var typeDetail = document.getElementById(typeDetailId)?.value ?? '';
+                    requestDetails.push({
+                        Id: 0,
+                        RequestId: 0,
+                        RequestTypeId: id,
+                        InspectionTypeDetail: typeDetail,
+                        DateCreated: new Date(),
+                        DateUpdated: new Date()
+                    });
+                }
+            });
+
+            var data = {
+                Id: + requestId,
+                CustomerId: + customerId,
+                AccountId: + accountId,
+                Status: 1,
+                CreatedBy: + userId,
+                DateCreated: new Date(dateCreated)
+            };
+
+            fetch(postUrl, {
+                method: 'POST',
+                headers : {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if(!response.ok) throw new Error("Failed to save request");
+
+                return response.json();
+            }).then(result => { 
+                var requestId = + result;
+                if(requestId > 0){
+                    var saveDetailUrl = '@Url.Action("SaveRequestDetails", "CustomerSupport")' + "?requestId=" + requestId;
+                    console.log('Request Details:', requestDetails);
+                    fetch(saveDetailUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestDetails)
+                    }).then(response => {
+                        if(!response.ok) throw new Error("Failed to save services");
+
+                        return response.json();
+                    }).then(result => {
+                        if(result) window.location.href = '@Url.Action("Requests", "CustomerSupport")';
+                    }).catch(error => { console.log('Error:', error); });
+
+                }
+            }).catch(ërror => { console.log('Error:', error); });
+
+        });
+    });
+</script>

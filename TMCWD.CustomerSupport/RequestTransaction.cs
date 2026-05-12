@@ -37,7 +37,7 @@ namespace TMCWD.CustomerSupport
 
         #region public methods
 
-        public bool SaveUpdate(Request request)
+        public int SaveUpdate(Request request)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace TMCWD.CustomerSupport
                 Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
             }
 
-            return false;
+            return 0;
         }
 
         public Request GetById(int id)
@@ -149,12 +149,12 @@ namespace TMCWD.CustomerSupport
                 if (details == null || !details.Any()) throw new Exception("Request details is empty");
 
                 var emptyDetailType = details.Where(x => string.IsNullOrEmpty(x.InspectionTypeDetail.Trim()));
-                var noInspectionType = details.Where(x => x.RequestTypeId <= 0);
-                var noRequestId = details.Where(x => x.RequestId <= 0);
+                var noInspectionType = details.Where(x => x.RequestTypeId <= 0).FirstOrDefault();
+                var noRequestId = details.Where(x => x.RequestId <= 0).FirstOrDefault();
 
                 if (emptyDetailType == null || !emptyDetailType.Any()) throw new Exception("One of the request detail is missing the required inspection type detail");
-                if (noInspectionType == null || !noInspectionType.Any()) throw new Exception("One of the request detail is missing the required inspection type");
-                if (noRequestId == null || !noRequestId.Any()) throw new Exception("One of the request detail is missing the request");
+                if (noInspectionType != null) throw new Exception("One of the request detail is missing the required inspection type");
+                if (noRequestId != null) throw new Exception("One of the request detail is missing the request");
 
                 return Task.Run(() => SaveMultipleRequestDetailTask(details)).GetAwaiter().GetResult();
 
@@ -172,7 +172,7 @@ namespace TMCWD.CustomerSupport
 
         #region private methods
 
-        private async Task<bool> SaveUpdateRequestTask(Request request)
+        private async Task<int> SaveUpdateRequestTask(Request request)
         {
 
             try
@@ -185,7 +185,8 @@ namespace TMCWD.CustomerSupport
                     {
                         var data = await response.Content.ReadAsStringAsync();
                         if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        return data.ToLower() == "true";
+                        int.TryParse(data, out int id);
+                        return id;
                     }
                 }
             }
@@ -194,7 +195,7 @@ namespace TMCWD.CustomerSupport
                 Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
             }
 
-            return false;
+            return 0;
         }
 
         private async Task<Request> GetRequestByIdTask(int id)
