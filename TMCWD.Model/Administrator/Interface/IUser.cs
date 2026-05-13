@@ -13,7 +13,9 @@ namespace TMCWD.Model.Administrator.Interface
         public string Password { get; set; }
         public string RememberToken { get; set; }
         public DateTime DateCreated { get; set; }
+        public int CreatedBy { get; set; }
         public DateTime DateUpdated { get; set; }
+        public int UpdatedBy { get; set; }
         public bool IsVerified { get; set; }
         public bool IsActive { get; set; }
         #endregion

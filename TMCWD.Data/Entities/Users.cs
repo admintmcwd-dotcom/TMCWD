@@ -37,8 +37,14 @@ namespace TMCWD.Data.Entities
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
 
+        [Column("CreatedBy")]
+        public System.Int64 CreatedBy { get; set; }
+
         [Column("DateUpdated")]
         public DateTime DateUpdated { get; set; }
+
+        [Column("UpdatedBy")]
+        public System.Int64 UpdatedBy { get; set; }
 
         [Column("IsVerified")]
         public bool IsVerified { get; set; }

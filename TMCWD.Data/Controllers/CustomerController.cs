@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
+using TMCWD.Data.Services;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.Data.Controllers
@@ -12,52 +13,43 @@ namespace TMCWD.Data.Controllers
     public class CustomerController : Controller
     {
 
-        private readonly UserDbContext _dbContext;
+        private readonly ICustomerService _customerService;
 
-        public CustomerController(UserDbContext context)
+        public CustomerController(ICustomerService service)
         {
-            _dbContext = context;
+            _customerService = service;
         }
 
-        [HttpPost("SaveUpdate")]
-        public ActionResult<bool> SaveUpdate([FromBody] Customer customer)
+        [HttpPost("SaveUpdate/{userId}")]
+        public async Task<ActionResult<Customer>> SaveUpdate(int userId, [FromBody] Customer customer)
         {
-            if (customer.Id == 0)
-            {
-                _dbContext.Customers.Add(customer);
-            }
-            else
-            {
-                _dbContext.Customers.Update(customer);
-            }
-            int res = _dbContext.SaveChanges();
-            if (res > 0) return Ok(true);
-
-            return Ok(false);
+            var updatedCustomer = await _customerService.SaveUpdate(userId, customer);
+            if (updatedCustomer == null || updatedCustomer?.Id <= 0) BadRequest("Customer was not saved due to some issue(s)");
+            return Ok(updatedCustomer);
         }
 
-        [HttpGet("GetById")]
-        public ActionResult<Customer> GetById(int id)
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<Customer>> Get(int id)
         {
-            var customerEnt = _dbContext.Customers.Where(x => x.Id == id).SingleOrDefault();
-            if (customerEnt == null) return NotFound($"Customer with id {id} cannot be found.");
-            return Ok(customerEnt);
+            var customer = await _customerService.Get(id);
+            if (customer == null) return NotFound($"Customer with id {id} was not found.");
+            return Ok(customer);
         }
 
-        [HttpGet("GetByName")]
-        public ActionResult<Customer> GetByName(string firstname, string lastname)
+        [HttpGet("GetByName/{firstname}/{lastname}")]
+        public async Task<ActionResult<IEnumerable<Customer>>> GetByName(string firstname, string lastname)
         {
-            var customerEnt = _dbContext.Customers.Where(x => x.Firstname.ToLower() == firstname.ToLower() && x.Lastname.ToLower() == lastname.ToLower()).SingleOrDefault();
-            if (customerEnt == null) return NotFound($"Customer with name {firstname} {lastname} cannot be found.");
-            return Ok(customerEnt);
+            var customers = await _customerService.GetByName(firstname, lastname);
+            if (customers == null || !customers.Any()) return NotFound($"Customer with name {firstname} {lastname} cannot be found.");
+            return Ok(customers);
 
         }
 
         [HttpGet("GetCustomers")]
-        public ActionResult<IEnumerable<Customer>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
-            var customers = _dbContext.Customers;
-            if (!customers.Any()) return NotFound("No customers found.");
+            var customers = await _customerService.GetCustomers();
+            if (customers == null || !customers.Any()) return NotFound("No customers found.");
 
             return Ok(customers);
         }

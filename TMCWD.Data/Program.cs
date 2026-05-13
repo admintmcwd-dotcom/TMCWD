@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TMCWD.Data.Context;
+using TMCWD.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,14 @@ builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<UserDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IInspectionTypeService, InspectionTypeService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<IRequestDetailService, RequestDetailService>();
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 

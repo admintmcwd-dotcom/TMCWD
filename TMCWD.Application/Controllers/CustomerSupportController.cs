@@ -10,21 +10,25 @@ namespace TMCWD.Application.Controllers
 {
     public class CustomerSupportController : Controller
     {
-        public IActionResult Index()
+
+        private readonly HttpClient _client;
+
+        public CustomerSupportController(IHttpClientFactory factory)
+        {
+            _client = factory.CreateClient("TmcWdApi");
+        }
+
+        public async Task<IActionResult> Index()
         {
             CustomerViewModel model = new();
-            User? currentUser = new();
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
+            UserTransaction userTrans = new(_client);
+            User currentUser = new();
+            currentUser = userTrans.ConvertJsonStringToUser(HttpContext.Session.GetString("currentUser"));
 
-            CustomerTransaction custTrans = new();
-
-            if (!String.IsNullOrEmpty(jsonCurrentUser?.Trim()))
-            {
-                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
-            }
+            CustomerTransaction custTrans = new(_client);
 
             model.CurrentUser = currentUser ?? new User();
-            model.PagedCustomerList = custTrans.GetCustomers();
+            model.PagedCustomerList = await custTrans.GetCustomers();
             ViewBag.Role = model.CurrentUser.Role;
 
             return View(model);

@@ -8,3 +8,4 @@
 **/package-lock.json
 .vs/TMCWD.slnx/v18/.futdcache.v2
 .vs/TMCWD.slnx/v18/.suo
+/TMCWD.Data/Services/IAccountService.cs

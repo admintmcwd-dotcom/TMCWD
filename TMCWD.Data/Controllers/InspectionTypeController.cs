@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
+using TMCWD.Data.Services;
+using TMCWD.Model.Administrator.Interface;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.Data.Controllers
@@ -11,51 +14,45 @@ namespace TMCWD.Data.Controllers
     public class InspectionTypeController : Controller
     {
 
-        private readonly UserDbContext _dbContext;
+        private readonly IInspectionTypeService _inspectionTypeService;
 
-        public InspectionTypeController(UserDbContext context)
+        public InspectionTypeController(IInspectionTypeService service)
         {
-            this._dbContext = context;
+            _inspectionTypeService = service;
         }
 
         [HttpGet("GetTypes")]
-        public ActionResult<IEnumerable<InspectionType>> GetTypes()
+        public async Task<ActionResult<IEnumerable<InspectionType>>> GetTypes()
         {
-            IEnumerable<InspectionType> types = new List<InspectionType>();
+            var inspectionTypes = await _inspectionTypeService.GetTypes();
 
-            types = _dbContext.InspectionTypes;
-            if (types == null || !types.Any()) return NotFound("No incident type found");
+            if (inspectionTypes == null || !inspectionTypes.Any()) return NotFound("No inspection type(s) found.");
 
-            return Ok(types);
+            return Ok(inspectionTypes);
         }
 
-        [HttpGet("GetById")]
-        public ActionResult<InspectionType> Get(int id)
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<InspectionType>> Get(int id)
         {
-            InspectionType type = new();
+            var inspectionType = await _inspectionTypeService.Get(id);
 
-            var res = _dbContext.InspectionTypes.Where(x => x.Id == id).FirstOrDefault();
-            if (res == null) return NotFound($"Incident type id {id} not found");
-            type = res;
+            if (inspectionType == null) return NotFound($"Inspection type with id {id} was not found.");
 
-            return Ok(type);
+            return Ok(inspectionType);
         }
 
-        [HttpPost("SaveUpdate")]
-        public ActionResult<bool> SaveUpdate([FromBody] InspectionType type)
+        [HttpPost("SaveUpdate/{userId}")]
+        public async Task<ActionResult<InspectionType>> SaveUpdate(int userId, [FromBody] InspectionType type)
         {
-            if (type.Id == 0)
-            {
-                _dbContext.InspectionTypes.Add(type);
-            }
-            else
-            {
-                _dbContext.InspectionTypes.Update(type);
-            }
-            int res = _dbContext.SaveChanges();
-            if (res > 0) return Ok(true);
+            StringBuilder sb = new();
 
-            return Ok(false);
+            if (String.IsNullOrEmpty(type.Name.Trim())) return BadRequest("Name is required in creating inspection type.");
+
+            var updatedType = await _inspectionTypeService.SaveUpdate(userId, type);
+
+            if (updatedType == null || updatedType?.Id <= 0) return BadRequest("Problem(s) were encountered while saving inspection type");
+
+            return Ok(updatedType);
         }
 
     }

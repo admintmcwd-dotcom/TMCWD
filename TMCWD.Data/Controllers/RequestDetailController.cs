@@ -2,60 +2,62 @@
 using Microsoft.EntityFrameworkCore;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
+using TMCWD.Data.Services;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.Data.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/{requestId}/[controller]")]
     public class RequestDetailController : Controller
     {
 
-        private readonly UserDbContext _dbContext;
+        private readonly IRequestDetailService _requestDetailService;
 
-        public RequestDetailController(UserDbContext context)
+        public RequestDetailController(IRequestDetailService service)
         {
-            _dbContext = context;
+            _requestDetailService = service;
         }
 
-        [HttpPost("SaveUpdate")]
-        public ActionResult<bool> SaveUpdate([FromBody] RequestDetail detail)
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<RequestDetail>> Get(int id)
         {
-
-            if (detail.Id > 0) _dbContext.RequestDetails.Update(detail);
-            else _dbContext.RequestDetails.Add(detail);
-
-            int res = _dbContext.SaveChanges();
-
-            if (res > 0) return Ok(true);
-
-            return Ok(false);
+            var requestDetail = await _requestDetailService.Get(id);
+            if (requestDetail == null) return NotFound($"Request detail with id {id} was not found.");
+            return Ok(requestDetail);
         }
 
-        [HttpPost("SaveMultiple")]
-        public ActionResult<bool> SaveMultiple([FromBody] List<RequestDetail> details)
+        [HttpPost("SaveUpdate/{userId}")]
+        public async Task<ActionResult<RequestDetail>> SaveUpdate(int userId, [FromRoute] int requestId, [FromBody] RequestDetail detail)
+        {
+            var updateDetail = await _requestDetailService.SaveUpdate(userId, requestId, detail);
+            if (updateDetail == null) return BadRequest("Problem(s) encountered while saving request detail");
+            return Ok(updateDetail);
+        }
+
+        [HttpPost("SaveMultiple/{userId}")]
+        public async Task<ActionResult<IEnumerable<RequestDetail>>> SaveMultiple(int userId, [FromRoute] int requestId, [FromBody] List<RequestDetail> details)
         {
 
             if (details.Count <= 0) return BadRequest("No details to add to this request");
 
-            foreach (var item in details)
-            {
-                _dbContext.RequestDetails.Add(item);
-            }
+            var updatedDetails = await _requestDetailService.SaveMultiple(userId, requestId, details);
 
-            var res = _dbContext.SaveChanges();
-            if (res > 0) return Ok(true);
+            var noId = updatedDetails.Where(x => x.Id == 0).FirstOrDefault();
 
-            return Ok(false);
+            if (noId != null) return BadRequest("Not all request details was saved");
+
+            return Ok(updatedDetails);
         }
 
-        [HttpGet("GetDetailsByRequestId")]
-        public ActionResult<IEnumerable<RequestDetail>> GetDetailsByRequestId(int requestId)
+        [HttpGet("GetByRequestId")]
+        public async Task<ActionResult<IEnumerable<RequestDetail>>> GetByRequestId([FromRoute] int requestId)
         {
-            var data = _dbContext.RequestDetails.Where(x => x.RequestId == requestId);
-            if (!data.Any()) return NotFound($"Details for request with id {requestId} not found");
+            var requestDetails = await _requestDetailService.GetByRequestId(requestId);
 
-            return Ok(data);
+            if (requestDetails == null || !requestDetails.Any()) return NotFound($"No request detail(s) with request id {requestId} was found.");
+
+            return Ok(requestDetails);
         }
 
     }

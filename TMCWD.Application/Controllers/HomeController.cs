@@ -9,16 +9,32 @@ namespace TMCWD.Application.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly HttpClient _client;
+
+        public HomeController(IHttpClientFactory factory)
+        {
+            _client = factory.CreateClient("TmcWdApi"); ;
+        }
+
         public IActionResult Index()
         {
             return View(new LoginViewModel() { Email = string.Empty, Password = string.Empty });
         }
 
         [HttpPost]
-        public IActionResult Login(string email, string password)
+        public async Task<IActionResult> Login(string email, string password)
         {
-            ApplicationLoginTransaction login = new ApplicationLoginTransaction(email, password);
-            User? currentUser = login.Login();
+
+            var response = await _client.GetAsync($"api/users/GetByEmail/{email}");
+
+            var data = await response.Content.ReadAsStringAsync();
+
+            if(!response.IsSuccessStatusCode) return View();
+
+            UserTransaction userTrans = new(_client);
+
+            User? currentUser = userTrans.ConvertJsonStringToUser(data);
+            
             if(currentUser != null)
             {
                 var userJson = JsonSerializer.Serialize(currentUser);

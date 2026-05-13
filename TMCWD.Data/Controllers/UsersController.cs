@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Data;
-using System.Xml.Linq;
-using TMCWD.Data.Context;
+using System.Text;
 using TMCWD.Data.Entities;
-using TMCWD.Model.Administrator.Interface;
-using TMCWD.Utility.Generic;
+using TMCWD.Data.Services;
+using TMCWD.Utility.Encryption;
 
 namespace TMCWD.Data.Controllers
 {
@@ -15,242 +12,112 @@ namespace TMCWD.Data.Controllers
     public class UsersController : Controller
     {
 
-        private readonly UserDbContext _dbContext;
+        private readonly IUserService _userService;
 
-        public UsersController(UserDbContext context)
+        public UsersController(IUserService userService)
         {
-            _dbContext = context;
+            _userService = userService;
         }
 
-        [HttpPost("SaveUser")]
-        public ActionResult<bool> Save([FromBody] User user)
+        [HttpPost("SaveUpdate/{userId}")]
+        public async Task<ActionResult<User>> SaveUpdate(int userId, [FromBody] User user)
         {
-            var res = _dbContext.Users.Where(x => x.Email.ToLower() == user.Email.ToLower()).FirstOrDefault();
+            StringBuilder sb = new();
 
-            if (res != null) return BadRequest($"User with email id {user.Email} already exists");
+            if (String.IsNullOrEmpty(user.Name.Trim())) sb.AppendLine("Name is required");
+            if (String.IsNullOrEmpty(user.Email.Trim())) sb.AppendLine("Email is required");
+            if (String.IsNullOrEmpty(user.Password.Trim())) sb.AppendLine("Password is required");
 
-            _dbContext.Users.Add(user);
-            int resp = _dbContext.SaveChanges();
-            if (resp > 0) return Ok(true);
+            if (!String.IsNullOrEmpty(sb.ToString().Trim())) return BadRequest(sb.ToString());
 
-            return Ok(false);
+            if(user.Id > 0)
+            {
+                user.UpdatedBy = userId;
+                user.DateUpdated = DateTime.Now;
+            }
+            else
+            {
+
+                var existingUser = await _userService.GetByEmail(StringEncyption.Encrypt(user.Email));
+
+                if (existingUser != null)
+                    return BadRequest($"User with email {user.Email} already exists.");
+
+                user.CreatedBy = userId;
+                user.DateCreated = DateTime.Now;
+            }
+
+            var updatedUser = await _userService.SaveUpdate(userId, user);
+
+            return Ok(updatedUser);
         }
 
-        [HttpGet("GetById")]
-        public ActionResult<User> Get(int id)
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<User>> Get(int id)
         {
-            //User user = new();
-            //try
-            //{
-            //    using (var dbContext = new UserDbContext())
-            //    {
-            //        var userEnt = dbContext.Users.Where(x => x.Id == id).SingleOrDefault();
-            //        if (userEnt == null) return NotFound($"User with id {id.ToString()} is not found");
-            //        user.DateCreated = userEnt.DateCreated;
-            //        user.DateUpdated = userEnt.DateUpdated;
-            //        user.DateVerified = userEnt.DateVerified;
-            //        user.Email = userEnt.Email;
-            //        user.Id = userEnt.Id;
-            //        user.IsActive = userEnt.IsActive;
-            //        user.IsVerified = userEnt.IsVerified;
-            //        user.Name = userEnt.Name;
-            //        user.Password = userEnt.Password;
-            //        user.RememberToken = userEnt.RememberToken;
-            //        user.Role = userEnt.Role;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-            //    return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            //}
-            var userEnt = _dbContext.Users.Where(x => x.Id == id).SingleOrDefault();
-            if (userEnt == null) return NotFound($"User with id {id.ToString()} is not found");
-            //user.DateCreated = userEnt.DateCreated;
-            //user.DateUpdated = userEnt.DateUpdated;
-            //user.DateVerified = userEnt.DateVerified;
-            //user.Email = userEnt.Email;
-            //user.Id = userEnt.Id;
-            //user.IsActive = userEnt.IsActive;
-            //user.IsVerified = userEnt.IsVerified;
-            //user.Name = userEnt.Name;
-            //user.Password = userEnt.Password;
-            //user.RememberToken = userEnt.RememberToken;
-            //user.Role = userEnt.Role;
-            return Ok(userEnt);
+
+            if (id <= 0) return BadRequest("To get user, id must be supplied");
+
+            var user = await _userService.Get(id);
+            if (user == null) return NotFound($"User with id {id} was not found");
+            return Ok(user);
         }
 
-        [HttpGet("GetByName")]
-        public ActionResult<User> GetByName(string name)
+        [HttpGet("GetByName/{name}")]
+        public async Task<ActionResult<User>> GetByName(string name)
         {
-            //User user = new();
-            //try
-            //{
-            //    using (var dbContext = new UserDbContext())
-            //    {
-            //        var userEnt = dbContext.Users.Where(x => x.Name.ToLower() == name.ToLower()).SingleOrDefault();
-            //        if (userEnt == null) return NotFound($"User with name {name} is not found");
-            //        user.DateCreated = userEnt.DateCreated;
-            //        user.DateUpdated = userEnt.DateUpdated;
-            //        user.DateVerified = userEnt.DateVerified;
-            //        user.Email = userEnt.Email;
-            //        user.Id = userEnt.Id;
-            //        user.IsActive = userEnt.IsActive;
-            //        user.IsVerified = userEnt.IsVerified;
-            //        user.Name = userEnt.Name;
-            //        user.Password = userEnt.Password;
-            //        user.RememberToken = userEnt.RememberToken;
-            //        user.Role = userEnt.Role;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-            //    return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            //}
-            var userEnt = _dbContext.Users.Where(x => x.Name.ToLower() == name.ToLower()).SingleOrDefault();
-            if (userEnt == null) return NotFound($"User with name {name} is not found");
-            //user.DateCreated = userEnt.DateCreated;
-            //user.DateUpdated = userEnt.DateUpdated;
-            //user.DateVerified = userEnt.DateVerified;
-            //user.Email = userEnt.Email;
-            //user.Id = userEnt.Id;
-            //user.IsActive = userEnt.IsActive;
-            //user.IsVerified = userEnt.IsVerified;
-            //user.Name = userEnt.Name;
-            //user.Password = userEnt.Password;
-            //user.RememberToken = userEnt.RememberToken;
-            //user.Role = userEnt.Role;
-            return Ok(userEnt);
+
+            if (String.IsNullOrEmpty(name.Trim())) return BadRequest("To get user, name must be supplied");
+
+            var user = await _userService.GetByName(name);
+            if (user == null) return NotFound($"User with name {name} was not found");
+            return Ok(user);
         }
 
-        [HttpGet("GetByEmail")]
-        public ActionResult<User> GetByEmail(string email)
+        [HttpGet("GetByEmail/{email}")]
+        public async Task<ActionResult<User>> GetByEmail(string email)
         {
-            //User user = new();
 
-            //try
-            //{
-            //    using (var dbContext = new UserDbContext())
-            //    {
-            //        var userEnt = dbContext.Users.Where(x => x.Email.ToLower() == email.ToLower()).SingleOrDefault();
-            //        if (userEnt == null) return NotFound($"User with email {email} is not found.");
-            //        user.DateCreated = userEnt.DateCreated;
-            //        user.DateUpdated = userEnt.DateUpdated;
-            //        user.DateVerified = userEnt.DateVerified;
-            //        user.Email = userEnt.Email;
-            //        user.Id = userEnt.Id;
-            //        user.IsActive = userEnt.IsActive;
-            //        user.IsVerified = userEnt.IsVerified;
-            //        user.Name = userEnt.Name;
-            //        user.Password = userEnt.Password;
-            //        user.RememberToken = userEnt.RememberToken;
-            //        user.Role = userEnt.Role;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-            //    return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            //}
-            var userEnt = _dbContext.Users.Where(x => x.Email.ToLower() == email.ToLower()).SingleOrDefault();
-            if (userEnt == null) return NotFound($"User with email {email} is not found.");
-            //user.DateCreated = userEnt.DateCreated;
-            //user.DateUpdated = userEnt.DateUpdated;
-            //user.DateVerified = userEnt.DateVerified;
-            //user.Email = userEnt.Email;
-            //user.Id = userEnt.Id;
-            //user.IsActive = userEnt.IsActive;
-            //user.IsVerified = userEnt.IsVerified;
-            //user.Name = userEnt.Name;
-            //user.Password = userEnt.Password;
-            //user.RememberToken = userEnt.RememberToken;
-            //user.Role = userEnt.Role;
+            if (String.IsNullOrEmpty(email.Trim())) return BadRequest("To get user, email must be supplied");
 
-            return Ok(userEnt);
+            var user = await _userService.GetByEmail(email);
+
+            if (user == null) return NotFound($"User with email {email} was not found.");
+
+            return Ok(user);
         }
 
         [HttpGet("GetUsers")]
-        public ActionResult<IEnumerable<User>> GetUsers()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            //IEnumerable<User> users = new List<User>();
-            //try
-            //{
-            //    using (var dbContext = new UserDbContext())
-            //    {
-            //        users = dbContext.Users;
-            //        if (!users.Any()) return NotFound("No user records found");
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-            //    return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            //}
-            var users = _dbContext.Users;
-            if (!users.Any()) return NotFound("No user records found");
+            var users = await _userService.GetUsers();
+            if (users == null || !users.Any()) return NotFound();
             return Ok(users);
         }
 
-        [HttpPut("UpdateUser")]
-        public ActionResult<bool> Update([FromBody] User user)
+        [HttpPut("ChangePassword/{id}/{userId}/{newPassword}")]
+        public async Task<ActionResult<bool>> ChangePassword(int id, int userId, string newPassword)
         {
-            //try
-            //{
-            //    using (var dbContext = new UserDbContext())
-            //    {
-            //        dbContext.Users.Update(user);
-            //        int res = dbContext.SaveChanges();
-            //        if (res > 0) return Ok(true);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-            //    return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            //}
-            _dbContext.Users.Update(user);
-            int res = _dbContext.SaveChanges();
-            if (res > 0) return Ok(true);
+            StringBuilder sb = new();
+            if (id <= 0) sb.AppendLine("To change password, user id must be supplied");
+            if (string.IsNullOrEmpty(newPassword.Trim())) sb.AppendLine("To change password, new password must be supplied");
+            if (!String.IsNullOrEmpty(sb.ToString().Trim())) return BadRequest(sb.ToString());
 
-            return Ok(false);
+            var existingUser = await _userService.Get(id);
+            if (existingUser == null) return NotFound($"User with id {id} was not found");
+            existingUser.Password = newPassword;
+
+            var updatedUser = await _userService.SaveUpdate(userId, existingUser);
+
+            return Ok(updatedUser.Id > 0);
         }
 
-        [HttpPut("ChangePassword")]
-        public ActionResult<bool> ChangePassword(int id, string newPassword)
+        [HttpGet("SearchUser/{searchString}")]
+        public async Task<ActionResult<IEnumerable<User>>> SearchUser(string searchString)
         {
-            //try
-            //{
-            //    using (var dbContext = new UserDbContext())
-            //    {
-            //        var userEnt = dbContext.Users.Where(x => x.Id.Equals(id)).SingleOrDefault();
-            //        if (userEnt == null) BadRequest($"User with id {id} cannot be found.");
-            //        userEnt?.Password = newPassword;
-            //        int res = dbContext.SaveChanges();
-            //        if (res > 0) return Ok(true);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-            //    return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            //}
-            var userEnt = _dbContext.Users.Where(x => x.Id.Equals(id)).SingleOrDefault();
-            if (userEnt == null) NotFound($"User with id {id} cannot be found.");
-            userEnt?.Password = newPassword;
-            int res = _dbContext.SaveChanges();
-            if (res > 0) return Ok(true);
-            return Ok(false);
-        }
+            var users = await _userService.SearchUser(searchString);
 
-        [HttpGet("SearchUser")]
-        public ActionResult<IEnumerable<User>> SearchUser(string searchString)
-        {
-            IEnumerable<User> users = new List<User>();
-
-            var usersEnt = _dbContext.Users.Where(x => x.Name.ToLower().Contains(searchString) || x.Email.ToLower().Contains(searchString));
-            if (usersEnt == null || !usersEnt.Any()) return NotFound($"User(s) which name or email contains '{searchString}' is not found");
-            users = usersEnt;
+            if(users == null  || !users.Any()) return NotFound($"User(s) with value {searchString} was not found.");
 
             return Ok(users);
         }
