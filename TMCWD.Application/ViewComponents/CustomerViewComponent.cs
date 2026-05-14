@@ -14,4 +14,11 @@ namespace TMCWD.Application.ViewComponents
             _customerTransaction = customerTransaction;
             _customerTransaction.SetClient(_client);
         }
+
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            var customers = await _customerTransaction.GetCustomers();
+            return View(customers);
+        }
+    }
 }
