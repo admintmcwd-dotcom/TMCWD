@@ -20,9 +20,9 @@ namespace TMCWD.Data.Services
             return account;
         }
 
-        public async Task<Account?> GetByAccountNumber(int customerId, string accountNumber)
+        public async Task<Account?> GetByAccountNumber(string accountNumber)
         {
-            var account = await _dbContext.Accounts.Where(x => x.CustomerId == customerId && x.AccountNumber.ToLower() == accountNumber.ToLower()).FirstOrDefaultAsync();
+            var account = await _dbContext.Accounts.Where(x => x.AccountNumber.ToLower() == accountNumber.ToLower()).FirstOrDefaultAsync();
             return account;
         }
 
@@ -32,15 +32,14 @@ namespace TMCWD.Data.Services
             return await accounts.ToListAsync();
         }
 
-        public async Task<Account?> GetByMeterNumber(int customerId, string meterNumber)
+        public async Task<Account?> GetByMeterNumber(string meterNumber)
         {
-            var account = await _dbContext.Accounts.Where(x => x.CustomerId == customerId && x.MeterNumber.ToLower() == meterNumber.ToLower()).FirstOrDefaultAsync();
+            var account = await _dbContext.Accounts.Where(x => x.MeterNumber.ToLower() == meterNumber.ToLower()).FirstOrDefaultAsync();
             return account;
         }
 
-        public async Task<Account> SaveUpdate(int userId, int customerId, Account account)
+        public async Task<Account> SaveUpdate(int userId, Account account)
         {
-            account.CustomerId = customerId;
             if(account.Id > 0)
             {
                 account.UpdatedBy = userId;

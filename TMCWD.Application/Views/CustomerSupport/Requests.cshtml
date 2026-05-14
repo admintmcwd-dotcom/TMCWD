@@ -63,7 +63,7 @@
                         <tr>
                             <td class="border border-gray-300 p-2 ...">@request.ControlNumber</td>
                             <td class="border border-gray-300 p-2 ...">@request.AccountId</td>
-                            <td data-customerid='@request.CustomerId' class="customer-detail border border-gray-300 p-2 ..."></td>
+                            <td data-customerid='@request.CustomerId' class="customer-detail border border-gray-300 p-2 ...">@(await Component.InvokeAsync("CustomerName", new { customerId = request.CustomerId }))</td>
                             <td data-userid='@request.CreatedBy' class="user-detail border border-gray-300 p-2 ..."></td>
                             <td class="border border-gray-300 p-2 ...">@(request.Status == RequestStatus.InProgress ? "In-Progress" : "Completed")</td>
                             <td class="border border-gray-300 p-2 ..."></td>

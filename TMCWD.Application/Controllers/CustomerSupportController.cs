@@ -5,6 +5,7 @@ using TMCWD.Application.Models;
 using TMCWD.Model.Administrator;
 using TMCWD.Model.CustomerSupport;
 using TMCWD.CustomerSupport;
+using TMCWD.Services;
 
 namespace TMCWD.Application.Controllers
 {
@@ -12,49 +13,64 @@ namespace TMCWD.Application.Controllers
     {
 
         private readonly HttpClient _client;
+        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly AccountTransaction _accountTransaction;
+        private readonly CustomerTransaction _customerTransaction;
+        private readonly RequestTransaction _requestTransaction;
+        private readonly InspectionTypeTransaction _inspectionTypeTransaction;
+        private readonly UserTransaction _userTransaction;
 
-        public CustomerSupportController(IHttpClientFactory factory)
+        public CustomerSupportController(IHttpClientFactory factory, 
+            AuthenticatedUserService authenticatedUserService, 
+            AccountTransaction accountTransaction, 
+            CustomerTransaction customerTransaction,
+            RequestTransaction requestTransaction,
+            InspectionTypeTransaction inspectionTypeTransaction,
+            UserTransaction userTransaction)
         {
             _client = factory.CreateClient("TmcWdApi");
+            _authenticatedUserService = authenticatedUserService;
+
+            _accountTransaction = accountTransaction;
+            _accountTransaction.SetClient(_client);
+
+            _customerTransaction = customerTransaction;
+            _customerTransaction.SetClient(_client);
+
+            _requestTransaction = requestTransaction;
+            _requestTransaction.SetClient(_client);
+
+            _inspectionTypeTransaction = inspectionTypeTransaction;
+            _inspectionTypeTransaction.SetClient(_client);
+
+            _userTransaction = userTransaction;
+            _userTransaction.SetClient(_client);
         }
 
         public async Task<IActionResult> Index()
         {
             CustomerViewModel model = new();
-            UserTransaction userTrans = new(_client);
-            User currentUser = new();
-            currentUser = userTrans.ConvertJsonStringToUser(HttpContext.Session.GetString("currentUser"));
-
-            CustomerTransaction custTrans = new(_client);
+            User currentUser = _authenticatedUserService.User;
 
             model.CurrentUser = currentUser ?? new User();
-            model.PagedCustomerList = await custTrans.GetCustomers();
+            model.PagedCustomerList = await _customerTransaction.GetCustomers();
             ViewBag.Role = model.CurrentUser.Role;
 
             return View(model);
         }
 
-        public IActionResult AddEditCustomer(int editCustomerId = 0)
+        public async Task<IActionResult> AddEditCustomer(int editCustomerId = 0)
         {
-            User? currentUser = new();
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-
-            if (!String.IsNullOrEmpty(jsonCurrentUser?.Trim()))
-            {
-                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
-            }
-
-            AccountTransaction acctTrans = new();
-            CustomerTransaction custTrans = new();
+            User currentUser = _authenticatedUserService.User;
 
             CustomerViewModel model = new()
             {
                 CurrentUser = currentUser,
-                AddEditCustomer = custTrans.GetById(editCustomerId) ?? new Customer(),
-                CustomerAccounts = editCustomerId > 0 ? acctTrans.GetByCustomerId(editCustomerId) : new List<Account>()
+                AddEditCustomer = await _customerTransaction.Get(editCustomerId) ?? new Customer(),
+                CustomerAccounts = editCustomerId > 0 ? await _accountTransaction.GetByCustomerId(editCustomerId) : new List<Account>()
             };
 
-            ViewBag.Role = currentUser?.Role;
+            ViewBag.Role = currentUser.Role;
 
             return View(model);
         }
@@ -66,85 +82,72 @@ namespace TMCWD.Application.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveCustomer(CustomerViewModel model)
+        public async Task<IActionResult> SaveCustomer(CustomerViewModel model)
         {
-            CustomerTransaction custTrans = new();
-            model.AddEditCustomer.CreatedBy = model.CurrentUser.Id;
-            custTrans.SaveUpdate(model.AddEditCustomer);
+
+            if(model.AddEditCustomer == null) return BadRequest("Customer data is required");
+
+            await _customerTransaction.SaveUpdate(_authenticatedUserService.User.Id, model.AddEditCustomer);
 
             return RedirectToAction("Index", "CustomerSupport");
         }
 
-        public IActionResult DeactivateCustomer(int customerId)
+        public async Task<IActionResult> DeactivateCustomer(int customerId)
         {
-            CustomerTransaction custTrans = new();
             Customer cust = new();
-            cust = custTrans.GetById(customerId);
+            User currentUser = new();
+            currentUser = _authenticatedUserService.User;
+            cust = await _customerTransaction.Get(customerId);
 
             if(cust != null)
             {
                 cust.IsActive = false;
-                custTrans.SaveUpdate(cust);
+                await _customerTransaction.SaveUpdate(currentUser.Id, cust);
             }
 
             return RedirectToAction("Index", "CustomerSupport");
         }
 
-        public IActionResult DeactivateAccount(int accountId)
+        public async Task<IActionResult> DeactivateAccount(int accountId)
         {
             AccountTransaction acctTrans = new();
             Account acct = new();
-            acct = acctTrans.GetById(accountId);
+            acct = await _accountTransaction.Get(accountId);
 
             if(acct != null)
             {
                 acct.IsActive = false;
-                acctTrans.SaveUpdate(acct);
+                await acctTrans.SaveUpdate(_authenticatedUserService.User.Id, acct);
             }
 
             return RedirectToAction("AddEditCustomer", "CustomerSupport", new { editCustomerId = acct.CustomerId });
         }
 
-        public IActionResult Requests()
+        public async Task<IActionResult> Requests()
         {
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-            User currentUser = new();
-
-            UserTransaction trans = new();
-            RequestTransaction requestTrans = new();
+            User currentUser = _authenticatedUserService.User;
             RequestViewModel model = new();
-            if (!String.IsNullOrEmpty(jsonCurrentUser.Trim()))
-            {
-                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
-                model.CurrentUser = currentUser;
-                ViewBag.Role = currentUser.Role;
-            }
-
-            model.Requests = requestTrans.GetRequests();
-
+            model.CurrentUser = currentUser;
+            ViewBag.Role = currentUser.Role;
+            model.Requests = await _requestTransaction.GetRequests();
+            model.CustomerTransaction =_customerTransaction;
+            model.AccountTransaction = _accountTransaction;
             return View(model);
         }
 
-        public IActionResult AddEditRequest(int requestId = 0)
+        public async Task<IActionResult> AddEditRequest(int requestId = 0)
         {
-            string jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-            User currentUser = new();
+            User currentUser = _authenticatedUserService.User;
             RequestViewModel model = new();
-            if (!String.IsNullOrEmpty(jsonCurrentUser.Trim()))
+            model.CurrentUser = currentUser;
+            ViewBag.Role = currentUser?.Role;
+
+            if (requestId > 0)
             {
-                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
-                model.CurrentUser = currentUser;
-                ViewBag.Role = currentUser?.Role;
+                model.AddEditRequest = await _requestTransaction.Get(requestId);
             }
 
-            if(requestId > 0)
-            {
-                RequestTransaction requestTrans = new();
-                model.AddEditRequest = requestTrans.GetById(requestId);
-            }
-
-            InspectionTypeTransaction inspTrans = new();
-            model.InspectionTypes = inspTrans.GetIncidentTypes() ?? new();
+            model.InspectionTypes = await _inspectionTypeTransaction.GetTypes() ?? new();
 
             return View(model);
         }
@@ -153,9 +156,8 @@ namespace TMCWD.Application.Controllers
         public async Task<IActionResult> GetCustomerById(int customerId)
         {
 
-            CustomerTransaction custTrans = new();
             Customer customer = new();
-            customer = custTrans.GetById(customerId);
+            customer = await _customerTransaction.Get(customerId);
 
             return View(customer);
         }
@@ -163,67 +165,42 @@ namespace TMCWD.Application.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserById(int userId)
         {
-            UserTransaction userTrans = new();
             User user = new();
-            user = userTrans.GetUserById(userId);
+            user = await _userTransaction.Get(userId);
             return View(user);
         }
 
         [HttpPost]
-        public IActionResult SaveRequest([FromBody] object data)
+        public async Task<IActionResult> SaveRequest([FromBody] object data)
         {
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-            User currentUser = new();
-            string stringRequest = data.ToString();
+            User currentUser = _authenticatedUserService.User;
+            string? stringRequest = data?.ToString();
 
             List<int> detailIds = new List<int>();
 
-            if (!String.IsNullOrEmpty(jsonCurrentUser.Trim()))
-            {
-                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
-            }
-
-            if (String.IsNullOrEmpty(stringRequest.Trim())) return BadRequest("Request data is empty");
+            if (String.IsNullOrEmpty(stringRequest?.Trim())) return BadRequest("Request data is empty");
 
             var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-            Request request = JsonSerializer.Deserialize<Request>(stringRequest, serializerOptions);
+            Request? request = JsonSerializer.Deserialize<Request>(stringRequest, serializerOptions);
 
             if (request == null) return BadRequest("Cannot convert request data to request object");
 
-            if (request.Id > 0)
-            {
-                request.DateUpdated = DateTime.Now;
-                request.UpdatedBy = currentUser.Id;
-            }
-            else
-            {
-                request.DateCreated = DateTime.Now;
-                request.CreatedBy = currentUser.Id;
-
-            }
             request.AccountId = 1;
             request.CustomerId = 1;
             request.ControlNumber = "TKT";
 
-            RequestTransaction requestTrans = new();
-            int id = requestTrans.SaveUpdate(request);
+            var updatedRequest = await _requestTransaction.SaveUpdate(currentUser.Id, request);
 
-            return Ok(id);
+            return Ok(updatedRequest.Id);
         }
 
         [HttpPost]
-        public IActionResult SaveRequestDetails(int requestId, [FromBody] object data)
+        public async Task<IActionResult> SaveRequestDetails(int requestId, [FromBody] object data)
         {
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-            User currentUser = new();
+            User currentUser = _authenticatedUserService.User;
             string stringRequest = data.ToString();
 
             List<int> detailIds = new List<int>();
-
-            if (!String.IsNullOrEmpty(jsonCurrentUser.Trim()))
-            {
-                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
-            }
 
             if (data == null) return BadRequest("No selected service(s)");
 
@@ -241,11 +218,15 @@ namespace TMCWD.Application.Controllers
                 requestDetail.RequestId = requestId;
             }
 
-            RequestTransaction requestTrans = new();
-
-            var res = requestTrans.SaveMulipleRequestDetail(requestDetails);
+            var res = await _requestTransaction.SaveMulipleRequestDetail(currentUser.Id, requestId, requestDetails);
 
             return Ok(res);
+        }
+
+        public async Task<IActionResult> GetCustomerName(int customerId)
+        {
+            var customer = await _customerTransaction.Get(customerId);
+            return ViewComponent("CustomerName", $"{customer.Firstname} {customer.Lastname}");
         }
 
     }

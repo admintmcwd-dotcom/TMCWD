@@ -10,7 +10,7 @@ using TMCWD.Utility.Generic;
 namespace TMCWD.Data.Controllers
 {
     [ApiController]
-    [Route("api/{customerId}/[controller]")]
+    [Route("api/[controller]")]
     public class AccountController : Controller
     {
 
@@ -22,14 +22,14 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPost("SaveUpdate/{userId}")]
-        public async Task<ActionResult<Account>> SaveUpdate(int userId, [FromRoute] int customerId, [FromBody] Account account)
+        public async Task<ActionResult<Account>> SaveUpdate(int userId, [FromBody] Account account)
         {
             StringBuilder sb = new();
 
             if (String.IsNullOrEmpty(account.Address.Trim())) sb.AppendLine("Address is required to create an account.");
             if (String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required to create an account.");
 
-            var updatedAccount = await _accountService.SaveUpdate(userId, customerId, account);
+            var updatedAccount = await _accountService.SaveUpdate(userId, account);
             if (updatedAccount == null || updatedAccount.Id <= 0) return BadRequest("Account was not created due to some issue(s).");
 
             return Ok(updatedAccount);
@@ -46,17 +46,17 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetByAccountNumber/{accountNumber}")]
-        public async Task<ActionResult<Account>> GetByAccountNumber([FromRoute] int customerId, string accountNumber)
+        public async Task<ActionResult<Account>> GetByAccountNumber(string accountNumber)
         {
-            var account = await _accountService.GetByAccountNumber(customerId, accountNumber);
+            var account = await _accountService.GetByAccountNumber(accountNumber);
 
             if (account == null) return NotFound($"Account with account number {accountNumber} was not found.");
 
             return Ok(account);
         }
 
-        [HttpGet("GetByCustomerId")]
-        public async Task<ActionResult<IEnumerable<Account>>> GetByCustomerId([FromRoute] int customerId)
+        [HttpGet("GetByCustomerId/{customerId}")]
+        public async Task<ActionResult<IEnumerable<Account>>> GetByCustomerId(int customerId)
         {
             var accounts = await _accountService.GetByCustomerId(customerId);
 
@@ -66,9 +66,9 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetByMeterNumber/{meterNumber}")]
-        public ActionResult<Account> GetByMeterNumber([FromRoute] int customerId, string meterNumber)
+        public ActionResult<Account> GetByMeterNumber(string meterNumber)
         {
-            var account = _accountService.GetByMeterNumber(customerId, meterNumber);
+            var account = _accountService.GetByMeterNumber(meterNumber);
 
             if (account == null) return NotFound($"Account with meter number {meterNumber} was not found.");
 

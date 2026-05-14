@@ -5,6 +5,8 @@ using TMCWD.Model.Administrator;
 using TMCWD.Administration;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Cryptography;
+using TMCWD.Services;
+using TMCWD.Utility.Encryption;
 
 namespace TMCWD.Application.Controllers
 {
@@ -12,23 +14,26 @@ namespace TMCWD.Application.Controllers
     {
 
         private readonly HttpClient _client;
+        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserTransaction _userTransaction;
+        private readonly InspectionTypeTransaction _inspectionTypeTransaction;
         
-        public AdminController(IHttpClientFactory factory) 
+        public AdminController(IHttpClientFactory factory, AuthenticatedUserService authenticatedUserService, UserTransaction userTransaction, InspectionTypeTransaction inspectionTypeTransaction) 
         {
             _client = factory.CreateClient("TmcWdApi");
+            _authenticatedUserService = authenticatedUserService;
+            _userTransaction = userTransaction;
+            _userTransaction.SetClient(_client);
+            _inspectionTypeTransaction = inspectionTypeTransaction;
+            _inspectionTypeTransaction.SetClient(_client);
         }
 
         public async Task<IActionResult> Index(string searchString = "")
         {
-            User? currentUser = new();
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
+            User currentUser = _authenticatedUserService.User;
 
-            UserTransaction userTransact = new(_client);
-
-            currentUser = userTransact.ConvertJsonStringToUser(jsonCurrentUser);
-
-            var userList = await userTransact.SearchUser(searchString);
-            if (userList == null) userList = await userTransact.GetUsers();
+            var userList = await _userTransaction.SearchUser(searchString);
+            if (userList == null) userList = await _userTransaction.GetUsers();
 
             AdminViewModel model = new()
             {
@@ -49,20 +54,13 @@ namespace TMCWD.Application.Controllers
         public async Task<IActionResult> AddEditUser(int currentUserId, int editUserId = 0)
         {
 
-            User? editUser = new();
-            User currentUser = new();
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-            UserTransaction userTrans = new(_client);
-
-            if (!string.IsNullOrEmpty(jsonCurrentUser.Trim()))
-            {
-                currentUser = userTrans.ConvertJsonStringToUser(jsonCurrentUser);
-            }
+            User editUser = new();
+            User currentUser = _authenticatedUserService.User;
 
             if (editUserId > 0)
             {
                 
-                editUser = await userTrans.Get(editUserId);
+                editUser = await _userTransaction.Get(editUserId);
             }
 
             AdminViewModel model = new()
@@ -74,7 +72,7 @@ namespace TMCWD.Application.Controllers
             };
 
 
-            model.Roles = userTrans.GetRoles();
+            model.Roles = _userTransaction.GetRoles();
 
             ViewBag.Role = currentUser.Role;
             return View(model);
@@ -83,44 +81,39 @@ namespace TMCWD.Application.Controllers
         [HttpPost()]
         public async Task<IActionResult> SaveUser(AdminViewModel model)
         {
-            UserTransaction userTrans = new(_client);
             if(model.CurrentUser == null || model.CurrentUser.Id <= 0)
             {
-                var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-                model.CurrentUser = userTrans.ConvertJsonStringToUser(jsonCurrentUser);
+                model.CurrentUser = _authenticatedUserService.User;
             }
 
             if (model.AddEditUser == null)
-                return View("AddEditUser");
+                return View("AddEditUser", model);
 
-            
-            await userTrans.SaveUpdate(model.CurrentUser.Id, model.AddEditUser);
+            if (!model.ConfirmPassword.Equals(model.Password) && model.AddEditUser.Id <= 0) return BadRequest("Password verification failed.");
+            if (model.AddEditUser.Id <= 0)    model.AddEditUser.Password = StringEncyption.Encrypt(model.Password);
+
+
+            await _userTransaction.SaveUpdate(model.CurrentUser.Id, model.AddEditUser);
             return RedirectToAction("Index", "Admin");
         }
 
         public async Task<IActionResult> DeactivateUser(int userId)
         {
-            UserTransaction userTrans = new(_client);
+            User currentUser = _authenticatedUserService.User;
 
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-            User currentUser = userTrans.ConvertJsonStringToUser(jsonCurrentUser);
-
-            var user = await userTrans.Get(userId);
+            var user = await _userTransaction.Get(userId);
             user?.IsActive = false;
-            await userTrans.SaveUpdate(currentUser.Id, user);
+            await _userTransaction.SaveUpdate(currentUser.Id, user);
             return RedirectToAction("Index", "Admin");
         }
 
         public async Task<IActionResult> InspectionTypes()
         {
             InspectionTypeViewModel model = new();
-            UserTransaction userTrans = new(_client);
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-            User currentUser = new();
-            currentUser = userTrans.ConvertJsonStringToUser(jsonCurrentUser);
+            User currentUser = _authenticatedUserService.User;
+            ViewBag.Role = currentUser.Role;
 
-            InspectionTypeTransaction inspectionTypeTrans = new(_client);
-            var inspectionTypes = await inspectionTypeTrans.GetTypes();
+            var inspectionTypes = await _inspectionTypeTransaction.GetTypes();
             if (inspectionTypes != null && inspectionTypes.Any()) model.InspectionTypes = inspectionTypes;
 
             return View(model);
@@ -129,17 +122,12 @@ namespace TMCWD.Application.Controllers
         public async Task<IActionResult> AddEditInspectionType(int inspectionTypeId = 0)
         {
             InspectionTypeViewModel model = new();
-            UserTransaction userTrans = new(_client);
-
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-
-            model.CurrentUser = userTrans.ConvertJsonStringToUser(jsonCurrentUser);
+            model.CurrentUser = _authenticatedUserService.User;
 
             model.AddEditInspectionType = new();
             if (inspectionTypeId > 0)
             {
-                InspectionTypeTransaction inspectionTypeTrans = new(_client);
-                model.AddEditInspectionType = await inspectionTypeTrans.Get(inspectionTypeId);
+                model.AddEditInspectionType = await _inspectionTypeTransaction.Get(inspectionTypeId);
             }
 
             return View(model);
@@ -148,13 +136,8 @@ namespace TMCWD.Application.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveUpdateInspectionType(InspectionTypeViewModel model)
         {
-            InspectionTypeTransaction inspTrans = new(_client);
-            UserTransaction userTrans = new(_client);
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-            User currentUser = new();
-            if (!string.IsNullOrEmpty(jsonCurrentUser.Trim())){
-                currentUser = userTrans.ConvertJsonStringToUser(jsonCurrentUser);
-            }
+            User currentUser = _authenticatedUserService.User;
+            
             if(model.AddEditInspectionType.Id <= 0)
             {
                 model.AddEditInspectionType.CreatedBy = currentUser.Id;
@@ -165,21 +148,20 @@ namespace TMCWD.Application.Controllers
                 model.AddEditInspectionType.DateUpdated = DateTime.Now;
                 model.AddEditInspectionType.UpdatedBy = currentUser.Id;
             }
-            await inspTrans.SaveUpdate(currentUser.Id, model.AddEditInspectionType);
+            await _inspectionTypeTransaction.SaveUpdate(currentUser.Id, model.AddEditInspectionType);
             return RedirectToAction("InspectionTypes", "Admin");
         }
 
         public async Task<IActionResult> DeactivateInspectionType(int inspectionTypeId, int currentUserId)
         {
-            InspectionTypeTransaction inspTrans = new(_client);
             InspectionType inspType = new();
-            inspType = await inspTrans.Get(inspectionTypeId);
+            inspType = await _inspectionTypeTransaction.Get(inspectionTypeId);
             if (inspType != null)
             {
                 inspType.IsActive = false;
                 inspType.UpdatedBy = currentUserId;
                 inspType.DateUpdated = DateTime.Now;
-                await inspTrans.SaveUpdate(currentUserId, inspType);
+                await _inspectionTypeTransaction.SaveUpdate(currentUserId, inspType);
             }
             return RedirectToAction("InspectionTypes", "Admin");
         }

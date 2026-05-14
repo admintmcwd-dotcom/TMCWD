@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
+using TMCWD.Data.Services;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.Data.Controllers
@@ -10,69 +11,34 @@ namespace TMCWD.Data.Controllers
     public class InspectionReportController : Controller
     {
 
-        [HttpPost("SaveUpdate")]
-        public ActionResult<bool> SaveUpdate([FromBody] InspectionReport report)
-        {
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    if (report.Id > 0) dbContext.InspectionReports.Update(report);
-                    else dbContext.InspectionReports.Add(report);
-                    int res = dbContext.SaveChanges();
-                    if (res > 0) return Ok(true);
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+        private readonly IInspectionReportService _inspectionReportService;
 
-            return Ok(false);
+        public InspectionReportController(IInspectionReportService service)
+        {
+            _inspectionReportService = service;
         }
 
-        [HttpGet("GetById")]
-        public ActionResult<InspectionReport> GetById(int id)
+        [HttpPost("SaveUpdate/{userId}")]
+        public async Task<ActionResult> SaveUpdate(int userId, [FromBody] InspectionReport report)
         {
-            InspectionReport report = new();
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.InspectionReports.FirstOrDefault(x => x.Id == id);
-                    if (data == null) return NotFound($"Inspection report with id {id} is not found.");
-                    report = data;
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+            var updatedReport = await _inspectionReportService.SaveUpdate(userId, report);
+            if (updatedReport == null) NotFound();
+            return Ok(updatedReport);
+        }
 
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult> Get(int id)
+        {
+            var report = await _inspectionReportService.Get(id);
+            if(report == null) NotFound();
             return Ok(report);
         }
 
-        [HttpGet("GetByRequestId")]
-        public ActionResult<IEnumerable<InspectionReport>> GetByRequestId(int requestId)
+        [HttpGet("GetByRequestId/{requestId}")]
+        public async Task<ActionResult> GetByRequestId(int requestId)
         {
-            IEnumerable<InspectionReport> reports = new List<InspectionReport>();
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.InspectionReports.Where(x => x.RequestId == requestId);
-                    if (data == null || !data.Any()) return NotFound($"Inspection report(s) with request id {requestId} is not found.");
-                    reports = data;
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
+            var reports = await _inspectionReportService.GetByRequestId(requestId);
+            if (reports == null || !reports.Any()) return NotFound();
             return Ok(reports);
         }
 

@@ -4,16 +4,22 @@ using TMCWD.Administration;
 using TMCWD.Model.Administrator;
 using TMCWD.Application.Models;
 using System.Text.Json;
+using TMCWD.Services;
 
 namespace TMCWD.Application.Controllers
 {
     public class HomeController : Controller
     {
         private readonly HttpClient _client;
+        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserTransaction _userTransaction;
 
-        public HomeController(IHttpClientFactory factory)
+        public HomeController(IHttpClientFactory factory, AuthenticatedUserService authenticatedUserService, UserTransaction userTransaction)
         {
-            _client = factory.CreateClient("TmcWdApi"); ;
+            _client = factory.CreateClient("TmcWdApi");
+            _authenticatedUserService = authenticatedUserService;
+            _userTransaction = userTransaction;
+            _userTransaction.SetClient(_client);
         }
 
         public IActionResult Index()
@@ -31,14 +37,11 @@ namespace TMCWD.Application.Controllers
 
             if(!response.IsSuccessStatusCode) return View();
 
-            UserTransaction userTrans = new(_client);
-
-            User? currentUser = userTrans.ConvertJsonStringToUser(data);
+            User currentUser = _userTransaction.ConvertJsonStringToUser(data);
             
             if(currentUser != null)
             {
-                var userJson = JsonSerializer.Serialize(currentUser);
-                HttpContext.Session.SetString("currentUser", userJson);
+                _authenticatedUserService.SetUser(currentUser);
                 switch (currentUser.Role)
                 {
                     case (int)UserRole.CustomerRepresentative:

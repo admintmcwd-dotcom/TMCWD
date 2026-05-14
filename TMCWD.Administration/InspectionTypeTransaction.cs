@@ -12,20 +12,21 @@ namespace TMCWD.Administration
 
         #region fields
 
-        private readonly HttpClient _client;
+        private HttpClient _client = new();
 
         #endregion
 
         #region constructors
 
-        public InspectionTypeTransaction(HttpClient client)
-        {
-            _client = client;
-        }
+        public InspectionTypeTransaction() { }
 
         #endregion
 
         #region public methods
+        public void SetClient(HttpClient client)
+        {
+            _client = client;
+        }
 
         public InspectionType ConvertJsonToInspectionType(string json)
         {
@@ -39,7 +40,7 @@ namespace TMCWD.Administration
             return JsonSerializer.Deserialize<List<InspectionType>>(json, serializeOptions) ?? new List<InspectionType>();
         }
 
-        public async Task<List<InspectionType>?> GetTypes()
+        public async Task<List<InspectionType>> GetTypes()
         {
             var response = await _client.GetAsync("api/InspectionType/GetTypes");
             var data = await response.Content.ReadAsStringAsync();
@@ -61,7 +62,7 @@ namespace TMCWD.Administration
             return this.ConvertJsonToInspectionType(data);
         }
 
-        public async Task<InspectionType?> Get(int id)
+        public async Task<InspectionType> Get(int id)
         {
             var response = await _client.GetAsync($"api/InspectionType/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();

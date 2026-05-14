@@ -12,22 +12,21 @@ namespace TMCWD.CustomerSupport
 
         #region fields
 
-        private const string _serviceRouteUrl = "api/Customer/";
-        private const string _saveUpdateUrl = $"{_serviceRouteUrl}SaveUpdate";
-        private const string _getByIdUrl = $"{_serviceRouteUrl}GetById";
-        private const string _getByNameUrl = $"{_serviceRouteUrl}GetByName";
-        private const string _getCustomersUrl = $"{_serviceRouteUrl}GetCustomers";
-
-        private readonly HttpClient _client;
+        private HttpClient _client = new();
 
         #endregion
 
         #region constructors
-        public CustomerTransaction(HttpClient client) { _client = client; }
+        public CustomerTransaction() { }
 
         #endregion
 
         #region public methods
+
+        public void SetClient(HttpClient client)
+        {
+            _client = client;
+        }
 
         public Customer ConvertJsonToCustomer(string json)
         {
@@ -54,7 +53,7 @@ namespace TMCWD.CustomerSupport
             return this.ConvertJsonToCustomer(data);
         }
 
-        public async Task<Customer?> Get(int id)
+        public async Task<Customer> Get(int id)
         {
             var response = await _client.GetAsync($"api/Customer/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
@@ -62,7 +61,7 @@ namespace TMCWD.CustomerSupport
             return this.ConvertJsonToCustomer(data);
         }
 
-        public async Task<List<Customer>?> GetByName(string firstname, string lastname)
+        public async Task<List<Customer>> GetByName(string firstname, string lastname)
         {
             var response = await _client.GetAsync($"api/Customer/GetByName/{firstname}/{lastname}");
             var data = await response.Content.ReadAsStringAsync();
@@ -70,7 +69,7 @@ namespace TMCWD.CustomerSupport
             return this.ConvertJsonToCustomers(data);
         }
 
-        public async Task<List<Customer>?> GetCustomers()
+        public async Task<List<Customer>> GetCustomers()
         {
             var response = await _client.GetAsync("api/Customer/GetCustomers");
             var data = await response.Content.ReadAsStringAsync();

@@ -10,17 +10,12 @@ using TMCWD.Utility.Generic;
 
 namespace TMCWD.CustomerSupport
 {
-    public class AccountTransaction : TransactionBase
+    public class AccountTransaction
     {
 
         #region fields
 
-        private const string _serviceRoute = "api/Account/";
-        private const string _saveUpdateUrl = $"{_serviceRoute}SaveUpdate";
-        private const string _getByIdUrl = $"{_serviceRoute}GetById";
-        private const string _getByAccountNumberUrl = $"{_serviceRoute}GetByAccountNumber";
-        private const string _getByCustomerIdUrl = $"{_serviceRoute}GetByCustomerId";
-        private const string _getByMeterNumberUrl = $"{_serviceRoute}GetByMeterNumber";
+        private HttpClient _client = new();
 
         #endregion
 
@@ -32,209 +27,93 @@ namespace TMCWD.CustomerSupport
 
         #region public methods
 
-        public bool SaveUpdate(Account account)
+        public void SetClient(HttpClient client)
         {
-
-            try
-            {
-                if (account == null) throw new Exception("Required account fields are not supplied");
-                if (String.IsNullOrEmpty(account.AccountNumber.Trim())) throw new Exception("Äccount number is required");
-                if (String.IsNullOrEmpty(account.MeterNumber.Trim())) throw new Exception("Meter number is required");
-                if (account.CustomerId <= 0) throw new Exception("No customer has been selected for this account");
-                if (String.IsNullOrEmpty(account.Address.Trim())) throw new Exception("Account address is required for account creation");
-                return Task.Run(() => SaveUpdateAccountTask(account)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
-
-            return false;
+            _client = client;
         }
 
-        public Account GetById(int id)
+        public Account ConvertJsonToAccount(string json)
         {
-
-            try
-            {
-                if (id <= 0) throw new Exception("Äccount id is not specified");
-                return Task.Run(() => GetAccountByIdTask(id)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
-
-            return new Account();
+            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<Account>(json, serializeOptions) ?? new Account();
         }
 
-        public Account GetByAccountNumber(string accountNumber)
+        public List<Account> ConvertJsonToAccounts(string json)
         {
-            try
-            {
-                if (String.IsNullOrEmpty(accountNumber.Trim())) throw new Exception("Account number is required to get account details");
-                return Task.Run(() => GetAccountByAccountNumberTask(accountNumber)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
-            return new Account();
+            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<List<Account>>(json, serializeOptions) ?? new List<Account>();
         }
 
-        public List<Account> GetByCustomerId(int id)
+        public async Task<Account> SaveUpdate(int userId, Account account)
         {
+            StringBuilder sb = new();
 
-            try
-            {
-                if (id <= 0) throw new Exception("Customer id is required to get accounts bound to customer");
-                return Task.Run(() => GetAccountByCustomerIdTask(id)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
+            if (account == null) sb.AppendLine("Required account fields are not supplied");
+            if (String.IsNullOrEmpty(account.AccountNumber.Trim())) sb.AppendLine("Äccount number is required");
+            if (String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required");
+            if (account.CustomerId <= 0) sb.AppendLine("No customer has been selected for this account");
+            if (String.IsNullOrEmpty(account.Address.Trim())) sb.AppendLine("Account address is required for account creation");
 
-            return new List<Account>();
+            if (String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
+
+            var content = JsonContent.Create(account);
+
+            var response = await _client.PostAsync($"api/Account/SaveUpdate/{userId}", content);
+
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            return ConvertJsonToAccount(data);
         }
 
-        public Account GetByMeterNumber(string meterNumber)
+        public async Task<Account> Get(int id)
         {
 
+            if (id <= 0) throw new Exception("Account id is not specified");
 
+            var response = await _client.GetAsync($"api/Account/Get/{id}");
 
-            return new Account();
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            return ConvertJsonToAccount(data);
         }
 
-        #endregion
-
-        #region private methods
-
-        private async Task<bool> SaveUpdateAccountTask(Account account)
+        public async Task<Account> GetByAccountNumber(string accountNumber)
         {
-            bool isSuccess = false;
 
-            try
-            {
-                using(HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    HttpContent content = JsonContent.Create(account);
-                    using (var response = await client.PostAsync(_saveUpdateUrl, content))
-                    {
-                        var data = await response.Content.ReadAsStringAsync();
-                        if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        isSuccess = data.ToLower() == "true";
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
+            if (String.IsNullOrEmpty(accountNumber.Trim())) throw new Exception("Account number is required to get account");
 
-            return isSuccess;
+            var response = await _client.GetAsync($"api/Account/GetByAccountNumber/{accountNumber}");
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            return ConvertJsonToAccount(data);
         }
 
-        private async Task<Account> GetAccountByIdTask(int id)
+        public async Task<List<Account>> GetByCustomerId(int id)
         {
-            Account account = new();
+            if (id <= 0) throw new Exception("Customer id is required to get accounts bound to customer");
 
-            try
-            {
-                using(HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    string url = QueryHelpers.AddQueryString(_getByIdUrl, "id", id.ToString());
-                    using(var response = await client.GetAsync(url))
-                    {
-                        var data = await response.Content.ReadAsStringAsync();
-                        if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                        var serialized = JsonSerializer.Deserialize<Account>(data, serializeOptions);
-                        if (serialized != null) account = serialized;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
+            var response = await _client.GetAsync($"api/Account/GetByCustomerId/{id}");
 
-            return account;
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            return ConvertJsonToAccounts(data);
         }
 
-        private async Task<Account> GetAccountByAccountNumberTask(string accountNumber)
+        public async Task<Account> GetByMeterNumber(string meterNumber)
         {
-            Account account = new();
 
-            try
-            {
-                using(HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    string url = QueryHelpers.AddQueryString(_getByAccountNumberUrl, "accountNumber", accountNumber);
-                    using(var response = await client.GetAsync(url))
-                    {
-                        var data = await response.Content.ReadAsStringAsync();
-                        if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                        var serialized = JsonSerializer.Deserialize<Account>(data, serializeOptions);
-                        if(serialized != null) account = serialized;
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
-
-            return account;
-        }
-
-        private async Task<List<Account>> GetAccountByCustomerIdTask(int id)
-        {
-            List<Account> accounts = new();
-
-            try
-            {
-                using(HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    string url = QueryHelpers.AddQueryString(_getByCustomerIdUrl, "customerId", id.ToString());
-                    using (var response = await client.GetAsync(url))
-                    {
-                        var data = await response.Content.ReadAsStringAsync();
-                        if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                        var serialized = JsonSerializer.Deserialize<List<Account>>(data, serializeOptions);
-                        if (serialized != null) accounts = serialized;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
-
-            return accounts;
-        }
-
-        private async Task<Account> GetAccountByMeterNumberTask(string meterNumber)
-        {
-            try
-            {
-                using(HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    string url = QueryHelpers.AddQueryString(_getByMeterNumberUrl, "meterNumber", meterNumber);
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
-            return new Account();
+            var response = await _client.GetAsync($"api/Account/GetByMeterNumber/{meterNumber}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToAccount(data);
         }
 
         #endregion

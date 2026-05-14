@@ -24,18 +24,18 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPost("SaveUpdate/{userId}")]
-        public async Task<ActionResult<int>> SaveUpdate(int userId, [FromBody] Request request)
+        public async Task<ActionResult<Request>> SaveUpdate(int userId, [FromBody] Request request)
         {
 
             var insertedRequest = await _requestService.SaveUpdate(userId, request);
 
             if (insertedRequest == null || insertedRequest.Id <= 0) BadRequest("Request was not created");
 
-            return Ok(insertedRequest?.Id);
+            return Ok(insertedRequest);
         }
 
-        [HttpGet("GetById/{id}")]
-        public async Task<ActionResult<Request>> GetById(int id)
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<Request>> Get(int id)
         {
             var data = await _requestService.Get(id);
             if (data == null) return NotFound($"Request with id {id} not found");

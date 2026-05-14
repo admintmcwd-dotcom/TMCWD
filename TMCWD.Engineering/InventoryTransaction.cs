@@ -20,6 +20,9 @@ namespace TMCWD.Engineering
         private const string _getByIdUrl = $"{_serviceRouteUrl}GetById";
         private const string _getAllUrl = $"{_serviceRouteUrl}GetAll";
         private const string _getByNameUrl = $"{_serviceRouteUrl}GetByName";
+
+        private HttpClient _client = new();
+
         #endregion
 
         #region constructors
@@ -28,76 +31,78 @@ namespace TMCWD.Engineering
 
         #region public methods
 
-        public bool SaveUpdate(Inventory inventory)
+        public void SetClient(HttpClient client)
         {
-
-            try
-            {
-                if (inventory == null) throw new Exception("Inventory data is null");
-                if (inventory.Division <= 0) throw new Exception("Please specify which division");
-                if (String.IsNullOrEmpty(inventory.UOM.Trim())) throw new Exception("Please specify the item unit");
-                if (String.IsNullOrEmpty(inventory.Name.Trim())) throw new Exception("Please specify the item name");
-                if (inventory.UnitCost <= 0) throw new Exception("Please specify the unit cost");
-                if (inventory.Id > 0) inventory.DateUpdated = DateTime.Now;
-                else inventory.DateCreated = DateTime.Now;
-
-                return Task.Run(() => SaveUpdateTask(inventory)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Engineering, ErrorType.Error, ex.Message);
-            }
-
-            return false;
+            _client = client;
         }
 
-        public Inventory GetById(int id)
+        public Inventory ConvertJsonToInventory(string json)
         {
-            Inventory inventory = new();
-            try
-            {
-                if (id <= 0) throw new Exception("Id is required to get inventory item");
-
-                inventory = Task.Run(() => GetByIdTask(id)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Engineering, ErrorType.Error, ex.Message);
-            }
-            return inventory;
+            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<Inventory>(json, serializeOptions) ?? new Inventory();
         }
 
-        public List<Inventory> GetAll()
+        public List<Inventory> ConvertJsonToInventoryItems(string json)
         {
-            List<Inventory> inventories = new();
-
-            try
-            {
-                inventories = Task.Run(() => GetAllTask()).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Engineering, ErrorType.Error, ex.Message);
-            }
-
-            return inventories;
+            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<List<Inventory>>(json, serializeOptions) ?? new List<Inventory>();
         }
 
-        public List<Inventory> GetByName(string name)
+        public async Task<Inventory> SaveUpdate(int userId, Inventory inventory)
         {
-            List<Inventory> inventories = new();
 
-            try
-            {
-                if (name.Length <= 4) return new List<Inventory>();
-                inventories = Task.Run(() => GetByNameTask(name)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Engineering, ErrorType.Error, ex.Message);
-            }
+            if (inventory == null) throw new Exception("Inventory data is null");
 
-            return inventories;
+            StringBuilder sb = new();
+
+            if (inventory.Division <= 0) sb.AppendLine("Please specify which division");
+            if (String.IsNullOrEmpty(inventory.UOM.Trim())) sb.AppendLine("Please specify the item unit");
+            if (String.IsNullOrEmpty(inventory.Name.Trim())) sb.AppendLine("Please specify the item name");
+            if (inventory.UnitCost <= 0) sb.AppendLine("Please specify the unit cost");
+
+            if(!String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
+
+            var content = JsonContent.Create(inventory);
+
+            var response = await _client.PostAsync($"api/Inventory/SaveUpdate/{userId}", content);
+
+            var data = await response.Content.ReadAsStringAsync();
+
+            if(!response.IsSuccessStatusCode) throw new Exception(data);
+
+            return ConvertJsonToInventory(data);
+        }
+
+        public async Task<Inventory> Get(int id)
+        {
+
+            if (id <= 0) throw new Exception("Id is required to get inventory item");
+
+            var response = await _client.GetAsync($"api/Inventory/Get/{id}");
+
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            return ConvertJsonToInventory(data);
+        }
+
+        public async Task<List<Inventory>> GetAll()
+        {
+
+            var response = await _client.GetAsync($"api/Inventory/GetAll");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToInventoryItems(data);
+        }
+
+        public async Task<List<Inventory>> GetByName(string name)
+        {
+
+            var response = await _client.GetAsync($"api/Inventory/GetByName/{name}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToInventoryItems(data);
         }
 
         #endregion

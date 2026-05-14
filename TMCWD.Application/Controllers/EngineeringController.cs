@@ -4,81 +4,77 @@ using TMCWD.Model.Administrator;
 using System.Text.Json;
 using TMCWD.Engineering;
 using TMCWD.Application.Models;
+using TMCWD.Services;
 
 namespace TMCWD.Application.Controllers
 {
     public class EngineeringController : Controller
     {
+
+        private readonly HttpClient _client;
+        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly InventoryTransaction _inventoryTransaction;
+
+        public EngineeringController(IHttpClientFactory factory, AuthenticatedUserService authenticatedUserService, InventoryTransaction inventoryTransaction)
+        {
+            _client = factory.CreateClient("TmcWdApi");
+            _authenticatedUserService = authenticatedUserService;
+            _inventoryTransaction = inventoryTransaction;
+            _inventoryTransaction.SetClient(_client);
+        }
+
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Inventory()
+        public async Task<IActionResult> Inventory()
         {
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-            User currentUser = new();
+            User currentUser = _authenticatedUserService.User;
 
             InventoryViewModel model = new();
-            
-            if (!String.IsNullOrEmpty(jsonCurrentUser.Trim()))
-            {
-                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
-                model.CurrentUser = currentUser;
-                ViewBag.Role = currentUser.Role;
-            }
+            model.CurrentUser = currentUser;
+            ViewBag.Role = currentUser.Role;
 
-            InventoryTransaction invTrans = new();
-            model.Inventory = invTrans.GetAll();
+            model.Inventory = await _inventoryTransaction.GetAll();
 
             return View(model);
         }
 
-        public IActionResult AddEditInventory(int inventoryId = 0)
+        public async Task<IActionResult> AddEditInventory(int inventoryId = 0)
         {
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
-            User currentUser = new();
+            User currentUser = _authenticatedUserService.User;
             InventoryViewModel model = new();
-
-            if (!String.IsNullOrEmpty(jsonCurrentUser.Trim()))
-            {
-                currentUser = JsonSerializer.Deserialize<User>(jsonCurrentUser);
-                model.CurrentUser = currentUser;
-                ViewBag.Role = currentUser?.Role;
-            }
+            model.CurrentUser = currentUser;
+            ViewBag.Role = currentUser?.Role;
 
             if(inventoryId > 0)
             {
                 model.AddEditInventory = new();
-                InventoryTransaction invTrans = new();
-                model.AddEditInventory = invTrans.GetById(inventoryId);
+                model.AddEditInventory = await _inventoryTransaction.Get(inventoryId);
             }
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult SaveUpdateInventory(InventoryViewModel model)
+        public async Task<IActionResult> SaveUpdateInventory(InventoryViewModel model)
         {
-            InventoryTransaction invTrans = new();
-            if (model.AddEditInventory.Id > 0) model.AddEditInventory.UpdatedBy = model.CurrentUser.Id;
-            else model.AddEditInventory.CreatedBy = model.CurrentUser.Id;
-            invTrans.SaveUpdate(model.AddEditInventory);
+            await _inventoryTransaction.SaveUpdate(_authenticatedUserService.User.Id, model.AddEditInventory);
             return RedirectToAction("Inventory", "Engineering");
         }
 
-        public IActionResult UpdateInventoryQuantity(int itemId, int newQuantity, int currentUserId)
+        public async Task<IActionResult> UpdateInventoryQuantity(int itemId, int newQuantity, int currentUserId)
         {
-            InventoryTransaction invTrans = new();
             Inventory inv = new();
-            inv = invTrans.GetById(itemId);
+            inv = await _inventoryTransaction.Get(itemId);
             if(inv != null)
             {
                 if(inv.Quantity != newQuantity)
                 {
                     inv.Quantity = newQuantity;
                     inv.UpdatedBy = currentUserId;
-                    invTrans.SaveUpdate(inv);
+                    await _inventoryTransaction.SaveUpdate(_authenticatedUserService.User.Id, inv);
                 }
             }
             return RedirectToAction("Inventory", "Engineering");

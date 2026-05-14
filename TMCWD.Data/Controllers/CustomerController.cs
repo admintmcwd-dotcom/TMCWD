@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.Metadata;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
@@ -52,7 +53,7 @@ namespace TMCWD.Data.Controllers
             if (customers == null || !customers.Any()) return NotFound("No customers found.");
 
             return Ok(customers);
-        }
+        }}
 
     }
 }

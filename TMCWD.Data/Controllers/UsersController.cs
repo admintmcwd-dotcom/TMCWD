@@ -33,7 +33,6 @@ namespace TMCWD.Data.Controllers
             if(user.Id > 0)
             {
                 user.UpdatedBy = userId;
-                user.DateUpdated = DateTime.Now;
             }
             else
             {
@@ -45,7 +44,10 @@ namespace TMCWD.Data.Controllers
 
                 user.CreatedBy = userId;
                 user.DateCreated = DateTime.Now;
+                user.DateVerified = DateTime.Now;
             }
+            user.DateUpdated = DateTime.Now;
+
 
             var updatedUser = await _userService.SaveUpdate(userId, user);
 

@@ -146,11 +146,14 @@
             });
         });
 
+        const saveRequestUrl = '@Url.Action("SaveRequest", "CustomerSupport")';
+        
+
         const btnSubmit = document.getElementById("btnSubmit");
-        btnSubmit.addEventListener("click", (evt) => {
+        btnSubmit.addEventListener("click", async (evt) => {
             evt.preventDefault();
             
-            var postUrl = '@Url.Action("SaveRequest", "CustomerSupport")';
+            
             const requestId = document.getElementById("hdRequestId").value;
             const customerId = document.getElementById("hdCustomerId").value;
             const userId = document.getElementById("hdCurrentUserId").value;
@@ -186,37 +189,16 @@
                 DateCreated: new Date(dateCreated)
             };
 
-            fetch(postUrl, {
-                method: 'POST',
-                headers : {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).then(response => {
-                if(!response.ok) throw new Error("Failed to save request");
-
-                return response.json();
-            }).then(result => { 
-                var requestId = + result;
-                if(requestId > 0){
-                    var saveDetailUrl = '@Url.Action("SaveRequestDetails", "CustomerSupport")' + "?requestId=" + requestId;
-                    console.log('Request Details:', requestDetails);
-                    fetch(saveDetailUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(requestDetails)
-                    }).then(response => {
-                        if(!response.ok) throw new Error("Failed to save services");
-
-                        return response.json();
-                    }).then(result => {
-                        if(result) window.location.href = '@Url.Action("Requests", "CustomerSupport")';
-                    }).catch(error => { console.log('Error:', error); });
-
-                }
-            }).catch(ërror => { console.log('Error:', error); });
+            const saveRequestClient = new WebClient(saveRequestUrl, data);
+            var resultRequestId = + await saveRequestClient.postAsync();
+            console.log('Request ID:', resultRequestId);
+            const saveDetailUrl = '@Url.Action("SaveRequestDetails", "CustomerSupport")' + "?requestId=" + resultRequestId;
+            if(resultRequestId > 0){
+                const saveRequestDetailClient = new WebClient(saveDetailUrl, requestDetails);
+                var isSuccess = await saveRequestDetailClient.postAsync();
+                console.log('Save Request Detail Return:', isSuccess);
+                if(isSuccess) window.location.href = '@Url.Action("Requests", "CustomerSupport")'
+            }
 
         });
     });
