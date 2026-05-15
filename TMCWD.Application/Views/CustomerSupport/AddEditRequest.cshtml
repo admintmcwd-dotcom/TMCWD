@@ -12,11 +12,12 @@
     <p class="text-gray-700">
         @Html.HiddenFor(x => x.CurrentUser.Id, new { id = "hdCurrentUserId" })
         @Html.HiddenFor(x => x.AddEditRequest.Id, new { id = "hdRequestId" })
-        @Html.HiddenFor(x => x.CurrentCustomer.Id, new { id = "hdCustomerId" })
+        @Html.HiddenFor(x => x.AddEditRequest.Id, new { id = "hdCustomerId" })
         @Html.HiddenFor(x => x.AddEditRequest.CustomerId, new { id = "hdAddEditCustomerId" })
         @Html.HiddenFor(x => x.AddEditRequest.DateCreated, new { id = "hdDateCreated" })
         @Html.HiddenFor(x => x.AddEditRequest.CreatedBy, new { id = "hdCreatedBy" })
         @Html.HiddenFor(x => x.AddEditRequest.AccountId, new { id = "hdAccountId" })
+        <input type="hidden" id="hdCustomerName" />
 
         <div class="grid gap-6 mb-6 md:grid-cols-2">
             <div>
@@ -42,7 +43,9 @@
             </div>
             <div>
                 <label for="pAccountName" class="block mb-2.5 text-sm font-medium text-heading">Account Name<a id="lnkAccountName" href="#" class="pl-4"><i class="fa fa-plus" aria-hidden="true"></i></a></label>
-                <vc:customer-name customer-id="@Model.AddEditRequest.CustomerId" p-id="pAccountName" p-class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"></vc:customer-name>
+                <div id="divCustomerName">
+                    <vc:customer-name customer-id="@Model.AddEditRequest.CustomerId" p-id="pAccountName" p-class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"></vc:customer-name>
+                </div>
             </div>
             <div>
                 <label for="pAccountNo" class="block mb-2.5 text-sm font-medium text-heading">Account No</label>
@@ -111,7 +114,7 @@
     </p>
 </div>
 
-<vc:customer-selection></vc:customer-selection>
+<vc:customer-selection value-container-element="hdCustomerId" text-container-element="hdCustomerName"></vc:customer-selection>
 
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function(event) {
@@ -199,10 +202,23 @@
 
     //customerSelectionDialog
         const lnkAccountName = document.getElementById("lnkAccountName");
-        lnkAccountName.onclick = (evt) =>{
+        lnkAccountName.onclick = async (evt) =>{
             evt.preventDefault();
             const customerSelectionDialog = document.getElementById("customerSelectionDialog");
             customerSelectionDialog.showModal();
+            const customerId = document.getElementById("hdCustomerId").value;
+            var encodedValue = encodeURIComponent("bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body");
+
+    const response = await fetch('@Url.Action("RefreshCustomerNameComponent", "CustomerSupport")' + "?customerId=" + customerId + "&pId=pAccountName&pClass=" + encodedValue);
+            const html = await response.text();
+            document.getElementById("divCustomerName").html = html;
+
+            //refreshCustomerName(customerId, "", encodedValue);
         };
+
+        // var refreshCustomerName = async (customerId, pId, pClass) => {
+            
+            
+        // };
     });
 </script>

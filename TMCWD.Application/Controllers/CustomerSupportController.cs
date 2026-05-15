@@ -237,5 +237,11 @@ namespace TMCWD.Application.Controllers
             return Ok(customers);
         }
 
+        public IActionResult RefreshCustomerNameComponent(int customerId, string pId = "", string pClass = "")
+        {
+
+            return ViewComponent("CustomerName", new { customerId = customerId, pId = pId, pClass = pClass });
+        }
+
     }
 }

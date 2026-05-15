@@ -104,15 +104,19 @@
             }
         };
 
-        btnCustomerSelectPick.onclick = (evt) => {
+        btnCustomerSelectPick.onclick = async (evt) => {
             var selectedRadio = document.querySelectorAll('input[type="radio"]:checked');
             if(selectedRadio){
-                var customerId = selectedRadio.dataset.customerid;
-                var customerName = selectedRadio.dataset.customername;
+                var customerId = selectedRadio[0].dataset.customerid;
+                var customerName = selectedRadio[0].dataset.customername;
                 const valueElement = document.getElementById("@Model.SelectedValueContainerId");
-                const textElement = document.getElementById("@Model.SelectedNameContainerId");
-                textElement.value = customerName;
+                // const textElement = document.getElementById("@Model.SelectedNameContainerId");
+                // textElement.value = customerName;
                 valueElement.value = customerId;
+                var urlEncoded = encodeURIComponent("bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body");
+                var url = '@Url.Action("RefreshCustomerNameComponent", "CustomerSupport")' + "?customerId=" + customerId + "&pId=pAccountName&pClass=" + urlEncoded;
+                const response = await fetch(url);
+                document.getElementById("@Model.ParentContainerId").innerHTML = await response.text();
                 customerSelectionDialog.close();
             }
         }
