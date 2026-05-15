@@ -40,6 +40,7 @@ namespace TMCWD.Data.Services
             }
             else
             {
+                request.ControlNumber = string.Empty;
                 request.CreatedBy = userId;
                 request.DateCreated = DateTime.Now;
 
@@ -55,7 +56,7 @@ namespace TMCWD.Data.Services
                 }
 
                 if (String.IsNullOrEmpty(request.ControlNumber.Trim()))
-                    request.ControlNumber = $"TKT{request.DateCreated.ToString("yyyy")}-{request.DateCreated.ToString("MM")}-{10.ToString().PadLeft(4, '0')}";
+                    request.ControlNumber = $"TKT{request.DateCreated.ToString("yyyy")}-{request.DateCreated.ToString("MM")}-{1.ToString().PadLeft(4, '0')}";
 
                 _dbContext.Requests.Add(request);
             }

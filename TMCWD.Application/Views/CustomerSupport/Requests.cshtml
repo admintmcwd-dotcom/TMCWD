@@ -62,9 +62,12 @@
                     {
                         <tr>
                             <td class="border border-gray-300 p-2 ...">@request.ControlNumber</td>
-                            <td class="border border-gray-300 p-2 ...">@request.AccountId</td>
-                            <td data-customerid='@request.CustomerId' class="customer-detail border border-gray-300 p-2 ...">@(await Component.InvokeAsync("CustomerName", new { customerId = request.CustomerId }))</td>
-                            <td data-userid='@request.CreatedBy' class="user-detail border border-gray-300 p-2 ..."></td>
+                            <td class="border border-gray-300 p-2 ...">
+                                @(await Component.InvokeAsync("AccountNumber", new { accountId = request.AccountId }))</td>
+                            <td data-customerid='@request.CustomerId' class="customer-detail border border-gray-300 p-2 ...">
+                                <vc:customer-name customer-id="@request.CustomerId" paragraph-class="mb-0"></vc:customer-name>
+                            </td>
+                            <td data-userid='@request.CreatedBy' class="user-detail border border-gray-300 p-2 ...">@(await Component.InvokeAsync("UserName", new { userId = request.CreatedBy }))</td>
                             <td class="border border-gray-300 p-2 ...">@(request.Status == RequestStatus.InProgress ? "In-Progress" : "Completed")</td>
                             <td class="border border-gray-300 p-2 ..."></td>
                         </tr>
@@ -80,43 +83,6 @@
 <script type="text/javascript">
 
     document.addEventListener("DOMContentLoaded", function(event) {
-
-        var customersColumn = document.getElementsByClassName("customer-detail");
-        var usersColumn = document.getElementsByClassName("user-detail");
-
-        [...customersColumn].forEach((td) => {
-            var customerId = td.dataset.customerId;
-            getCustomerData(customerId);
-        });
-
-        [...usersColumn].forEach((td) => {
-            var userId = td.dataset.userId;
-            getUserData(userId);
-        });
-
-        var getCustomerData = function(customerId){
-            fetch('@Url.Action("GetCustomerById", "CustomerSupport")' + '?customerId=' + customerId, {
-            method: 'Get',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-            })
-            .then(response => response.json())
-            .then(result => console.log('Success:', result))
-            .catch(error => console.log('Error:', error));
-        };
-
-        var getUserData = function(userId){
-            fetch('@Url.Action("GetUserById", "CustomerSupport")' + '?userId=' + userId, {
-            method: 'Get',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-            })
-            .then(response => response.json())
-            .then(result => console.log('Success:', result))
-            .catch(error => console.log('Error:', error));
-        };
 
     });
 

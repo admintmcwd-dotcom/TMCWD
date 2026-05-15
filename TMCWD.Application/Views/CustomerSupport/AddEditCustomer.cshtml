@@ -92,7 +92,7 @@
                             <td class="border border-gray-300 p-2 ...">@account.MeterNumber</td>
                             <td class="border border-gray-300 p-2 ...">@account.Address</td>
                             <td class="border border-gray-300 p-2 ...">@(account.IsCurrentAddress ? "Yes" : "No")</td>
-                            <td class="border border-gray-300 p-2 ...">@(account.IsActive ? "Yes" : "No")</td>
+                            <td class="border border-gray-300 p-2 ...">@(account.Status.ToString())</td>
                             <td class="border border-gray-300 p-2 ...">
                                 <a href="@Url.Action("Index", "Account", new { customerId = Model.AddEditCustomer.Id, accountId = account.Id })" class="text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
                                     <i class="fa fa-pencil" aria-hidden="true"></i>

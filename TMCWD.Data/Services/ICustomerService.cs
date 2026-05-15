@@ -10,5 +10,7 @@ namespace TMCWD.Data.Services
         Task<IEnumerable<Customer>?> GetByName(string firstname, string lastname);
 
         Task<IEnumerable<Customer>?> GetCustomers();
+
+        Task<IEnumerable<Customer>?> Search(string searchString);
     }
 }

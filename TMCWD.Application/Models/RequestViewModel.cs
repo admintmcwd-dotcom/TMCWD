@@ -1,4 +1,5 @@
-﻿using TMCWD.CustomerSupport;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using TMCWD.CustomerSupport;
 using TMCWD.Model.Administrator;
 using TMCWD.Model.CustomerSupport;
 namespace TMCWD.Application.Models
@@ -24,17 +25,7 @@ namespace TMCWD.Application.Models
 
         public AccountTransaction AccountTransaction { get; set; } = new AccountTransaction();
 
-        public string GetCustomerName(int customerId)
-        {
-            var customer = Task.Run(() => CustomerTransaction.Get(customerId)).GetAwaiter().GetResult();
-            return $"{customer.Firstname} {customer.Lastname}";
-        }
-
-        public string GetAccountNumber(int accountId)
-        {
-            var account = Task.Run(() => AccountTransaction.Get(accountId)).GetAwaiter().GetResult();
-            return account.AccountNumber;
-        }
+        public IEnumerable<SelectListItem> AccountSelectionList { get; set; } = new List<SelectListItem>();
 
     }
 }

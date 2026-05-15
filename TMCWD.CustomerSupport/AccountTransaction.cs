@@ -48,7 +48,7 @@ namespace TMCWD.CustomerSupport
         {
             StringBuilder sb = new();
 
-            if (account == null) sb.AppendLine("Required account fields are not supplied");
+            if (account == null) throw new Exception("Required account fields are not supplied");
             if (String.IsNullOrEmpty(account.AccountNumber.Trim())) sb.AppendLine("Äccount number is required");
             if (String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required");
             if (account.CustomerId <= 0) sb.AppendLine("No customer has been selected for this account");

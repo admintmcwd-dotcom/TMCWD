@@ -34,8 +34,8 @@ namespace TMCWD.Data.Entities
         [Required, Column("IsCurrentAddress")]
         public bool IsCurrentAddress { get; set; }
 
-        [Required, Column("IsActive")]
-        public bool IsActive { get; set; }
+        [Required, Column("Status")]
+        public int Status { get; set; }
 
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }

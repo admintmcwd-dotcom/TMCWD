@@ -13,6 +13,7 @@
         @Html.HiddenFor(x => x.CurrentUser.Id, new { id = "hdCurrentUserId" })
         @Html.HiddenFor(x => x.AddEditRequest.Id, new { id = "hdRequestId" })
         @Html.HiddenFor(x => x.CurrentCustomer.Id, new { id = "hdCustomerId" })
+        @Html.HiddenFor(x => x.AddEditRequest.CustomerId, new { id = "hdAddEditCustomerId" })
         @Html.HiddenFor(x => x.AddEditRequest.DateCreated, new { id = "hdDateCreated" })
         @Html.HiddenFor(x => x.AddEditRequest.CreatedBy, new { id = "hdCreatedBy" })
         @Html.HiddenFor(x => x.AddEditRequest.AccountId, new { id = "hdAccountId" })
@@ -20,46 +21,38 @@
         <div class="grid gap-6 mb-6 md:grid-cols-2">
             <div>
                 <label for="pControlNumber" class="block mb-2.5 text-sm font-medium text-heading">Control No.</label>
-                @if(Model.AddEditRequest.Id > 0){
-                    <p id="pControlNumber" class="mb-3 text-body">@Model.AddEditRequest.ControlNumber</p>
+                @if(Model.AddEditRequest.Id > 0)
+                {
+                    <p id="pControlNumber" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">@Model.AddEditRequest.ControlNumber.Trim())</p>
                 }
                 else
                 {
-                    <p id="pControlNumber" class="mb-3 text-body">Not yet created</p>
+                    <p id="pControlNumber" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">Not yet created.</p>
                 }
             </div>
             <div>
                 <label for="pDate" class="block mb-2.5 text-sm font-medium text-heading">Date</label>
                 @if(Model.AddEditRequest.Id > 0){
-                    <p id="pDate" class="mb-3 text-body">@Model.AddEditRequest.DateCreated.ToString("dd MMM yyyy")</p>
+                    <p id="pDate" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">@Model.AddEditRequest.DateCreated.ToString("dd MMM yyyy")</p>
                 }
                 else
                 {
-                    <p id="pDate" class="mb-3 text-body">@DateTime.Now.ToString("dd MMM yyyy")</p>
+                    <p id="pDate" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">@DateTime.Now.ToString("dd MMM yyyy")</p>
                 }
             </div>
             <div>
-                @if(Model.CurrentCustomer.Id > 0)
-                {
-                    <label for="pAccountName" class="block mb-2.5 text-sm font-medium text-heading">Account Name</label>
-                    <p id="pAccountName" class="mb-3 text-body">@(Model.CurrentCustomer.Lastname + ", " + Model.CurrentCustomer.Firstname)</p>
-                }
-                else
-                {
-                    @Html.LabelFor(x => x.CurrentCustomer.Firstname, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
-                    @Html.TextBoxFor(x => x.CurrentCustomer.Firstname, new { id = "txtAccountName", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
-                }
+                <label for="pAccountName" class="block mb-2.5 text-sm font-medium text-heading">Account Name<a id="lnkAccountName" href="#" class="pl-4"><i class="fa fa-plus" aria-hidden="true"></i></a></label>
+                <vc:customer-name customer-id="@Model.AddEditRequest.CustomerId" p-id="pAccountName" p-class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"></vc:customer-name>
             </div>
             <div>
+                <label for="pAccountNo" class="block mb-2.5 text-sm font-medium text-heading">Account No</label>
                 @if (Model.CurrentAccount.Id > 0)
                 {
-                    <label for="pAccountNo" class="block mb-2.5 text-sm font-medium text-heading">Account No</label>
-                    <p id="pAccountNo" class="mb-3 text-body">@(Model.CurrentAccount.AccountNumber)</p>
+                    <p id="pAccountNo" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">@(Model.CurrentAccount.AccountNumber)</p>
                 }
                 else
                 {
-                    @Html.LabelFor(x => x.CurrentAccount.AccountNumber, new { @class = "block mb-2.5 text-sm font-medium text-heading" })
-                    @Html.TextBoxFor(x => x.CurrentAccount.AccountNumber, new { id = "txtAccountNo", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body", required = "required", placeholder = "Name" })
+                    @Html.DropDownListFor(x => x.AddEditRequest.AccountId, Model.AccountSelectionList, new { id = "pAccountNo", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" })
                 }
             </div>
             <div>
@@ -111,12 +104,14 @@
             <button id="btnSubmit" type"button" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-150">
                 Save
             </button>
-            <button type="button" class="px-4 py-2 bg-orange-600 text-black font-semibold rounded-md hover:bg-gray-700 transition duration-150" onclick="location.href='@Url.Action("Index", "Admin")'">
+            <button type="button" class="px-4 py-2 bg-orange-600 text-black font-semibold rounded-md hover:bg-gray-700 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
                 Cancel
             </button>
         </div>
     </p>
 </div>
+
+<vc:customer-selection></vc:customer-selection>
 
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function(event) {
@@ -201,5 +196,13 @@
             }
 
         });
+
+    //customerSelectionDialog
+        const lnkAccountName = document.getElementById("lnkAccountName");
+        lnkAccountName.onclick = (evt) =>{
+            evt.preventDefault();
+            const customerSelectionDialog = document.getElementById("customerSelectionDialog");
+            customerSelectionDialog.showModal();
+        };
     });
 </script>

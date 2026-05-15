@@ -6,7 +6,7 @@
 class WebClient {
 
     url = "";
-    data = null
+    data = null;
     constructor(url, data) {
         this.url = url;
         this.data = data;
@@ -28,6 +28,24 @@ class WebClient {
             returnResult = result;
         });
         
+        return returnResult;
+    }
+
+    async getAsync() {
+        var returnResult = null;
+        await fetch(this.url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (!response.ok)
+                return null;
+            return response.json();
+        }).then(result => {
+            returnResult = result;
+        });
+
         return returnResult;
     }
 

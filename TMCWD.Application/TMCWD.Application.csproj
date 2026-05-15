@@ -14,8 +14,4 @@
     <ProjectReference Include="..\TMCWD.Services\TMCWD.Services.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Shared\Components\" />
-  </ItemGroup>
-
 </Project>

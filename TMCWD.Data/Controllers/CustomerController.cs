@@ -53,7 +53,15 @@ namespace TMCWD.Data.Controllers
             if (customers == null || !customers.Any()) return NotFound("No customers found.");
 
             return Ok(customers);
-        }}
+        }
+
+        [HttpGet("Search/{searchString}")]
+        public async Task<ActionResult> Search(string searchString)
+        {
+            var customers = await _customerService.Search(searchString);
+            if (customers == null || !customers.Any()) return NotFound($"No customers found matching the search string: {searchString}");
+            return Ok(customers);
+        }
 
     }
 }

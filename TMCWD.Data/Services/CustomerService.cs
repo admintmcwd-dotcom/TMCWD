@@ -50,5 +50,12 @@ namespace TMCWD.Data.Services
             await _dbContext.SaveChangesAsync();
             return customer;
         }
+
+        public async Task<IEnumerable<Customer>?> Search(string searchString)
+        {
+            var customers = _dbContext.Customers.Where(x => x.Firstname.ToLower().Contains(searchString.ToLower()) || x.Lastname.ToLower().Contains(searchString.ToLower()) || x.Email.ToLower().Contains(searchString.ToLower()) || (x.Firstname.ToLower() + " " + x.Lastname.ToLower()).Contains(searchString.ToLower())).AsQueryable();
+            return await customers.ToListAsync();
+        }
+
     }
 }

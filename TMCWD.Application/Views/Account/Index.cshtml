@@ -31,8 +31,9 @@
                 @Html.LabelFor(x => x.AddEditAccount.IsCurrentAddress, new { @class = "select-none ms-2 text-sm font-medium text-heading" })
             </div>
             <div class="flex items-center mb-4">
-                @Html.CheckBoxFor(x => x.AddEditAccount.IsActive, new { id = "chkIsActive", @class = "w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft" })
-                @Html.LabelFor(x => x.AddEditAccount.IsActive, new { @class = "select-none ms-2 text-sm font-medium text-heading" })
+                    @Html.LabelFor(x => x.AddEditAccount.Status, new { @class = "select-none ms-2 text-sm font-medium text-heading" })
+                @Html.DropDownListFor(x => x.AddEditAccount.Status, new SelectList(Model.AccountStatuses, "Value", "Text"), new { id = "ddlStatus", @class = "bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" })
+                @* @Html.CheckBoxFor(x => x.AddEditAccount.IsActive, new { id = "chkIsActive", @class = "w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft" }) *@
             </div>
         </div>
         <div>
@@ -79,7 +80,7 @@
                             <td class="border border-gray-300 p-2 ...">@account.MeterNumber</td>
                             <td class="border border-gray-300 p-2 ...">@account.Address</td>
                             <td class="border border-gray-300 p-2 ...">@(account.IsCurrentAddress ? "Yes" : "No")</td>
-                            <td class="border border-gray-300 p-2 ...">@(account.IsActive ? "Yes" : "No")</td>
+                            <td class="border border-gray-300 p-2 ...">@(account.Status.ToString())</td>
                             <td class ="border border-gray-300 p-2 ...">
                                 <a href="@Url.Action("Index", "Account", new { customerId = Model.AddEditAccount.CustomerId, accountId = account.Id })" class="text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
                                     <i class="fa fa-pencil" aria-hidden="true"></i>

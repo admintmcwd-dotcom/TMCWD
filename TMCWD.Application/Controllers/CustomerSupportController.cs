@@ -116,7 +116,7 @@ namespace TMCWD.Application.Controllers
 
             if(acct != null)
             {
-                acct.IsActive = false;
+                acct.Status = AccountStatus.Closed;
                 await acctTrans.SaveUpdate(_authenticatedUserService.User.Id, acct);
             }
 
@@ -227,6 +227,14 @@ namespace TMCWD.Application.Controllers
         {
             var customer = await _customerTransaction.Get(customerId);
             return ViewComponent("CustomerName", $"{customer.Firstname} {customer.Lastname}");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchCustomer(string searchString)
+        {
+            var customers = await _customerTransaction.Search(searchString);
+            if (customers == null || !customers.Any()) return NotFound();
+            return Ok(customers);
         }
 
     }

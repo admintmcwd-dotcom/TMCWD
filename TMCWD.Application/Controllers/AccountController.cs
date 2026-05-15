@@ -49,7 +49,6 @@ namespace TMCWD.Application.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveAccount(AccountViewModel model)
         {
-            var jsonCurrentUser = HttpContext.Session.GetString("currentUser");
             User currentUser = _authenticatedUserService.User;
 
             await _accountTransaction.SaveUpdate(currentUser.Id, model.AddEditAccount);
@@ -62,7 +61,7 @@ namespace TMCWD.Application.Controllers
             acct =  await _accountTransaction.Get(accountId);
             if(acct != null)
             {
-                acct.IsActive = false;
+                acct.Status = AccountStatus.Closed;
                 await _accountTransaction.SaveUpdate(_authenticatedUserService.User.Id, acct);
                 RedirectToAction("Index", "Account", new { customerId = acct.CustomerId });
             }

@@ -48,6 +48,7 @@ namespace TMCWD.Data.Services
             }
             else
             {
+                account.Status = (int)AccountStatus.Pending;
                 account.CreatedBy = userId;
                 account.DateCreated = DateTime.Now;
                 _dbContext.Accounts.Update(account);

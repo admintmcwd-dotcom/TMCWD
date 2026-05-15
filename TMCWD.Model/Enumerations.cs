@@ -26,3 +26,11 @@ public enum RequestStatus
     InProgress = 1,
     Completed = 2
 }
+
+public enum AccountStatus
+{
+    Pending = 1,
+    Suspended = 2,
+    Active = 3,
+    Closed = 4
+}

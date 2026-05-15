@@ -77,6 +77,14 @@ namespace TMCWD.CustomerSupport
             return this.ConvertJsonToCustomers(data);
         }
 
+        public async Task<List<Customer>> Search(string searchString)
+        {
+            var response = await _client.GetAsync($"api/Customer/Search/{searchString}");
+            var data = await response.Content.ReadAsStringAsync();
+            if(!response.IsSuccessStatusCode) return null;
+            return this.ConvertJsonToCustomers(data);
+        }
+
         #endregion
 
     }
