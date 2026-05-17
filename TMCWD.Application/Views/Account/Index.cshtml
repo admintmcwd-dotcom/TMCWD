@@ -98,6 +98,8 @@
     </p>
 </div>
 
+<vc:modal-dialog type="deactivate"></vc:modal-dialog>
+
 <script type="text/javascript">
 
     var btnClear = document.getElementById("btnClear");
@@ -115,12 +117,23 @@
             evt.preventDefault();
             var accountId = evt.target.parentElement.dataset.id;
 
-            showModalDialog({
+            var modal = new ModalDialog({
                 type: 'deactivate',
-                submitUrl: '@Url.Action("DeactivateAccount", "Account")' + "?accountId=" + accountId,
                 title: 'Deactivate Account',
-                content: 'Are you sure you want to deactivate account? All of account data will be permanently removed. This action cannot be undone.'
+                content: 'Are you sure you want to deactivate account? All of account data will be permanently removed. This action cannot be undone.',
+                submitCallback: () => {
+                    window.location.href = '@Url.Action("DeactivateAccount", "Account")' + "?accountId=" + accountId;
+                }
             });
+
+            modal.show();
+
+            // showModalDialog({
+            //     type: 'deactivate',
+            //     submitUrl: '@Url.Action("DeactivateAccount", "Account")' + "?accountId=" + accountId,
+            //     title: 'Deactivate Account',
+            //     content: 'Are you sure you want to deactivate account? All of account data will be permanently removed. This action cannot be undone.'
+            // });
         });
     });
 

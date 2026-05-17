@@ -68,7 +68,16 @@
                                 <vc:customer-name customer-id="@request.CustomerId" paragraph-class="mb-0"></vc:customer-name>
                             </td>
                             <td data-userid='@request.CreatedBy' class="user-detail border border-gray-300 p-2 ...">@(await Component.InvokeAsync("UserName", new { userId = request.CreatedBy }))</td>
-                            <td class="border border-gray-300 p-2 ...">@(request.Status == RequestStatus.InProgress ? "In-Progress" : "Completed")</td>
+                            <td class="border border-gray-300 p-2 text-center ...">
+                                @if(request.Status == RequestStatus.InProgress)
+                                {
+                                    <i class="fa-solid fa-clock text-yellow-500" aria-hidden="true"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-check text-green-500"></i>
+                                }
+                            </td>
                             <td class="border border-gray-300 p-2 ..."></td>
                         </tr>
                     }

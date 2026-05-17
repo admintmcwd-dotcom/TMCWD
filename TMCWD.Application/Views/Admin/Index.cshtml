@@ -67,7 +67,16 @@
                             <td class="border border-gray-300 p-2 ...">@user.Name</td>
                             <td class="border border-gray-300 p-2 ...">@user.Email</td>
                             <td class="border border-gray-300 p-2 ...">@user.DateCreated</td>
-                            <td class="text-center border border-gray-300 p-4 ...">@(user.IsActive ? "Yes" : "No")</td>
+                            <td class="text-center border border-gray-300 p-4 ...">
+                                @if (user.IsActive)
+                                {
+                                    <i class="fa-solid fa-check text-green-500"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-xmark text-red-500"></i>
+                                }
+                            </td>
                             <td class="text-center border border-gray-300 p-4 ...">
                                 <a href="@Url.Action("AddEditUser", "Admin", new { currentUserId = Model.CurrentUser.Id, editUserId = user.Id })" class="text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
                                     <i class="fa fa-pencil" aria-hidden="true"></i>
@@ -84,10 +93,10 @@
     </p>
 </div>
 
-
+<vc:modal-dialog type="deactivate"></vc:modal-dialog>
 <!-- Deactivate Modal Window -->
 
-<el-dialog >
+@* <el-dialog >
     <dialog id="deactivateModal" aria-labelledby="dialog-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
         <el-dialog-backdrop class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
 
@@ -115,7 +124,7 @@
             </el-dialog-panel>
         </div>
     </dialog>
-</el-dialog>
+</el-dialog> *@
 
 <!-- End Deactivate Modal Window -->
 
@@ -128,14 +137,24 @@
             event.preventDefault();
             var currentLink = event.target.parentElement;
             var dataId = currentLink.dataset.id;
-            var deactivateUrl = "@Url.Action("DeactivateUser", "Admin")" + "?userId=" + dataId;
 
-            showModalDialog({
-                type: "deactivate",
-                submitUrl: deactivateUrl,
-                title: "Deactivate User",
-                content: "Are you sure you want to deactivate user? All of the user data will be permanently removed. This action cannot be undone."
+            var modal = new ModalDialog({
+                type: 'deactivate',
+                title: 'Deactivate User',
+                content: 'Are you sure you want to deactivate user? All of the user data will be permanently removed. This action cannot be undone.',
+                submitCallback: () => {
+                    window.location.href = "@Url.Action("DeactivateUser", "Admin")" + "?userId=" + dataId;
+                }
             });
+
+            modal.show();
+
+            // showModalDialog({
+            //     type: "deactivate",
+            //     submitUrl: deactivateUrl,
+            //     title: "Deactivate User",
+            //     content: "Are you sure you want to deactivate user? All of the user data will be permanently removed. This action cannot be undone."
+            // });
         });
     });
 

@@ -185,8 +185,6 @@ namespace TMCWD.Application.Controllers
 
             if (request == null) return BadRequest("Cannot convert request data to request object");
 
-            request.AccountId = 1;
-            request.CustomerId = 1;
             request.ControlNumber = "TKT";
 
             var updatedRequest = await _requestTransaction.SaveUpdate(currentUser.Id, request);
@@ -239,8 +237,12 @@ namespace TMCWD.Application.Controllers
 
         public IActionResult RefreshCustomerNameComponent(int customerId, string pId = "", string pClass = "")
         {
-
             return ViewComponent("CustomerName", new { customerId = customerId, pId = pId, pClass = pClass });
+        }
+
+        public IActionResult RefreshAccountSelectComponent(int customerId)
+        {
+            return ViewComponent("AccountSelection", new { customerId = customerId });
         }
 
     }

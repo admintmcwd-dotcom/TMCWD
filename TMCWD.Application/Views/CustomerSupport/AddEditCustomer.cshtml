@@ -109,10 +109,11 @@
         <!-- End Accounts Table -->
     </p>
 </div>
+<vc:modal-dialog type="deactivate"></vc:modal-dialog>
 
 <!-- Deactivate Modal Window -->
 
-<el-dialog>
+@* <el-dialog>
     <dialog id="deactivateModal" aria-labelledby="dialog-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
         <el-dialog-backdrop class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
 
@@ -140,7 +141,7 @@
             </el-dialog-panel>
         </div>
     </dialog>
-</el-dialog>
+</el-dialog> *@
 
 <!-- End Deactivate Modal Window -->
 
@@ -152,12 +153,23 @@
         link.addEventListener("click", (evt) => {
             var accountId = evt.target.parentElement.dataset.id;
 
-            showModalDialog({
+            var modal = new ModalDialog({
                 type: 'deactivate',
-                submitUrl: '@Url.Action("DeactivateAccount", "CustomerSupport")' + "?accountId=" + accountId,
                 title: 'Deactivate Customer',
-                content: 'Are you sure you want to deactivate customer? All of customer data will be permanently removed. This action cannot be undone.'
+                content: 'Are you sure you want to deactivate customer? All of customer data will be permanently removed. This action cannot be undone.',
+                submitCallback: () => {
+                    window.location.href = '@Url.Action("DeactivateAccount", "CustomerSupport")' + "?accountId=" + accountId;
+                }
             });
+
+            modal.show();
+
+            // showModalDialog({
+            //     type: 'deactivate',
+            //     submitUrl: '@Url.Action("DeactivateAccount", "CustomerSupport")' + "?accountId=" + accountId,
+            //     title: 'Deactivate Customer',
+            //     content: 'Are you sure you want to deactivate customer? All of customer data will be permanently removed. This action cannot be undone.'
+            // });
         });
     });
 
@@ -168,10 +180,15 @@
         if(@(Model.AddEditCustomer.Id) > 0)
             window.location.href = '@Url.Action("Index", "Account", new { customerId = Model.AddEditCustomer.Id })';
         else
-            showAlert({
+            var alert = new Alert();
+            alert.show({
                 type: 'warning',
                 content: 'You have to create customer first before adding account(s)'
             });
+            // showAlert({
+            //     type: 'warning',
+            //     content: 'You have to create customer first before adding account(s)'
+            // });
 
     };
 </script>

@@ -89,7 +89,8 @@
         <!-- End Inventory Table -->
     </p>
 </div>
-
+<vc:modal-dialog type="deactivate"></vc:modal-dialog>
+<vc:modal-dialog type="number"></vc:modal-dialog>
 
 <!-- Update Quantity Modal -->
 @* <div id="quantityModal" data-dialog-backdrop="modal" data-dialog-backdrop-close="true" class="pointer-events-none fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300">
@@ -124,13 +125,24 @@
         link.addEventListener("click", (evt) => {
             evt.preventDefault();
             var id = evt.target.parentElement.dataset.id;
-            
-            showModalDialog({
+
+            var deactivateModal = new ModalDialog({
                 type: 'deactivate',
-                submitUrl: '@Url.Action("DeactivateInventory", "Engineering")' + '?inventoryId=' + id + '&userId=' + '@Model.CurrentUser.Id',
                 title: 'Deactivate Inventory',
-                content: 'Are you sure you want to deactivate inventory? All of inventory data will be permanently removed. This action cannot be undone.'
+                content: 'Are you sure you want to deactivate inventory? All of inventory data will be permanently removed. This action cannot be undone.',
+                submitCallback: () => {
+                    window.location.href = '@Url.Action("DeactivateInventory", "Engineering")' + '?inventoryId=' + id + '&userId=' + '@Model.CurrentUser.Id';
+                }
             });
+
+            deactivateModal.show();
+            
+            // showModalDialog({
+            //     type: 'deactivate',
+            //     submitUrl: '@Url.Action("DeactivateInventory", "Engineering")' + '?inventoryId=' + id + '&userId=' + '@Model.CurrentUser.Id',
+            //     title: 'Deactivate Inventory',
+            //     content: 'Are you sure you want to deactivate inventory? All of inventory data will be permanently removed. This action cannot be undone.'
+            // });
         });
     });
 
@@ -142,16 +154,27 @@
             var quantity = evt.target.parentElement.dataset.quantity;
             var content = 'Current Quantity: ' + quantity;
 
-            showModalDialog({
-                type: 'quantity',
+            var numberDialog = new ModalDialog({
+                type: 'number',
                 title: itemName,
                 content: content,
-                currentValueForInputText: quantity,
-                submitCallBack: ((newQuantity) => {
-                    var currentUserId = '@Model.CurrentUser.Id';
-                    window.location.href = '@Url.Action("UpdateInventoryQuantity", "Engineering")' + '?itemId=' + itemId + '&newQuantity=' + newQuantity + '&currentUserId=' + currentUserId;
-                })
+                submitCallback: (quantity => {
+
+                }
             });
+
+            numberDialog.show();
+
+            // showModalDialog({
+            //     type: 'quantity',
+            //     title: itemName,
+            //     content: content,
+            //     currentValueForInputText: quantity,
+            //     submitCallBack: ((newQuantity) => {
+            //         var currentUserId = '@Model.CurrentUser.Id';
+            //         window.location.href = '@Url.Action("UpdateInventoryQuantity", "Engineering")' + '?itemId=' + itemId + '&newQuantity=' + newQuantity + '&currentUserId=' + currentUserId;
+            //     })
+            // });
 
         });
     });

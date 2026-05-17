@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Text.Json;
 using TMCWD.Application.Models;
 using TMCWD.CustomerSupport;
@@ -68,5 +69,49 @@ namespace TMCWD.Application.Controllers
             return RedirectToAction("Index", "Account");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddAccount([FromBody] object content)
+        {
+            if(content != null)
+            {
+                var stringJson = JsonSerializer.Serialize(content);
+                using var doc = JsonDocument.Parse(stringJson);
+                if (doc == null) return NoContent();
+                JsonElement root = doc.RootElement;
+
+                if (root.ValueKind == JsonValueKind.Null) return NoContent();
+
+                var customerIdProperty = root.GetProperty("customerId");
+                var accountAddressProperty = root.GetProperty("accountAddress");
+
+                if (customerIdProperty.ValueKind == JsonValueKind.Null || accountAddressProperty.ValueKind == JsonValueKind.Null) return NoContent();
+                int.TryParse(customerIdProperty.GetString(), out int custId);
+                int customerId = custId;
+                string? address = accountAddressProperty.GetString();
+                if (customerId > 0 && !String.IsNullOrEmpty(address))
+                {
+                    Account account = new()
+                    {
+                        AccountNumber = "TMCWD-" + DateTime.Now.Ticks.ToString(),
+                        CreatedBy = _authenticatedUserService.User.Id,
+                        Address = WebUtility.UrlDecode(address),
+                        CustomerId = customerId,
+                        DateCreated = DateTime.Now,
+                        Status = AccountStatus.Pending,
+                        DateUpdated = DateTime.Now,
+                        IsCurrentAddress = false,
+                        MeterNumber = string.Empty,
+                        UpdatedBy = _authenticatedUserService.User.Id,
+                    };
+                    var savedAccount = await _accountTransaction.SaveUpdate(_authenticatedUserService.User.Id, account);
+                    return Ok(savedAccount);
+                }
+                else return NoContent();
+            }
+
+            return NoContent();
+        }
+
     }
+
 }

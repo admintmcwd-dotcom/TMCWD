@@ -42,7 +42,7 @@
                     <th class="border border-gray-300 text-center ...">Id #</th>
                     <th class="border border-gray-300 text-center ...">Name</th>
                     <th class="border border-gray-300 text-center ...">Date Enrolled</th>
-                    <th class="border border-gray-300 text-center ...">Status</th>
+                    <th class="border border-gray-300 text-center ...">Active</th>
                     <th class="border border-gray-300 text-center ..."></th>
                 </tr>
             </thead>
@@ -62,7 +62,16 @@
                             <td class="border border-gray-300 p-2 ...">@customer.Id</td>
                             <td class="border border-gray-300 p-2 ...">@($"{customer.Lastname}, {customer.Firstname} {customer.Middlename}")</td>
                             <td class="border border-gray-300 p-2 ...">@customer.DateCreated</td>
-                            <td class="border border-gray-300 p-2 ...">@(customer.IsActive ? "Yes" : "No")</td>
+                            <td class="border border-gray-300 p-2 text-center ...">
+                                @if (customer.IsActive)
+                                {
+                                    <i class="fa-solid fa-check text-green-500"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-xmark text-red-500"></i>
+                                }
+                            </td>
                             <td class="border border-gray-300 p-2 ...">
                                 <a href="@Url.Action("AddEditCustomer", "CustomerSupport", new { currentUserId = Model.CurrentUser.Id, editCustomerId = customer.Id })" class="text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
                                     <i class="fa fa-pencil" aria-hidden="true"></i>
@@ -105,10 +114,11 @@
         <!-- End Request Table -->
     </p>     
 </div>
+<vc:modal-dialog type="deactivate"></vc:modal-dialog>
 
 <!-- Deactivate Modal Window -->
 
-<el-dialog>
+@* <el-dialog>
     <dialog id="deactivateModal" aria-labelledby="dialog-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
         <el-dialog-backdrop class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
 
@@ -136,7 +146,7 @@
             </el-dialog-panel>
         </div>
     </dialog>
-</el-dialog>
+</el-dialog> *@
 
 <!-- End Deactivate Modal Window -->
 
@@ -150,12 +160,23 @@
             evt.preventDefault();
             customerId = evt.target.parentElement.dataset.id;
 
-            showModalDialog({
+            var modal = new ModalDialog({
                 type: 'deactivate',
-                submitUrl: 'Url.Action("DeactivateCustomer", "CustomerSupport")' + '?customerId=' + customerId,
                 title: 'Deactivate Customer',
-                content: 'Are you sure you want to deactivate customer? All of customer data will be permanently removed. This action cannot be undone.'
+                content: 'Are you sure you want to deactivate customer? All of customer data will be permanently removed. This action cannot be undone.',
+                submitCallback: () => {
+                    window.location.href = '@Url.Action("DeactivateCustomer", "CustomerSupport")' + '?customerId=' + customerId;
+                }
             });
+
+            modal.show();
+
+            // showModalDialog({
+            //     type: 'deactivate',
+            //     submitUrl: 'Url.Action("DeactivateCustomer", "CustomerSupport")' + '?customerId=' + customerId,
+            //     title: 'Deactivate Customer',
+            //     content: 'Are you sure you want to deactivate customer? All of customer data will be permanently removed. This action cannot be undone.'
+            // });
         });
     });
 </script>

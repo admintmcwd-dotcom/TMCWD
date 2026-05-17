@@ -6,8 +6,5 @@
 
         public string SelectedNameContainerId { get; set; } = String.Empty;
 
-        public string ParentContainerId { get; set; } = String.Empty;
-
-        public bool IsRefreshCustomerName { get; set; }
     }
 }
