@@ -66,5 +66,19 @@ namespace TMCWD.Data.Services
             await _dbContext.SaveChangesAsync();
             return requestDetail;
         }
+
+        public async Task<bool> Delete(RequestDetail detail)
+        {
+            _dbContext.RequestDetails.Remove(detail);
+            var res = await _dbContext.SaveChangesAsync();
+            return res > 0;
+        }
+
+        public async Task<bool> DeleteDetails(IEnumerable<RequestDetail> details)
+        {
+            _dbContext.RequestDetails.RemoveRange(details);
+            var res = await _dbContext.SaveChangesAsync();
+            return res > 0;
+        }
     }
 }

@@ -13,13 +13,13 @@ namespace TMCWD.Data.Services
             _dbContext = context;
         }
 
-        public async Task<Recommendation?> Get(int id)
+        public async Task<Recommendation> Get(int id)
         {
             var recommendation = await _dbContext.Recommendations.Where(x => x.Id == id).FirstOrDefaultAsync();
             return recommendation;
         }
 
-        public async Task<IEnumerable<Recommendation>?> GetByRequestId(int requestId)
+        public async Task<IEnumerable<Recommendation>> GetByRequestId(int requestId)
         {
             var recommendations = _dbContext.Recommendations.Where(x => x.RequestId == requestId);
             return await recommendations.ToListAsync();
@@ -44,5 +44,7 @@ namespace TMCWD.Data.Services
             await _dbContext.SaveChangesAsync();
             return recommendation;
         }
+
     }
+
 }

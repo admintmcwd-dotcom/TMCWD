@@ -19,7 +19,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPost("SaveUpdate/{userId}")]
-        public async Task<ActionResult<Recommendation>> SaveUpdate(int userId, [FromRoute] int requestId, [FromBody] Recommendation recommendation)
+        public async Task<ActionResult> SaveUpdate(int userId, int requestId, [FromBody] Recommendation recommendation)
         {
 
             if (String.IsNullOrEmpty(recommendation.Details.Trim())) return BadRequest("Recommendation details is required");
@@ -31,7 +31,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<Recommendation>> Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
             var recommendation = await _recommendationService.Get(id);
 
@@ -41,7 +41,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetByRequestId")]
-        public async Task<ActionResult<IEnumerable<Recommendation>>> GetByRequestId([FromRoute] int requestId)
+        public async Task<ActionResult> GetByRequestId(int requestId)
         {
             var recommendations = await _recommendationService.GetByRequestId(requestId);
 

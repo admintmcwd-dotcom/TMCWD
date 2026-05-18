@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
 using TMCWD.Data.Services;
@@ -13,7 +14,6 @@ namespace TMCWD.Data.Controllers
     {
 
         private readonly IRequestDetailService _requestDetailService;
-
         public RequestDetailController(IRequestDetailService service)
         {
             _requestDetailService = service;
@@ -60,5 +60,24 @@ namespace TMCWD.Data.Controllers
             return Ok(requestDetails);
         }
 
+        [HttpDelete("Delete/{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var requestDetail = await _requestDetailService.Get(id);
+            if (requestDetail == null) return NotFound($"Request detail with id {id} was not found");
+            var res = await _requestDetailService.Delete(requestDetail);
+            return Ok(res);
+        }
+
+        [HttpDelete("DeleteDetails")]
+        public async Task<ActionResult> DeleteDetails(int requestId)
+        {
+            var details = await _requestDetailService.GetByRequestId(requestId);
+            if (details == null || !details.Any()) return NotFound($"Request details with request id {requestId} was not found.");
+            var res = await _requestDetailService.DeleteDetails(details);
+            return Ok(res);
+        }
+
     }
+
 }

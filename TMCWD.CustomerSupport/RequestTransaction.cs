@@ -166,8 +166,51 @@ namespace TMCWD.CustomerSupport
             return returnedDetails?.Count() > 0;
         }
 
+        public async Task<RequestDetail> GetRequestDetail(int id)
+        {
+            var response = await _client.GetAsync($"api/RequestDetail/Get/{id}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return this.ConvertJsonToRequestDetail(data);
+        }
+
+        public async Task<List<RequestDetail>> GetRequestDetailByRequestId(int requestId)
+        {
+            var response = await _client.GetAsync($"api/{requestId}/RequestDetail/GetByRequestId");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return this.ConvertJsonToRequestDetails(data);
+        }
+
+        public async Task<bool> DeleteRequestDetail(int id)
+        {
+
+            if (id <= 0) throw new Exception("Request detail id is required to delete request detail item");
+
+            var response = await _client.DeleteAsync($"api/RequestDetail/Delete/{id}");
+
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) throw new Exception(data);
+
+            return data.ToLower() == "true";
+        }
+
+        public async Task<bool> DeleteRequestDetails(int requestId)
+        {
+            if (requestId <= 0) throw new Exception("Request id is required to delete request details");
+
+            var response = await _client.DeleteAsync($"api/RequestDetail/DeleteDetails/{requestId}");
+
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) throw new Exception(data);
+
+            return data.ToLower() == "true";
+        }
 
         #endregion
 
     }
+
 }

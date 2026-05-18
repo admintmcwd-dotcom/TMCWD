@@ -78,7 +78,14 @@
                                     <i class="fa-solid fa-check text-green-500"></i>
                                 }
                             </td>
-                            <td class="border border-gray-300 p-2 ..."></td>
+                            <td class="border border-gray-300 p-2 ...">
+                                <a href="@Url.Action("AddEditRequest", "CustomerSupport", new { requestId = request.Id })" class="text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                </a>
+                                <a id="lnkShowModal" command="show-modal" data-id="@request.Id" commandfor="deactivateModal" href="#" class="deactivateLink text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </a>
+                            </td>
                         </tr>
                     }
                 }

@@ -10,6 +10,8 @@ namespace TMCWD.Data.Services
         Task<IEnumerable<RequestDetail>> SaveMultiple(int userId, int requestId, List<RequestDetail> requestDetails);
         Task<IEnumerable<RequestDetail>?> GetByRequestId(int requestId);
         Task<RequestDetail?> Get(int id);
+        Task<bool> Delete(RequestDetail detail);
+        Task<bool> DeleteDetails(IEnumerable<RequestDetail> details);
 
     }
 }

@@ -10,17 +10,16 @@ namespace TMCWD.Data.Entities
         public System.Int64 Id { get; set; }
         [Required, Column("RequestId")]
         public System.Int64 RequestId { get; set; }
-        [Required, Column("RecommendationUserId")]
-        public System.Int64 RecommendationUserId { get; set; }
         [Required, MaxLength(255), Column("Detail")]
         public string Details { get; set; } = string.Empty;
-        [Column("DateCreated")]
-        public DateTime DateCreated { get; set; }
         [Column("CreatedBy")]
         public System.Int64 CreatedBy { get; set; }
-        [Column("DateUpdated")]
-        public DateTime DateUpdated { get; set; }
+        [Column("DateCreated")]
+        public DateTime DateCreated { get; set; }
         [Column("UpdatedBy")]
         public System.Int64 UpdatedBy { get; set; }
+        [Column("DateUpdated")]
+        public DateTime DateUpdated { get; set; }
+
     }
 }

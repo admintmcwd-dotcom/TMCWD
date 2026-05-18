@@ -24,9 +24,8 @@ namespace TMCWD.Model.CustomerSupport
         public RequestStatus Status { get; set; }
         public int CreatedBy { get; set; }
         public DateTime DateCreated { get; set; }
-        public int UpdatedeBy { get; set; }
-        public DateTime DateUpdated { get; set; }
         public int UpdatedBy { get; set; }
+        public DateTime DateUpdated { get; set; }
 
     }
 }

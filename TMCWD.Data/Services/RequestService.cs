@@ -19,7 +19,7 @@ namespace TMCWD.Data.Services
         public async Task<Request?> Get(int id)
         {
 
-            var request = await _dbContext.Requests.FindAsync(id);
+            var request = await _dbContext.Requests.Where(x => x.Id == id).FirstOrDefaultAsync();
 
             return request;
         }

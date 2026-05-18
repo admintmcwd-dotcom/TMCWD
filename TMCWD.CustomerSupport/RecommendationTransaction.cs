@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -17,10 +18,7 @@ namespace TMCWD.CustomerSupport
 
         #region fields
 
-        private const string _serviceRouteUrl = "api/Recommendation/";
-        private const string _saveUpdateUrl = $"{_serviceRouteUrl}SaveUpdate";
-        private const string _getByIdUrl = $"{_serviceRouteUrl}GetById";
-        private const string _getByRequestId = $"{_serviceRouteUrl}GetByRequestId";
+        private HttpClient _client = new();
 
         #endregion
 
@@ -32,141 +30,67 @@ namespace TMCWD.CustomerSupport
 
         #region public methods
 
-        public bool SaveUpdate(Recommendation recommendation)
+        public void SetClient(HttpClient client) 
         {
-
-            try
-            {
-                if (recommendation == null) throw new Exception("Recommendation is empty");
-                if (String.IsNullOrEmpty(recommendation.Details.Trim())) throw new Exception("Recommendation detail is not provided");
-                if (recommendation.RequestId <= 0) throw new Exception("No request is provided for this recommendation");
-
-                return Task.Run(() => SaveUpdateTask(recommendation)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
-
-            return false;
+            this._client = client;
         }
 
-        public Recommendation GetById(int id)
+        public Recommendation ConvertJsonToRecommendation(string json)
         {
-            Recommendation recommendation = new();
-
-            try
-            {
-                if (id <= 0) throw new Exception("Recommendation id is required");
-
-                return Task.Run(() => GetByIdTask(id)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
-
-            return recommendation;
+            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<Recommendation>(json, serializeOptions) ?? new Recommendation(); 
         }
 
-        public List<Recommendation> GetByRequestId(int requestId)
+        public List<Recommendation> ConvertJsonToRecommendations(string json)
         {
-            List<Recommendation> recommendations = new();
-
-            try
-            {
-                if (requestId <= 0) throw new Exception("Request id is required to get recommendations");
-
-                return Task.Run(() => GetByRequestIdTask(requestId)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
-
-            return recommendations;
+            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<List<Recommendation>>(json, serializeOptions) ?? new List<Recommendation>();
         }
 
-        #endregion
-
-        #region private methods
-
-        private async Task<bool> SaveUpdateTask(Recommendation recommendation)
+        public async Task<Recommendation> SaveUpdate(int requestId, int userId, Recommendation recommendation)
         {
 
-            try
-            {
-                using (HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    HttpContent content = JsonContent.Create(recommendation);
-                    using (var response = await client.PostAsync(_saveUpdateUrl, content))
-                    {
-                        var data = await response.Content.ReadAsStringAsync();
-                        if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        return data.ToLower().Trim() == "true";
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
+            StringBuilder sb = new();
 
-            return false;
+            if (recommendation == null) throw new Exception("Recommendation is empty");
+
+            if (String.IsNullOrEmpty(recommendation.Details.Trim())) sb.AppendLine("Recommendation detail is not provided");
+            if (recommendation.RequestId <= 0) sb.AppendLine("No request is provided for this recommendation");
+
+            var response = await _client.GetAsync($"api/{requestId}/SaveUpdate/{userId}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) throw new Exception(data);
+
+            return ConvertJsonToRecommendation(data);
         }
 
-        private async Task<Recommendation> GetByIdTask(int id)
+        public async Task<Recommendation> GetById(int requestId, int id)
         {
-            Recommendation recommendation = new();
-            try
-            {
-                using (HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    string url = QueryHelpers.AddQueryString(_getByIdUrl, "id", id.ToString());
-                    using (var response = await client.GetAsync(_getByIdUrl))
-                    {
-                        var data = await response.Content.ReadAsStringAsync();
-                        if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<Recommendation>(data);
-                        if (serialized == null) recommendation = serialized;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
 
-            return recommendation;
+            if (id <= 0) throw new Exception("Recommendation id is required");
+
+            var response = await _client.GetAsync($"api/{requestId}/Get/{id}");
+
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) throw new Exception(data);
+
+            return ConvertJsonToRecommendation(data);
+
         }
 
-        private async Task<List<Recommendation>> GetByRequestIdTask(int requestId)
+        public async Task<List<Recommendation>> GetByRequestId(int requestId)
         {
-            List<Recommendation> recommendations = new();
+            if (requestId <= 0) throw new Exception("Request id is required to get recommendations");
 
-            try
-            {
-                using (HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    string url = QueryHelpers.AddQueryString(_getByIdUrl, "id", requestId.ToString());
-                    using (var response = await client.GetAsync(_getByRequestId))
-                    {
-                        var data = await response.Content.ReadAsStringAsync();
-                        if (!response.IsSuccessStatusCode) throw new Exception(data);
-                        var serialized = JsonSerializer.Deserialize<List<Recommendation>>(data);
-                        if (serialized == null) recommendations = serialized;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-            }
+            var response = await _client.GetAsync($"api/{requestId}/Recommendation/GetByRequestId");
 
-            return recommendations;
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            return ConvertJsonToRecommendations(data);
+
         }
 
         #endregion

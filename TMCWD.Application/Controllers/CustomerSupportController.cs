@@ -12,6 +12,8 @@ namespace TMCWD.Application.Controllers
     public class CustomerSupportController : Controller
     {
 
+        #region fields
+
         private readonly HttpClient _client;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly AccountTransaction _accountTransaction;
@@ -19,6 +21,11 @@ namespace TMCWD.Application.Controllers
         private readonly RequestTransaction _requestTransaction;
         private readonly InspectionTypeTransaction _inspectionTypeTransaction;
         private readonly UserTransaction _userTransaction;
+        private readonly RecommendationTransaction _recommendationTransactin;
+
+        #endregion
+
+        #region constructors
 
         public CustomerSupportController(IHttpClientFactory factory, 
             AuthenticatedUserService authenticatedUserService, 
@@ -26,7 +33,8 @@ namespace TMCWD.Application.Controllers
             CustomerTransaction customerTransaction,
             RequestTransaction requestTransaction,
             InspectionTypeTransaction inspectionTypeTransaction,
-            UserTransaction userTransaction)
+            UserTransaction userTransaction,
+            RecommendationTransaction recommendationTrasaction)
         {
             _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
@@ -45,7 +53,14 @@ namespace TMCWD.Application.Controllers
 
             _userTransaction = userTransaction;
             _userTransaction.SetClient(_client);
+
+            _recommendationTransactin = recommendationTrasaction;
+            _recommendationTransactin.SetClient(_client);
         }
+
+        #endregion
+
+        #region public methods
 
         public async Task<IActionResult> Index()
         {
@@ -142,12 +157,23 @@ namespace TMCWD.Application.Controllers
             model.CurrentUser = currentUser;
             ViewBag.Role = currentUser?.Role;
 
+            var types = await _inspectionTypeTransaction.GetTypes() ?? new();
+
+            List<RequestDetail> requestDetail = new();
+
             if (requestId > 0)
             {
                 model.AddEditRequest = await _requestTransaction.Get(requestId);
+                if(model.AddEditRequest != null)
+                {
+                    model.CurrentCustomer = await _customerTransaction.Get(model.AddEditRequest.CustomerId);
+                    model.CurrentAccount = await _accountTransaction.Get(model.AddEditRequest.AccountId);
+                    requestDetail = await _requestTransaction.GetRequestDetailByRequestId(model.AddEditRequest.Id) ?? new();
+                    model.Recommendations = await _recommendationTransactin.GetByRequestId(model.AddEditRequest.Id) ?? new();
+                }
             }
 
-            model.InspectionTypes = await _inspectionTypeTransaction.GetTypes() ?? new();
+            model.InspectionTypes = ConvertToInspectionTypeToViewModel(types, requestDetail);
 
             return View(model);
         }
@@ -245,5 +271,34 @@ namespace TMCWD.Application.Controllers
             return ViewComponent("AccountSelection", new { customerId = customerId });
         }
 
+        #endregion
+
+        #region private methods
+
+        private List<RequestInspectionTypeViewModel> ConvertToInspectionTypeToViewModel(List<InspectionType> inspTypes, List<RequestDetail> details = null)
+        {
+
+            List<RequestInspectionTypeViewModel> types = new();
+
+            if (inspTypes == null || inspTypes.Count <= 0) return new List<RequestInspectionTypeViewModel>();
+
+            foreach(var inspType in inspTypes)
+            {
+                RequestInspectionTypeViewModel model = new RequestInspectionTypeViewModel
+                {
+                    Type = inspType,
+                    IsChecked = details.Where(x => x.RequestTypeId == inspType.Id).Any()
+
+                };
+
+                types.Add(model);
+            }
+
+            return types;
+        }
+
+        #endregion
+
     }
+
 }
