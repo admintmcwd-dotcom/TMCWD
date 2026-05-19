@@ -56,17 +56,18 @@ class ModalDialog {
     dialog = null;
     cancelButton = null;
     submitButton = null;
-    numberText = null;
+    inputText = null;
     fnSubmitCallback = null;
     title = "";
     content = "";
+    textTitle = "";
 
     constructor(params) {
         this.title = params.title;
         this.content = params.content;
-        this.#setTitleAndContent(params.type);
+        this.textTitle = params.textTile;
         this.fnSubmitCallback = params.submitCallback;
-        this.#setButton(params.type);
+        this.#initialize(params.type);
     }
 
     show() {
@@ -80,9 +81,15 @@ class ModalDialog {
         this.dialog.close();
     }
 
+    #initialize(type) {
+        this.#setTitleAndContent(type);
+        this.#setButton(type);
+    }
+
     #setTitleAndContent(type) {
         var elTitle = null;
         var elContent = null;
+        var elTextTitle = null;
         switch (type) {
             case 'deactivate':
                 elTitle = document.getElementsByClassName("deactivate-title");
@@ -95,6 +102,12 @@ class ModalDialog {
             case 'number':
                 elTitle = document.getElementsByClassName("number-title");
                 elContent = document.getElementsByClassName("number-content");
+                elTextTitle = document.getElementsByClassName("number-text-title");
+                break;
+            case "text":
+                elTitle = document.getElementsByClassName("text-title");
+                elContent = document.getElementsByClassName("text-content");
+                elTextTitle = document.getElementsByClassName("text-text-title");
                 break;
             default:
                 break;
@@ -102,13 +115,14 @@ class ModalDialog {
 
         if (elTitle) elTitle[0].innertText = this.title;
         if (elContent) elContent[0].innertText = this.content;
+        if (elTextTitle) elTextTitle[0].innerText = this.textTitle;
     }
 
     #setButton(type) {
         var dialogClassName = ""
         var cancelButtonClassName = "";
         var submitButtonClassName = "";
-        var inputNumberClassName = ""
+        var inputClassName = ""
         switch (type) {
             case 'deactivate':
                 dialogClassName = "deactivate-modal";
@@ -124,7 +138,13 @@ class ModalDialog {
                 dialogClassName = "number-modal";
                 cancelButtonClassName = "number-cancel"
                 submitButtonClassName = "number-submit";
-                inputNumberClassName = "number-text";
+                inputClassName = "number-text";
+                break;
+            case 'text':
+                dialogClassName = "text-modal";
+                cancelButtonClassName = "text-cancel";
+                submitButtonClassName = "text-submit";
+                inputClassName = "text-text";
                 break;
             default:
                 dialogClassName = "";
@@ -137,7 +157,7 @@ class ModalDialog {
         if (elDialog) this.dialog = elDialog[0];
         if (elCancel) this.cancelButton = elCancel[0];
         if (elSubmit) this.submitButton = elSubmit[0];
-        if (elText) this.numberText = elText[0];
+        if (elText) this.inputText = elText[0];
     }
 
     #cancelAddListener() {

@@ -57,7 +57,9 @@ namespace TMCWD.CustomerSupport
             if (String.IsNullOrEmpty(recommendation.Details.Trim())) sb.AppendLine("Recommendation detail is not provided");
             if (recommendation.RequestId <= 0) sb.AppendLine("No request is provided for this recommendation");
 
-            var response = await _client.GetAsync($"api/{requestId}/SaveUpdate/{userId}");
+            var content = JsonContent.Create(recommendation);
+
+            var response = await _client.PostAsync($"api/{requestId}/Recommendation/SaveUpdate/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) throw new Exception(data);
 
@@ -69,7 +71,7 @@ namespace TMCWD.CustomerSupport
 
             if (id <= 0) throw new Exception("Recommendation id is required");
 
-            var response = await _client.GetAsync($"api/{requestId}/Get/{id}");
+            var response = await _client.GetAsync($"api/{requestId}/Recommendation/Get/{id}");
 
             var data = await response.Content.ReadAsStringAsync();
 

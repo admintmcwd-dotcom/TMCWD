@@ -166,45 +166,52 @@
                 <svg id="accordion-icon-item-2" data-accordion-icon class="w-5 h-5 shrink-0 rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
             </button>
         </h2>
-        <div id="accordion-collapse-body-2" class="hidden bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-1">
-            @if(Model.Recommendations == null || !Model.Recommendations.Any())
-            {
+        <div id="accordion-collapse-body-2" class="hidden bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-1">
+            <div class="w-full grid grid-cols-[90%_10%] gap-4">
                 <div>
-                    <button type="button" class="nvr nvu nvy nwb nwd nwf nwg nwh nwj">
+                    <textarea id="txtRecommendation" rows="2" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-3.5 shadow-xs placeholder:text-body" placeholder="Write recommendation here . . ."></textarea>
+                </div>
+                <div>
+                    <button id="btnAddRecommendation" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
-                <div class="w-full h-32 pt-16 text-center align-middle">
-                    No record(s) found . . .
-                </div>
-            }
-            else{
-            <table class="customer-select-list w-full text-sm text-left rtl:text-right text-body">
-                <thead>
-                    <tr>
-                        <th scope="col" class="px-6 py-3 font-medium text-center">Detail</th>
-                        <th scope="col" class="px-6 py-3 font-medium text-center">Recommended By</th>
-                        <th scope="col" class="px-6 py-3 font-medium text-center"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var recommendation in Model.Recommendations)
+            </div>
+            <hr class="h-px my-8 bg-neutral-quaternary">
+            <div id="divRecommendation" class="w-full">
+                @if(Model.Recommendations == null || !Model.Recommendations.Any())
+                {
+                    <div id="divRecommendationNoRecord" class="w-full h-32 pt-16 text-center align-middle">
+                        No record(s) found . . .
+                    </div>
+                }
+                else
+                {
+                    @foreach (var recommendation in Model.Recommendations)
                     {
-                    <tr>
-                        <td scope="col" class="px-6 py-3">
-                            @recommendation.Details
-                        </td>
-                        <td scope="col" class="px-6 py-3 text-center"></td>
-                    </tr>
+                        <div class="grid grid-cols-[20%_80%] gap-4">
+                            <div class="border-r-2 text-center">
+                                <div class="w-full mb-2">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="w-full">
+                                    <vc:user-name user-id="recommendation.CreatedBy"></vc:user-name>
+                                </div>
+                            </div>
+                            <div class="text-wrap">
+                                @recommendation.Details
+                            </div>
+                        </div>
+                        <hr class="h-px my-2 bg-neutral-quaternary">
                     }
-                </tbody>
-            </table>
-            }
+                }
+            </div>
         </div>
     }
 </div>
 
 <vc:customer-selection></vc:customer-selection>
+
 <div id="divAccountSelection">
     <vc:account-selection customer-id="@Model.AddEditRequest.CustomerId"></vc:account-selection>
 </div>
@@ -230,12 +237,6 @@
             const icon = document.getElementById("accordion-icon-item-2");
             accordionItem.classList.toggle("hidden");
             icon.classList.toggle("rotate-180");
-        });
-
-        const lnkAddRecommendation = document.getElementById("lnkAddRecommendation");
-        lnkAddRecommendation.addEventListener("click", (evt) => {
-            evt.preventDefault();
-            console.log('this link was click');
         });
         
         var checkBoxes = document.querySelectorAll('input[type="checkbox"]');
@@ -393,5 +394,74 @@
                 accountSelect.show();
             }
         });
+
+        const btnAddRecommendation = document.getElementById("btnAddRecommendation");
+        btnAddRecommendation.addEventListener("click", async (evt) => {
+            evt.preventDefault();
+            const txtRecommendation = document.getElementById("txtRecommendation");
+            var saveRecommendationUrl = '@Url.Action("SaveRecommendation", "CustomerSupport")';
+            var saveRecommendationdata = {
+                requestId: '@Model.AddEditRequest.Id',
+                details: encodeURIComponent(txtRecommendation.value)
+            };
+
+            var recommendationClient = new WebClient(saveRecommendationUrl, saveRecommendationdata);
+            var recommendationResponse = await recommendationClient.postAsync();
+
+            if(recommendationResponse == null) return;
+
+            var userUrl = '@Url.Action("GetUserByIdForTable", "CustomerSupport")' + '?userId=' + recommendationResponse.createdBy;
+            var userClient = new WebClient(userUrl, null);
+            var userResponse = await userClient.getAsync();
+
+            if(userResponse == null) return;
+
+            const divRecommendation = document.getElementById("divRecommendation");
+            const columnParentDiv = document.createElement("div");
+            columnParentDiv.classList.add("grid", "grid-cols-[20%_80%]", "gap-4");
+
+            //column 1
+            const column1 = document.createElement("div");
+            column1.classList.add("border-r-2", "text-center");
+
+            const column1Child1 = document.createElement("div");
+            column1Child1.classList.add("w-full", "mb-2");
+
+            const userIcon = document.createElement("i");
+            userIcon.classList.add("fa-solid", "fa-user");
+            column1Child1.appendChild(userIcon);
+
+            const column1Child2 = document.createElement("div");
+            column1Child2.classList.add("w-full");
+            column1Child2.innerText = userResponse.name;
+
+            column1.appendChild(column1Child1);
+            column1.appendChild(column1Child2);
+            //end column 1
+
+            //column 2
+
+            const column2 = document.createElement("div");
+            column2.classList.add("text-wrap");
+            column2.innerText = txtRecommendation.value
+
+            //end column 2
+
+            columnParentDiv.appendChild(column1);
+            columnParentDiv.appendChild(column2);
+
+            //hr
+            const hr = document.createElement("hr");
+            hr.classList.add("h-px", "my-2", "bg-neutral-quaternary");
+
+            const noRecordDiv = document.getElementById("divRecommendationNoRecord");
+            noRecordDiv.classList.add("hidden");
+
+            divRecommendation.appendChild(columnParentDiv);
+            divRecommendation.appendChild(hr);
+
+            txtRecommendation.value = '';
+        });
+
     });
 </script>

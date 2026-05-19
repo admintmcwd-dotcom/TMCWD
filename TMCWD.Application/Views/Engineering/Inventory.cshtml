@@ -158,8 +158,9 @@
                 type: 'number',
                 title: itemName,
                 content: content,
-                submitCallback: (quantity => {
-
+                textTitle: 'New Value',
+                submitCallback: (quantity) => {
+                    window.location.href = '@Url.Action("UpdateInventoryQuantity", "Engineering")' + '?itemId=' + itemId + '&newQuantity=' + quantity + '&currentUserId=' + currentUserId;
                 }
             });
 

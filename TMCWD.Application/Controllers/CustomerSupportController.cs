@@ -6,6 +6,7 @@ using TMCWD.Model.Administrator;
 using TMCWD.Model.CustomerSupport;
 using TMCWD.CustomerSupport;
 using TMCWD.Services;
+using System.Net;
 
 namespace TMCWD.Application.Controllers
 {
@@ -21,7 +22,7 @@ namespace TMCWD.Application.Controllers
         private readonly RequestTransaction _requestTransaction;
         private readonly InspectionTypeTransaction _inspectionTypeTransaction;
         private readonly UserTransaction _userTransaction;
-        private readonly RecommendationTransaction _recommendationTransactin;
+        private readonly RecommendationTransaction _recommendationTransaction;
 
         #endregion
 
@@ -54,8 +55,8 @@ namespace TMCWD.Application.Controllers
             _userTransaction = userTransaction;
             _userTransaction.SetClient(_client);
 
-            _recommendationTransactin = recommendationTrasaction;
-            _recommendationTransactin.SetClient(_client);
+            _recommendationTransaction = recommendationTrasaction;
+            _recommendationTransaction.SetClient(_client);
         }
 
         #endregion
@@ -159,21 +160,32 @@ namespace TMCWD.Application.Controllers
 
             var types = await _inspectionTypeTransaction.GetTypes() ?? new();
 
-            List<RequestDetail> requestDetail = new();
+            List<RequestDetail> requestDetails = new();
 
             if (requestId > 0)
             {
                 model.AddEditRequest = await _requestTransaction.Get(requestId);
                 if(model.AddEditRequest != null)
                 {
-                    model.CurrentCustomer = await _customerTransaction.Get(model.AddEditRequest.CustomerId);
-                    model.CurrentAccount = await _accountTransaction.Get(model.AddEditRequest.AccountId);
-                    requestDetail = await _requestTransaction.GetRequestDetailByRequestId(model.AddEditRequest.Id) ?? new();
-                    model.Recommendations = await _recommendationTransactin.GetByRequestId(model.AddEditRequest.Id) ?? new();
+                    Task<Customer> getCustomerTask = _customerTransaction.Get(model.AddEditRequest.CustomerId);
+                    Task<Account> getAccountTask = _accountTransaction.Get(model.AddEditRequest.AccountId);
+                    Task<List<RequestDetail>> getRequestDetailsTask = _requestTransaction.GetRequestDetailByRequestId(model.AddEditRequest.Id);
+                    Task<List<Recommendation>> getRecommendationsTask = _recommendationTransaction.GetByRequestId(model.AddEditRequest.Id);
+
+                    await Task.WhenAll(getCustomerTask, getAccountTask, getRequestDetailsTask, getRecommendationsTask);
+                    model.CurrentCustomer = getCustomerTask.Result;
+                    model.CurrentAccount = getAccountTask.Result;
+                    requestDetails = getRequestDetailsTask.Result;
+                    model.Recommendations = getRecommendationsTask.Result;
+
+                    //model.CurrentCustomer = await _customerTransaction.Get(model.AddEditRequest.CustomerId);
+                    //model.CurrentAccount = await _accountTransaction.Get(model.AddEditRequest.AccountId);
+                    //requestDetail = await _requestTransaction.GetRequestDetailByRequestId(model.AddEditRequest.Id) ?? new();
+                    //model.Recommendations = await _recommendationTransaction.GetByRequestId(model.AddEditRequest.Id) ?? new();
                 }
             }
 
-            model.InspectionTypes = ConvertToInspectionTypeToViewModel(types, requestDetail);
+            model.InspectionTypes = ConvertToInspectionTypeToViewModel(types, requestDetails);
 
             return View(model);
         }
@@ -259,6 +271,51 @@ namespace TMCWD.Application.Controllers
             var customers = await _customerTransaction.Search(searchString);
             if (customers == null || !customers.Any()) return NotFound();
             return Ok(customers);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveRecommendation([FromBody] object data)
+        {
+
+            if (data == null) return NoContent();
+            string stringRequest = JsonSerializer.Serialize(data);
+
+            if (String.IsNullOrEmpty(stringRequest.Trim())) return NoContent();
+
+            using var doc = JsonDocument.Parse(stringRequest);
+            if (doc == null) return NoContent();
+
+            JsonElement root = doc.RootElement;
+
+            if(root.ValueKind == JsonValueKind.Null) return NoContent();
+            var requestIdAttr = root.GetProperty("requestId");
+            var detailsAttr = root.GetProperty("details");
+
+            if(requestIdAttr.ValueKind == JsonValueKind.Null || detailsAttr.ValueKind == JsonValueKind.Null) return NoContent();
+            int.TryParse(requestIdAttr.GetString(), out int requestId);
+            string details = detailsAttr.GetString();
+
+            Recommendation recommendation = new()
+            {
+                RequestId = requestId,
+                Details = WebUtility.UrlDecode(details)
+            };
+
+            recommendation.DateCreated = DateTime.Now;
+            recommendation.DateUpdated = DateTime.Now;
+
+            var updatedRecommendation = await _recommendationTransaction.SaveUpdate(recommendation.RequestId, _authenticatedUserService.User.Id, recommendation);
+
+            return Ok(updatedRecommendation);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserByIdForTable(int userId)
+        {
+            User user = new();
+            user = await _userTransaction.Get(userId);
+            if (user == null) return NoContent();
+            return Ok(user);
         }
 
         public IActionResult RefreshCustomerNameComponent(int customerId, string pId = "", string pClass = "")
