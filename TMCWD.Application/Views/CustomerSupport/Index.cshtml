@@ -6,143 +6,149 @@
 }
 @model TMCWD.Application.Models.CustomerViewModel
 
-<!-- Page Content -->
-<main class="p-8">
-    <!-- Search and Action Button -->
-    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
-        <p class="text-gray-700">
-            <div class="grid grid-cols-3 gap-4">
-                <div class="col-span-2">
-                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
-                </div>
-                <div class="grid-column">
-                    <button class="rounded-md bg-blue-900 p-2 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-blue-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                            type="button" id="btnSeachUser">
-                        <svg width="20px" height="20px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17.545 15.467l-3.779-3.779a6.15 6.15 0 0 0 .898-3.21c0-3.417-2.961-6.377-6.378-6.377A6.185 6.185 0 0 0 2.1 8.287c0 3.416 2.961 6.377 6.377 6.377a6.15 6.15 0 0 0 3.115-.844l3.799 3.801a.953.953 0 0 0 1.346 0l.943-.943c.371-.371.236-.84-.135-1.211zM4.004 8.287a4.282 4.282 0 0 1 4.282-4.283c2.366 0 4.474 2.107 4.474 4.474a4.284 4.284 0 0 1-4.283 4.283c-2.366-.001-4.473-2.109-4.473-4.474z" style="fill:rgb(255, 255, 255)" />
-                        </svg>
-                    </button>
-                    <button class="rounded-md bg-blue-900 p-2 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-blue-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                            type="button"
-                            onclick="location.href='@Url.Action("AddEditCustomer", "CustomerSupport")'">
-                        <svg width="20px" height="20px" viewBox="0 0 0.6 0.6" id="plus" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color">
-                            <path id="primary" d="M0.3 0.5a0.025 0.025 0 0 1 -0.025 -0.025v-0.15H0.125a0.025 0.025 0 0 1 0 -0.05h0.15V0.125a0.025 0.025 0 0 1 0.05 0v0.15h0.15a0.025 0.025 0 0 1 0 0.05h-0.15v0.15a0.025 0.025 0 0 1 -0.025 0.025" style="fill: rgb(255, 255, 255);" />
-                        </svg>
-                    </button>
-                </div>
+<!-- Search and Action Button -->
+<div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
+    <p class="text-gray-700">
+        <div class="grid grid-cols-3 gap-4">
+            <div class="col-span-2">
+                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
             </div>
-        </p>
-    </div>
+            <div class="grid-column">
+                <button class="rounded-md bg-blue-900 p-2 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-blue-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        type="button" id="btnSeachUser">
+                    <svg width="20px" height="20px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.545 15.467l-3.779-3.779a6.15 6.15 0 0 0 .898-3.21c0-3.417-2.961-6.377-6.378-6.377A6.185 6.185 0 0 0 2.1 8.287c0 3.416 2.961 6.377 6.377 6.377a6.15 6.15 0 0 0 3.115-.844l3.799 3.801a.953.953 0 0 0 1.346 0l.943-.943c.371-.371.236-.84-.135-1.211zM4.004 8.287a4.282 4.282 0 0 1 4.282-4.283c2.366 0 4.474 2.107 4.474 4.474a4.284 4.284 0 0 1-4.283 4.283c-2.366-.001-4.473-2.109-4.473-4.474z" style="fill:rgb(255, 255, 255)" />
+                    </svg>
+                </button>
+                <button class="rounded-md bg-blue-900 p-2 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-blue-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        type="button"
+                        onclick="location.href='@Url.Action("AddEditCustomer", "CustomerSupport")'">
+                    <svg width="20px" height="20px" viewBox="0 0 0.6 0.6" id="plus" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color">
+                        <path id="primary" d="M0.3 0.5a0.025 0.025 0 0 1 -0.025 -0.025v-0.15H0.125a0.025 0.025 0 0 1 0 -0.05h0.15V0.125a0.025 0.025 0 0 1 0.05 0v0.15h0.15a0.025 0.025 0 0 1 0 0.05h-0.15v0.15a0.025 0.025 0 0 1 -0.025 0.025" style="fill: rgb(255, 255, 255);" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </p>
+</div>
 
-    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
-        <h5 class="mb-2 text-2xl font-bold text-gray-900">Customers</h5>
-        <p class="text-gray-700">
-            <!-- Customer Table -->
-            <table class="border-collapse border border-gray-full w-full ...">
-                <thead>
+<div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
+    <h5 class="mb-2 text-2xl font-bold text-gray-900">Customers</h5>
+    <p class="text-gray-700">
+        <!-- Customer Table -->
+        <table class="border-collapse border border-gray-full w-full ...">
+            <thead>
+                <tr>
+                    <th class="border border-gray-300 text-center ...">Id #</th>
+                    <th class="border border-gray-300 text-center ...">Name</th>
+                    <th class="border border-gray-300 text-center ...">Date Enrolled</th>
+                    <th class="border border-gray-300 text-center ...">Active</th>
+                    <th class="border border-gray-300 text-center ..."></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(Model.PagedCustomerList == null || Model.PagedCustomerList.Count <= 0)
+                {
                     <tr>
-                        <th class="border border-gray-300 text-center ...">Id #</th>
-                        <th class="border border-gray-300 text-center ...">Name</th>
-                        <th class="border border-gray-300 text-center ...">Date Enrolled</th>
-                        <th class="border border-gray-300 text-center ...">Status</th>
-                        <th class="border border-gray-300 text-center ..."></th>
+                            <td colspan="5" class="border border-gray-300 text-center ...">
+                                No record(s) found . . .
+                            </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @if(Model.PagedCustomerList == null || Model.PagedCustomerList.Count <= 0)
+                }
+                else{
+                    foreach(var customer in Model.PagedCustomerList)
                     {
                         <tr>
-                                <td colspan="5" class="border border-gray-300 text-center ...">
-                                    No record(s) found . . .
-                                </td>
+                            <td class="border border-gray-300 p-2 ...">@customer.Id</td>
+                            <td class="border border-gray-300 p-2 ...">@($"{customer.Lastname}, {customer.Firstname} {customer.Middlename}")</td>
+                            <td class="border border-gray-300 p-2 ...">@customer.DateCreated</td>
+                            <td class="border border-gray-300 p-2 text-center ...">
+                                @if (customer.IsActive)
+                                {
+                                    <i class="fa-solid fa-check text-green-500"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-xmark text-red-500"></i>
+                                }
+                            </td>
+                            <td class="border border-gray-300 p-2 ...">
+                                <a href="@Url.Action("AddEditCustomer", "CustomerSupport", new { currentUserId = Model.CurrentUser.Id, editCustomerId = customer.Id })" class="text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                </a>
+                                @* <a href="#" class="deactivateLink text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </a> *@
+                                <a id="lnkShowModal" command="show-modal" data-id="@customer.Id" commandfor="deactivateModal" href="#" class="lnkDeactivate deactivateLink text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </a>
+                            </td>
                         </tr>
                     }
-                    else{
-                        foreach(var customer in Model.PagedCustomerList)
-                        {
-                            <tr>
-                                <td class="border border-gray-300 p-2 ...">@customer.Id</td>
-                                <td class="border border-gray-300 p-2 ...">@($"{customer.Lastname}, {customer.Firstname} {customer.Middlename}")</td>
-                                <td class="border border-gray-300 p-2 ...">@customer.DateCreated</td>
-                                <td class="border border-gray-300 p-2 ...">@(customer.IsActive ? "Yes" : "No")</td>
-                                <td class="border border-gray-300 p-2 ...">
-                                    <a href="@Url.Action("AddEditCustomer", "CustomerSupport", new { currentUserId = Model.CurrentUser.Id, editCustomerId = customer.Id })" class="text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
-                                        <i class="fa fa-pencil" aria-hidden="true"></i>
-                                    </a>
-                                    @* <a href="#" class="deactivateLink text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
-                                        <i class="fa fa-plus" aria-hidden="true"></i>
-                                    </a> *@
-                                    <a id="lnkShowModal" command="show-modal" data-id="@customer.Id" commandfor="deactivateModal" href="#" class="lnkDeactivate deactivateLink text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
-                                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-            <!-- End Customer Table -->
+                }
+            </tbody>
+        </table>
+        <!-- End Customer Table -->
 
-            <!-- Request Table -->
-            @* <table class="border-collapse border border-gray-full w-full ...">
-                <thead>
-                    <tr>
-                        <th class="border border-gray-300 ...">Control #</th>
-                        <th class="border border-gray-300 ...">Name</th>
-                        <th class="border border-gray-300 ...">Date</th>
-                        <th class="border border-gray-300 ...">Status</th>
-                        <th class="border border-gray-300 ..."></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="border border-gray-300 ...">xxxx-1111</td>
-                        <td class="border border-gray-300 ...">Wally Villanueva</td>
-                        <td class="border border-gray-300 ...">@DateTime.Now.ToShortDateString()</td>
-                        <td class="border border-gray-300 ...">In-Progress</td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table> *@
-            <!-- End Request Table -->
-        </p>     
-   </div>
+        <!-- Request Table -->
+        @* <table class="border-collapse border border-gray-full w-full ...">
+            <thead>
+                <tr>
+                    <th class="border border-gray-300 ...">Control #</th>
+                    <th class="border border-gray-300 ...">Name</th>
+                    <th class="border border-gray-300 ...">Date</th>
+                    <th class="border border-gray-300 ...">Status</th>
+                    <th class="border border-gray-300 ..."></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="border border-gray-300 ...">xxxx-1111</td>
+                    <td class="border border-gray-300 ...">Wally Villanueva</td>
+                    <td class="border border-gray-300 ...">@DateTime.Now.ToShortDateString()</td>
+                    <td class="border border-gray-300 ...">In-Progress</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table> *@
+        <!-- End Request Table -->
+    </p>     
+</div>
+<vc:modal-dialog type="deactivate"></vc:modal-dialog>
 
-    <!-- Deactivate Modal Window -->
+<!-- Deactivate Modal Window -->
 
-    <el-dialog>
-        <dialog id="deactivateModal" aria-labelledby="dialog-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
-            <el-dialog-backdrop class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
+@* <el-dialog>
+    <dialog id="deactivateModal" aria-labelledby="dialog-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+        <el-dialog-backdrop class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
 
-            <div tabindex="0" class="flex min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
-                <el-dialog-panel class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 text-red-600">
-                                    <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </div>
-                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <h3 id="dialog-title" class="text-base font-semibold text-gray-900">Deactivate account</h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500">Are you sure you want to deactivate customer? All of the customer's data will be permanently removed. This action cannot be undone.</p>
-                                </div>
+        <div tabindex="0" class="flex min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
+            <el-dialog-panel class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 text-red-600">
+                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 id="dialog-title" class="text-base font-semibold text-gray-900">Deactivate account</h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500">Are you sure you want to deactivate customer? All of the customer's data will be permanently removed. This action cannot be undone.</p>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                        <button id="btnSubmitDeactivateDialog" type="button" command="close" commandfor="dialog" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto">Deactivate</button>
-                        <button id="btnCancelDeactivateDialog" type="button" command="close" commandfor="dialog" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
-                    </div>
-                </el-dialog-panel>
-            </div>
-        </dialog>
-    </el-dialog>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <button id="btnSubmitDeactivateDialog" type="button" command="close" commandfor="dialog" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto">Deactivate</button>
+                    <button id="btnCancelDeactivateDialog" type="button" command="close" commandfor="dialog" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                </div>
+            </el-dialog-panel>
+        </div>
+    </dialog>
+</el-dialog> *@
 
-    <!-- End Deactivate Modal Window -->
-
-</main>
+<!-- End Deactivate Modal Window -->
 
 <script type="text/javascript">
 
@@ -153,20 +159,24 @@
         link.addEventListener("click", (evt) => {
             evt.preventDefault();
             customerId = evt.target.parentElement.dataset.id;
-            document.getElementById("deactivateModal").showModal();
+
+            var modal = new ModalDialog({
+                type: 'deactivate',
+                title: 'Deactivate Customer',
+                content: 'Are you sure you want to deactivate customer? All of customer data will be permanently removed. This action cannot be undone.',
+                submitCallback: () => {
+                    window.location.href = '@Url.Action("DeactivateCustomer", "CustomerSupport")' + '?customerId=' + customerId;
+                }
+            });
+
+            modal.show();
+
+            // showModalDialog({
+            //     type: 'deactivate',
+            //     submitUrl: 'Url.Action("DeactivateCustomer", "CustomerSupport")' + '?customerId=' + customerId,
+            //     title: 'Deactivate Customer',
+            //     content: 'Are you sure you want to deactivate customer? All of customer data will be permanently removed. This action cannot be undone.'
+            // });
         });
     });
-
-    var btnDeactivateCancel = document.getElementById("btnCancelDeactivateDialog");
-    btnDeactivateCancel.onclick = function(evt){
-        evt.preventDefault();
-        document.getElementById("deactivateModal").close();
-    };
-
-    var btnDeactivateSubmit = document.getElementById("btnSubmitDeactivateDialog");
-    btnDeactivateSubmit.onclick = function(evt){
-        evt.preventDefault();
-    window.location.href = "@Url.Action("DeactivateCustomer", "CustomerSupport")" + "?customerId=" + customerId;
-    }
-
 </script>

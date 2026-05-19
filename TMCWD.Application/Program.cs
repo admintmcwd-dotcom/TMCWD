@@ -1,8 +1,27 @@
+using TMCWD.Administration;
+using TMCWD.CustomerSupport;
+using TMCWD.Engineering;
+using TMCWD.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<AuthenticatedUserService>();
+builder.Services.AddTransient<UserTransaction>();
+builder.Services.AddTransient<InspectionTypeTransaction>();
+builder.Services.AddTransient<AccountTransaction>();
+builder.Services.AddTransient<CustomerTransaction>();
+builder.Services.AddTransient<RequestTransaction>();
+builder.Services.AddTransient<InventoryTransaction>();
+builder.Services.AddTransient<RecommendationTransaction>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddHttpClient("TmcWdApi", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5178");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
 
 builder.Services.AddSession(options =>
 {

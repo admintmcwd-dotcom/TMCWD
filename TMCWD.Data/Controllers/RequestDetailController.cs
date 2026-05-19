@@ -1,90 +1,83 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
+using TMCWD.Data.Services;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.Data.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/{requestId}/[controller]")]
     public class RequestDetailController : Controller
     {
 
-        [HttpPost("SaveUpdate")]
-        public ActionResult<bool> SaveUpdate([FromBody] RequestDetail detail)
+        private readonly IRequestDetailService _requestDetailService;
+        public RequestDetailController(IRequestDetailService service)
         {
-
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    if (detail.Id > 0) dbContext.RequestDetails.Update(detail);
-                    else dbContext.RequestDetails.Add(detail);
-
-                    int res = dbContext.SaveChanges();
-
-                    if (res > 0) return Ok(true);
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
-            return Ok(false);
+            _requestDetailService = service;
         }
 
-        [HttpPost("SaveMultiple")]
-        public ActionResult<bool> SaveMultiple([FromBody] List<RequestDetail> details)
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<RequestDetail>> Get(int id)
         {
-
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    if (details.Count <= 0) return BadRequest("No details to add to this request");
-
-                    foreach(var item in details)
-                    {
-                        dbContext.RequestDetails.Add(item);
-                    }
-
-                    var res = dbContext.SaveChanges();
-                    if (res > 0) return Ok(true);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
-            return Ok(false);
+            var requestDetail = await _requestDetailService.Get(id);
+            if (requestDetail == null) return NotFound($"Request detail with id {id} was not found.");
+            return Ok(requestDetail);
         }
 
-        [HttpGet("GetDetailsByRequestId")]
-        public ActionResult<IEnumerable<RequestDetail>> GetDetailsByRequestId(int requestId)
+        [HttpPost("SaveUpdate/{userId}")]
+        public async Task<ActionResult<RequestDetail>> SaveUpdate(int userId, [FromRoute] int requestId, [FromBody] RequestDetail detail)
         {
-            IEnumerable<RequestDetail> details = new List<RequestDetail>();
+            var updateDetail = await _requestDetailService.SaveUpdate(userId, requestId, detail);
+            if (updateDetail == null) return BadRequest("Problem(s) encountered while saving request detail");
+            return Ok(updateDetail);
+        }
 
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.RequestDetails.Where(x => x.RequestId == requestId);
-                    if (!data.Any()) return NotFound($"Details for request with id {requestId} not found");
-                    details = data;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+        [HttpPost("SaveMultiple/{userId}")]
+        public async Task<ActionResult<IEnumerable<RequestDetail>>> SaveMultiple(int userId, [FromRoute] int requestId, [FromBody] List<RequestDetail> details)
+        {
 
-            return Ok(details);
+            if (details.Count <= 0) return BadRequest("No details to add to this request");
+
+            var updatedDetails = await _requestDetailService.SaveMultiple(userId, requestId, details);
+
+            var noId = updatedDetails.Where(x => x.Id == 0).FirstOrDefault();
+
+            if (noId != null) return BadRequest("Not all request details was saved");
+
+            return Ok(updatedDetails);
+        }
+
+        [HttpGet("GetByRequestId")]
+        public async Task<ActionResult<IEnumerable<RequestDetail>>> GetByRequestId([FromRoute] int requestId)
+        {
+            var requestDetails = await _requestDetailService.GetByRequestId(requestId);
+
+            if (requestDetails == null || !requestDetails.Any()) return NotFound($"No request detail(s) with request id {requestId} was found.");
+
+            return Ok(requestDetails);
+        }
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var requestDetail = await _requestDetailService.Get(id);
+            if (requestDetail == null) return NotFound($"Request detail with id {id} was not found");
+            var res = await _requestDetailService.Delete(requestDetail);
+            return Ok(res);
+        }
+
+        [HttpDelete("DeleteDetails")]
+        public async Task<ActionResult> DeleteDetails(int requestId)
+        {
+            var details = await _requestDetailService.GetByRequestId(requestId);
+            if (details == null || !details.Any()) return NotFound($"Request details with request id {requestId} was not found.");
+            var res = await _requestDetailService.DeleteDetails(details);
+            return Ok(res);
         }
 
     }
+
 }

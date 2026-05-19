@@ -25,7 +25,7 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
 
         public DateTime DateUpdated { get; set; }
 
-        public bool IsActive { get; set; }
+        public AccountStatus Status { get; set; }
 
         public int CreatedBy { get; set; }
 

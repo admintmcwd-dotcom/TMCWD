@@ -16,19 +16,31 @@ namespace TMCWD.Data.Entities
         #region properties
 
         [Key, Column("Id")]
-        public decimal Id { get; set; }
+        public System.Int64 Id { get; set; }
 
         [Required, MaxLength(150), Column("Name")]
         public string Name { get; set; } = string.Empty;
 
         [Required, Column("WithDetail")]
-        public bool WidthDetail { get; set; }
+        public bool WithDetail { get; set; }
+
+        [Column("IsRequiredAccount")]
+        public bool IsRequiredAccount { get; set; }
+
+        [Column("IsActive")]
+        public bool IsActive { get; set; }
 
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
 
+        [Required, Column("CreatedBy")]
+        public System.Int64 CreatedBy { get; set; }
+
         [Column("DateUpdated")]
         public DateTime DateUpdated { get; set; }
+
+        [Column("UpdatedBy")]
+        public System.Int64 UpdatedBy { get; set; }
 
         #endregion
     }

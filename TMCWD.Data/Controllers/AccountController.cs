@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Text;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
+using TMCWD.Data.Services;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.Data.Controllers
@@ -12,72 +14,66 @@ namespace TMCWD.Data.Controllers
     public class AccountController : Controller
     {
 
-        private readonly UserDbContext _dbContext;
+        private readonly IAccountService _accountService;
 
-        public AccountController(UserDbContext context)
+        public AccountController(IAccountService service)
         {
-            this._dbContext = context;
+            _accountService = service;
         }
 
-        [HttpPost("SaveUpdate")]
-        public ActionResult<bool> SaveUpdate([FromBody] Account account)
+        [HttpPost("SaveUpdate/{userId}")]
+        public async Task<ActionResult<Account>> SaveUpdate(int userId, [FromBody] Account account)
         {
-            if (account.Id > 0)
-                _dbContext.Accounts.Update(account);
-            else
-                _dbContext.Accounts.Add(account);
+            StringBuilder sb = new();
 
-            int res = _dbContext.SaveChanges();
-            if (res > 0) return Ok(true);
-            return Ok(false);
+            if (String.IsNullOrEmpty(account.Address.Trim())) sb.AppendLine("Address is required to create an account.");
+            if (String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required to create an account.");
+
+            var updatedAccount = await _accountService.SaveUpdate(userId, account);
+            if (updatedAccount == null || updatedAccount.Id <= 0) return BadRequest("Account was not created due to some issue(s).");
+
+            return Ok(updatedAccount);
         }
 
-        [HttpGet("GetById")]
-        public ActionResult<Account> GetById(int id)
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<Account>> Get(int id)
         {
-            Account account = new();
+            var account = await _accountService.Get(id);
 
-            var data = _dbContext.Accounts.Where(x => x.Id == id).FirstOrDefault();
-            if (data == null) return NotFound($"Account with id {id} not found");
-            account = data;
+            if (account == null) return NotFound($"Account with id {id} was not found.");
 
             return Ok(account);
         }
 
-        [HttpGet("GetByAccountNumber")]
-        public ActionResult<Account> GetByAccountNumber(string accountNumber)
+        [HttpGet("GetByAccountNumber/{accountNumber}")]
+        public async Task<ActionResult<Account>> GetByAccountNumber(string accountNumber)
         {
-            Account account = new();
+            var account = await _accountService.GetByAccountNumber(accountNumber);
 
-            var data = _dbContext.Accounts.Where(x => x.AccountNumber.ToLower() == accountNumber.ToLower()).FirstOrDefault();
-            if (data == null) return NotFound($"Account with account number {accountNumber} not found");
-            account = data;
+            if (account == null) return NotFound($"Account with account number {accountNumber} was not found.");
 
             return Ok(account);
         }
 
-        [HttpGet("GetByCustomerId")]
-        public ActionResult<IEnumerable<Account>> GetByCustomerId(int customerId)
+        [HttpGet("GetByCustomerId/{customerId}")]
+        public async Task<ActionResult<IEnumerable<Account>>> GetByCustomerId(int customerId)
         {
-            IEnumerable<Account> accounts = new List<Account>();
+            var accounts = await _accountService.GetByCustomerId(customerId);
 
-            var data = _dbContext.Accounts.Where(x => x.CustomerId == customerId);
-            if (!data.Any()) return NotFound($"Account(s) with customer id {customerId} not found");
-            accounts = data;
+            if (accounts == null || !accounts.Any()) return NotFound($"Account(s) with customer id {customerId} was not found.");
 
             return Ok(accounts);
         }
 
-        [HttpGet("GetByMeterNumber")]
+        [HttpGet("GetByMeterNumber/{meterNumber}")]
         public ActionResult<Account> GetByMeterNumber(string meterNumber)
         {
-            Account account = new();
+            var account = _accountService.GetByMeterNumber(meterNumber);
 
-            var data = _dbContext.Accounts.Where(x => x.MeterNumber.ToLower().Trim() == meterNumber.ToLower().Trim()).FirstOrDefault();
-            if (data == null) return NotFound($"Account with meter number {meterNumber} is not found.");
-            account = data;
+            if (account == null) return NotFound($"Account with meter number {meterNumber} was not found.");
 
             return Ok(account);
         }
+
     }
 }

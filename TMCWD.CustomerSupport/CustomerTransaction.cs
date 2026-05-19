@@ -12,11 +12,7 @@ namespace TMCWD.CustomerSupport
 
         #region fields
 
-        private const string _serviceRouteUrl = "api/Customer/";
-        private const string _saveUpdateUrl = $"{_serviceRouteUrl}SaveUpdate";
-        private const string _getByIdUrl = $"{_serviceRouteUrl}GetById";
-        private const string _getByNameUrl = $"{_serviceRouteUrl}GetByName";
-        private const string _getCustomersUrl = $"{_serviceRouteUrl}GetCustomers";
+        private HttpClient _client = new();
 
         #endregion
 
@@ -27,214 +23,66 @@ namespace TMCWD.CustomerSupport
 
         #region public methods
 
-        public bool SaveUpdate(Customer customer)
+        public void SetClient(HttpClient client)
         {
-            bool isSuccess = false;
-
-            try
-            {
-
-                if (customer == null) throw new Exception("Customer data was not supplied");
-                if (String.IsNullOrEmpty(customer.Firstname.Trim())) throw new Exception("Customer firstname is required");
-                if (String.IsNullOrEmpty(customer.Lastname.Trim())) throw new Exception("Customer lastname is required");
-                if (String.IsNullOrEmpty(customer.PhoneNumber.Trim())) throw new Exception("Customer phone number is required");
-                if (String.IsNullOrEmpty(customer.Email.Trim())) throw new Exception("Customer email is required");
-                if (customer.CreatedBy <= 0) throw new Exception("No current user");
-                if (customer.Id <= 0) customer.DateCreated = DateTime.Now; 
-                customer.DateUpdated = DateTime.Now;
-
-                if (customer == null) return isSuccess;
-                isSuccess = Task.Run(() => SaveUpdateTask(customer)).GetAwaiter().GetResult();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Error in SaveUpdate: {ex.Message}");
-            }
-
-            return isSuccess;
+            _client = client;
         }
 
-        public Customer? GetById(int id)
+        public Customer ConvertJsonToCustomer(string json)
         {
-            Customer? customer = new();
-            try
-            {
-                if (id <= 0) throw new Exception("Invalid customer ID supplied.");
-                customer = Task.Run(() => GetByIdTask(id)).GetAwaiter().GetResult();
-                if(customer == null) throw new Exception($"Customer with ID {id} not found.");
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Error in GetById: {ex.Message}");
-            }
-            return customer;
+            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<Customer>(json, serializeOptions) ?? new Customer();
         }
 
-        public Customer? GetByName(string firstname, string lastname)
+        public List<Customer> ConvertJsonToCustomers(string json)
         {
-            Customer? customer = new();
-            try
-            {
-                if (String.IsNullOrEmpty(firstname.Trim())) throw new Exception("Customer firstname is required");
-                if (String.IsNullOrEmpty(lastname.Trim())) throw new Exception("Customer lastname is required");
-                customer = Task.Run(() => GetByNameTask(firstname, lastname)).GetAwaiter().GetResult();
-                if (customer == null) throw new Exception($"Customer with name {firstname} {lastname} not found.");
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Error in GetByName: {ex.Message}");
-            }
-            return customer;
+            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<List<Customer>>(json, serializeOptions) ?? new List<Customer>();
         }
 
-        public List<Customer>? GetCustomers()
+        public async Task<Customer> SaveUpdate(int userId, Customer customer)
         {
-            List<Customer>? customers = new();
-            try
-            {
-                customers = Task.Run(() => GetCustomersTask()).GetAwaiter().GetResult();
-                if (customers == null || customers.Count == 0) throw new Exception("No customers found.");
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Error in GetCustomers: {ex.Message}");
-            }
-            return customers;
+            var content = JsonContent.Create(customer);
+
+            var response = await _client.PostAsync($"api/Customer/SaveUpdate/{userId}", content);
+
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            return this.ConvertJsonToCustomer(data);
         }
 
-        #endregion
-
-        #region private methods
-
-        private async Task<bool> SaveUpdateTask(Customer customer)
+        public async Task<Customer> Get(int id)
         {
-            bool isSuccess = false;
-
-            try
-            {
-                using(HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    HttpContent content = JsonContent.Create(customer);
-                    using(var response = await client.PostAsync(_saveUpdateUrl, content))
-                    {
-                        var data = await response.Content.ReadAsStringAsync();
-                        if (!response.IsSuccessStatusCode) throw new Exception($"Failed to save/update customer. Status Code: {response.StatusCode}");
-                        return data.Trim().ToLower() == "true";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Error saving/updating customer: {ex.Message}");
-            }
-
-            return isSuccess;
+            var response = await _client.GetAsync($"api/Customer/Get/{id}");
+            var data = await response.Content.ReadAsStringAsync();
+            if(!response.IsSuccessStatusCode) return null;
+            return this.ConvertJsonToCustomer(data);
         }
 
-        private async Task<Customer?> GetByIdTask(int id)
+        public async Task<List<Customer>> GetByName(string firstname, string lastname)
         {
-            Customer? customer = new();
-
-            try
-            {
-                using(HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    string url = QueryHelpers.AddQueryString(_getByIdUrl, "id", id.ToString());
-                    using(var response = await client.GetAsync(url))
-                    {
-                        if(!response.IsSuccessStatusCode)
-                        {
-                            Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Failed to retrieve customer by ID. Status Code: {response.StatusCode}");
-                        }
-                        else
-                        {
-                            string jsonResponse = await response.Content.ReadAsStringAsync();
-                            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                            customer = System.Text.Json.JsonSerializer.Deserialize<Customer>(jsonResponse, serializeOptions);
-                            if(customer == null) throw new Exception($"Customer with ID {id} not found.");
-                        }
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Error retrieving customer by ID: {ex.Message}");
-            }
-
-            return customer;
+            var response = await _client.GetAsync($"api/Customer/GetByName/{firstname}/{lastname}");
+            var data = await response.Content.ReadAsStringAsync();
+            if(!response.IsSuccessStatusCode) return null;
+            return this.ConvertJsonToCustomers(data);
         }
 
-        private async Task<Customer?> GetByNameTask(string firstname, string lastname)
+        public async Task<List<Customer>> GetCustomers()
         {
-            Customer? customer = new();
-
-            try
-            {
-
-                using (HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    string url = QueryHelpers.AddQueryString(_getByNameUrl, new Dictionary<string, string?>
-                    {
-                        { "firstname", firstname },
-                        { "lastname", lastname }
-                    });
-                    using (var response = await client.GetAsync(url))
-                    {
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Failed to retrieve customer by name. Status Code: {response.StatusCode}");
-                        }
-                        else
-                        {
-                            string jsonResponse = await response.Content.ReadAsStringAsync();
-                            customer = System.Text.Json.JsonSerializer.Deserialize<Customer>(jsonResponse);
-                            if (customer == null) throw new Exception($"Customer with name {firstname} {lastname} not found.");
-                        }
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Error retrieving customer by name: {ex.Message}");
-            }
-
-            return customer;
+            var response = await _client.GetAsync("api/Customer/GetCustomers");
+            var data = await response.Content.ReadAsStringAsync();
+            if(!response.IsSuccessStatusCode) return null;
+            return this.ConvertJsonToCustomers(data);
         }
 
-        private async Task<List<Customer>?> GetCustomersTask()
+        public async Task<List<Customer>> Search(string searchString)
         {
-            List<Customer>? customers = new();
-
-            try
-            {
-                using(HttpClient client = new())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-                    using (var response = await client.GetAsync(_getCustomersUrl))
-                    {
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Failed to retrieve customers. Status Code: {response.StatusCode}");
-                        }
-                        else
-                        {
-                            string jsonResponse = await response.Content.ReadAsStringAsync();
-                            var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                            customers = System.Text.Json.JsonSerializer.Deserialize<List<Customer>>(jsonResponse, serializeOptions);
-                            if (customers == null) throw new Exception("No customers found.");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, $"Error retrieving customers: {ex.Message}");
-            }
-
-            return customers;
+            var response = await _client.GetAsync($"api/Customer/Search/{searchString}");
+            var data = await response.Content.ReadAsStringAsync();
+            if(!response.IsSuccessStatusCode) return null;
+            return this.ConvertJsonToCustomers(data);
         }
 
         #endregion

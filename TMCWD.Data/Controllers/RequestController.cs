@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
 using TMCWD.Utility.Generic;
+using TMCWD.Data.Services;
 
 namespace TMCWD.Data.Controllers
 {
@@ -10,117 +12,69 @@ namespace TMCWD.Data.Controllers
     public class RequestController : Controller
     {
 
-        [HttpPost("SaveUpdate")]
-        public ActionResult<bool> SaveUpdate([FromBody] Request request)
+        private readonly IRequestService _requestService;
+        private readonly ICustomerService _customerService;
+        private readonly IAccountService _accountService;
+
+        public RequestController(IRequestService requestService, ICustomerService customerService, IAccountService accountService)
         {
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    if (request.Id > 0) dbContext.Requests.Update(request);
-                    else dbContext.Requests.Add(request);
-
-                    int res = dbContext.SaveChanges();
-                    if (res > 0) return Ok(true);
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
-            return Ok(false);
+            _requestService = requestService;
+            _customerService = customerService;
+            _accountService = accountService;
         }
 
-        [HttpGet("GetById")]
-        public ActionResult<Request> GetById(int id)
+        [HttpPost("SaveUpdate/{userId}")]
+        public async Task<ActionResult<Request>> SaveUpdate(int userId, [FromBody] Request request)
         {
-            Request request = new();
 
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Requests.Where(x => x.Id == id).FirstOrDefault();
-                    if (data == null) return NotFound($"Request with id {id} not found");
-                    request = data;
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+            var insertedRequest = await _requestService.SaveUpdate(userId, request);
 
-            return Ok(request);
+            if (insertedRequest == null || insertedRequest.Id <= 0) BadRequest("Request was not created");
+
+            return Ok(insertedRequest);
+        }
+
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<Request>> Get(int id)
+        {
+            var data = await _requestService.Get(id);
+            if (data == null) return NotFound($"Request with id {id} not found");
+            return Ok(data);
         }
 
         [HttpGet("GetRequests")]
-        public ActionResult<IEnumerable<Request>> GetRequests()
+        public async Task<ActionResult<IEnumerable<Request>>> GetRequests()
         {
-            IEnumerable<Request> requests = new List<Request>();
-
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Requests;
-                    if (!data.Any()) return NotFound("No request(s) found");
-                    requests = data;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
-            return Ok(requests);
+            var data = await _requestService.GetAll();
+            if (!data.Any()) return NotFound("No request(s) found");
+            return Ok(data);
         }
 
-        [HttpGet("GetByUserId")]
-        public ActionResult<IEnumerable<Request>> GetByUserId(int userId)
+        [HttpGet("GetByUserId/{userId}")]
+        public async Task<ActionResult<IEnumerable<Request>>> GetByUserId(int userId)
         {
-            IEnumerable<Request> requests = new List<Request>();
-
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Requests.Where(x => x.UserId == userId);
-                    if (!data.Any()) return NotFound($"No request(s) found for user with id {userId}");
-                    requests = data;
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
-            return Ok(requests);
+            var data = await _requestService.GetByUserId(userId);
+            if (data == null || !data.Any()) return NotFound($"No request(s) found for user with id {userId}");
+            return Ok(data);
         }
 
-        [HttpGet("GetByCustomerId")]
-        public ActionResult<IEnumerable<Request>> GetByCustomerId(int customerId)
+        [HttpGet("GetByCustomerId/{customerId}")]
+        public async Task<ActionResult<IEnumerable<Request>>> GetByCustomerId(int customerId)
         {
-            IEnumerable<Request> requests = new List<Request>();
+            var data = await _requestService.GetByCustomerId(customerId);
+            if (data == null || !data.Any()) return NotFound($"No request(s) found for customer with id {customerId}");
+            return Ok(data);
+        }
 
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Requests.Where(x =>x.CustomerId == customerId);
-                    if (!data.Any()) return NotFound($"No request(s) found for customer with id {customerId}");
-                    requests = data;
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+        [HttpGet("SearchRequest/{searchString}")]
+        public async Task<ActionResult<IEnumerable<Request>>> SearchRequest(string searchString)
+        {
+            var requests = from request in await _requestService.GetAll()
+                          join customer in await _customerService.GetCustomers() on request.CustomerId equals customer.Id
+                          join account in await _accountService.GetAccounts() on request.AccountId equals account.Id
+                          where $"{customer.Firstname} {customer.Lastname}".Contains(searchString) || account.AccountNumber.Contains(searchString) || $"{customer.Lastname} {customer.Firstname}".Contains(searchString)
+                          select request;
+            if (requests == null || !requests.Any()) return NotFound($"Request with value {searchString} was not found.");
 
             return Ok(requests);
         }

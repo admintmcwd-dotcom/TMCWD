@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
+using TMCWD.Data.Services;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.Data.Controllers
@@ -10,100 +13,48 @@ namespace TMCWD.Data.Controllers
     public class InventoryController : Controller
     {
 
-        [HttpPost("SaveUpdate")]
-        public ActionResult<bool> SaveUpdate([FromBody] Inventory inventory)
+        private readonly IInventoryService _inventoryService;
+
+        public InventoryController(IInventoryService service) { _inventoryService = service; }
+
+        [HttpPost("SaveUpdate/{userId}")]
+        public async Task<ActionResult<Inventory>> SaveUpdate(int userId, [FromBody] Inventory inventory)
         {
+            StringBuilder sb = new();
+            if (String.IsNullOrEmpty(inventory.Name.Trim())) sb.AppendLine("Inventory item name is required to create inventory");
+            if (inventory.Quantity <= 0) sb.AppendLine("Quantity must be greater than zero (0)");
+            if(inventory.UnitCost <= 0) sb.AppendLine("Unit cost must be greater than zero (0)");
+            if (String.IsNullOrEmpty(inventory.UOM.Trim())) sb.AppendLine("Please specify unit of measurement (UOM)");
 
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    if (inventory.Id > 0) dbContext.Inventories.Update(inventory);
-                    else dbContext.Inventories.Add(inventory);
+            if (String.IsNullOrEmpty(sb.ToString().Trim())) return BadRequest(sb.ToString());
 
-                    int res = dbContext.SaveChanges();
-
-                    if (res > 0) return Ok(true);
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
-            return Ok(false);
+            var updatedInventory = await _inventoryService.SaveUpdate(userId, inventory);
+            if (inventory == null) return BadRequest("Problem(s) encountered while saving inventory item");
+            return Ok(updatedInventory);
         }
 
-        [HttpGet("GetById")]
-        public ActionResult<Inventory> GetById(int id)
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<Inventory>> Get(int id)
         {
-
-            Inventory inventory = new();
-
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Inventories.FirstOrDefault(x => x.Id == id);
-                    if (data == null) return NotFound($"Inventory with id {id} is not found.");
-                    inventory = data;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
+            var inventory = await _inventoryService.Get(id);
+            if (inventory == null) return NotFound($"Inventory item with id {id} was not found.");
             return Ok(inventory);
         }
 
         [HttpGet("GetAll")]
-        public ActionResult<IEnumerable<Inventory>> GetAll()
+        public async Task<ActionResult<IEnumerable<Inventory>>> GetAll()
         {
-
-            IEnumerable<Inventory> inventories = new List<Inventory>();
-
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Inventories;
-                    if (data == null || !data.Any()) return NotFound($"No inventory found.");
-                    inventories = data;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
-            return Ok(inventories);
+            var inventory = await _inventoryService.GetAll();
+            if (inventory == null || !inventory.Any()) return NotFound("Inventory item(s) not found.");
+            return Ok(inventory);
         }
 
-        [HttpGet("GetByName")]
-        public ActionResult<IEnumerable<Inventory>> GetByName(string name)
+        [HttpGet("GetByName/{name}")]
+        public async Task<ActionResult<IEnumerable<Inventory>>> GetByName(string name)
         {
-            IEnumerable<Inventory> inventories = new List<Inventory>();
-
-            try
-            {
-                using (var dbContext = new UserDbContext())
-                {
-                    var data = dbContext.Inventories.Where(x => x.Name.Contains(name));
-                    if (data == null || !data.Any()) return NotFound(null);
-                    inventories = data;
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.Data, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
-            return Ok(inventories);
+            var inventory = await _inventoryService.GetByName(name);
+            if (inventory == null || !inventory.Any()) return NotFound($"Inventory item with name {name} was not found.");
+            return Ok(inventory);
         }
 
     }

@@ -20,7 +20,7 @@ namespace TMCWD.Data.Entities
         public System.Int64 Id { get; set; }
         [Required, Column("RequestId")]
         public int RequestId { get; set; }
-        [Required, Column("RequesTypeId")]
+        [Required, Column("RequestTypeId")]
         public int RequestTypeId { get; set; }
         [MaxLength(255), Column("InspectionTypeDetail")]
         public string InspectionTypeDetail { get; set; } = string.Empty;

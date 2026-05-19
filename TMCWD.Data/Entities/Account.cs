@@ -25,7 +25,7 @@ namespace TMCWD.Data.Entities
         [Required, MaxLength(50), Column("AccountNumber")]
         public string AccountNumber { get; set; } = string.Empty;
 
-        [Required, MaxLength(50), Column("MeterNumber")]
+        [MaxLength(50), Column("MeterNumber")]
         public string MeterNumber { get; set; } = string.Empty;
 
         [Required, MaxLength(255), Column("Address")]
@@ -34,8 +34,8 @@ namespace TMCWD.Data.Entities
         [Required, Column("IsCurrentAddress")]
         public bool IsCurrentAddress { get; set; }
 
-        [Required, Column("IsActive")]
-        public bool IsActive { get; set; }
+        [Required, Column("Status")]
+        public int Status { get; set; }
 
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }

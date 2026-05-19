@@ -41,8 +41,12 @@ namespace TMCWD.Model.Administrator
         public string RememberToken { get; set; }
         [DisplayName("Created")]
         public DateTime DateCreated { get; set; }
+        [DisplayName("Enrolled By")]
+        public int CreatedBy { get; set; }
         [DisplayName("Updated")]
         public DateTime DateUpdated { get; set; }
+        [DisplayName("Updated By")]
+        public int UpdatedBy { get; set; }
         public bool IsVerified { get; set; }
         [DisplayName("Active")]
         public bool IsActive { get; set; }

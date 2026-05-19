@@ -1,0 +1,467 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_insideLayout";
+}
+
+@model TMCWD.Application.Models.RequestViewModel
+
+
+<div id="accordion-collapse-request" data-accordion="collapse" class="rounded-lg border border-default overflow-hidden shadow-xs">
+    <h2 id="accordion-collapse-heading-1" class="bg-gray-300">
+        <button id="accordion-button-item-1" type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Request Details</span>
+            <svg id="accordion-icon-item-1" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
+        </button>
+    </h2>
+    <div id="accordion-collapse-body-1" class="bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-1">
+        <div class="p-4 md:p-5">
+            <!-- Request Details -->
+
+            <p class="text-gray-700">
+                @Html.HiddenFor(x => x.CurrentUser.Id, new { id = "hdCurrentUserId" })
+                @Html.HiddenFor(x => x.AddEditRequest.Id, new { id = "hdRequestId" })
+                @Html.HiddenFor(x => x.AddEditRequest.CustomerId, new { id = "hdAddEditCustomerId" })
+                @Html.HiddenFor(x => x.AddEditRequest.DateCreated, new { id = "hdDateCreated" })
+                @Html.HiddenFor(x => x.AddEditRequest.CreatedBy, new { id = "hdCreatedBy" })
+                @Html.HiddenFor(x => x.AddEditRequest.AccountId, new { id = "hdAccountId" })
+                <input type="hidden" id="hdCustomerName" />
+
+                <div class="grid gap-6 mb-6 md:grid-cols-2">
+                    <div>
+                        <label for="pControlNumber" class="block mb-2.5 text-sm font-medium text-heading">Control No.</label>
+                        <p id="pControlNumber" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                            @if (Model.AddEditRequest.Id > 0)
+                            {
+                                @Model.AddEditRequest.ControlNumber
+                            }
+                            else
+                            {
+                                @("No yet created . . .")
+                            }
+                        </p>
+                    </div>
+                    <div>
+                        <label for="pDate" class="block mb-2.5 text-sm font-medium text-heading">Date</label>
+                        <p id="pDate" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                            @if (Model.AddEditRequest.Id > 0)
+                            {
+                                @Model.AddEditRequest.DateCreated.ToString("dd MMM yyyy")
+                            }
+                            else
+                            {
+                                @DateTime.Now.ToString("dd MMM yyyy")
+                            }
+                        </p>
+                    </div>
+                    <div>
+                        <label for="pCustomerName" class="block mb-2.5 text-sm font-medium text-heading">Account Name<a id="lnkAccountName" href="#" class="pl-4"><i class="fa fa-plus" aria-hidden="true"></i></a></label>
+                        <div id="divCustomerName">
+                            <p id="pCustomerName" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                            @if (Model.AddEditRequest.CustomerId > 0)
+                            {
+                                @($"{Model.CurrentCustomer.Lastname}, {Model.CurrentCustomer.Firstname} {Model.CurrentCustomer.Middlename}")
+                            }
+                            else
+                            {
+                                @("No customer selectected . . .")
+                            }
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="pPhone" class="block mb-2.5 text-sm font-medium text-heading">Contact No.</label>
+                        <p id="pPhone" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                        @if (Model.CurrentCustomer.Id > 0)
+                        {
+                            @(Model.CurrentCustomer.PhoneNumber)
+                        }
+                        else
+                        {
+                            @("No customer selectected . . .")
+                        }
+                        </p>
+                    </div>
+                    <div>
+                        <label for="pEmail" class="block mb-2.5 text-sm font-medium text-heading">Email</label>
+                        <p id="pEmail" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                            @if(Model.AddEditRequest.AccountId > 0)
+                            {
+                                @Model.CurrentCustomer.Email
+                            }
+                            else{
+                                @("No selected customer . . .")
+                            }
+                        </p>
+                    </div>
+                    <div>
+                        <label for="pAccountNo" class="block mb-2.5 text-sm font-medium text-heading">Account No<a id="lnkAccountNo" href="#" class="pl-4 disabled:cursor-not-allowed"><i class="fa fa-plus" aria-hidden="true"></i></a></label>
+                        <div id="divAccountDropdown">
+                            <p id="pAccountNo" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                            @if (Model.AddEditRequest.AccountId > 0)
+                            {
+                                @Model.CurrentAccount.AccountNumber
+                            }
+                            else
+                            {
+                                @("No selected account . . .")
+                            }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="grid col-span-2 gap-1">
+                        <label for="pAddress" class="block mb-2.5 text-sm font-medium text-heading">Service Address</label>
+                        <p id="pAddress" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                            @if (Model.CurrentAccount.Id > 0)
+                            {
+                                @Model.CurrentAccount.Address
+                            }
+                            else
+                            {
+                                @("No selected account . . .")
+                            }
+                        </p>
+                    </div>
+                    <div class="grid col-span-2 gap-6">
+                        <div class="grid gap-4 mb-6 md:grid-cols-4">
+                            @foreach (var inspectionType in Model.InspectionTypes)
+                            {
+                                <div class="group flex items-center ps-4 pr-4 bg-neutral-primary-soft border border-default rounded-lg shadow-xs hover:bg-blue-900 hover:text-white hover:cursor-pointer">
+                                    <input id='@("border-checkbox-" + inspectionType.Type.Id)' data-id="@inspectionType.Type.Id" data-withdetail="@inspectionType.Type.WithDetail" data-requiredaccount="@inspectionType.Type.IsRequiredAccount" type="checkbox" value="" name="bordered-checkbox" checked="@inspectionType.IsChecked" class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft hover:cursor-pointer">
+                                    @if (inspectionType.Type.WithDetail)
+                                    {
+                                        <label for='@("border-checkbox-" + inspectionType.Type.Id)' class="select-none w-1/2 py-4 ms-2 text-sm font-medium text-heading hover:cursor-pointer">@inspectionType.Type.Name</label>
+                                        <input id='@("txtDetail-" + inspectionType.Type.Id)' type="text"
+                                               placeholder="Detail here..."
+                                               class="bg-transparent border-none focus:ring-0 text-gray-700 w-full outline-none group-hover:text-white" />
+                                    }
+                                    else
+                                    {
+                                        <label for='@("border-checkbox-" + inspectionType.Type.Id)' class="select-none w-full py-4 ms-2 text-sm font-medium text-heading hover:cursor-pointer">@inspectionType.Type.Name</label>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button id="btnSubmit" type"button" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-150">
+                        Save
+                    </button>
+                    <button type="button" class="px-4 py-2 bg-orange-600 text-black font-semibold rounded-md hover:bg-gray-700 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
+                        Cancel
+                    </button>
+                </div>
+            </p>
+
+            <!-- Request Details End -->
+        </div>
+    </div>
+    @if (Model.AddEditRequest.Id > 0)
+    {
+        <h2 id="accordion-collapse-heading-2" class="bg-gray-300">
+            <button id="accordion-button-item-2" type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+                <span>Recommendations</span>
+                <svg id="accordion-icon-item-2" data-accordion-icon class="w-5 h-5 shrink-0 rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
+            </button>
+        </h2>
+        <div id="accordion-collapse-body-2" class="hidden bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-1">
+            <div class="w-full grid grid-cols-[90%_10%] gap-4">
+                <div>
+                    <textarea id="txtRecommendation" rows="2" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-3.5 shadow-xs placeholder:text-body" placeholder="Write recommendation here . . ."></textarea>
+                </div>
+                <div>
+                    <button id="btnAddRecommendation" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <hr class="h-px my-8 bg-neutral-quaternary">
+            <div id="divRecommendation" class="w-full">
+                @if(Model.Recommendations == null || !Model.Recommendations.Any())
+                {
+                    <div id="divRecommendationNoRecord" class="w-full h-32 pt-16 text-center align-middle">
+                        No record(s) found . . .
+                    </div>
+                }
+                else
+                {
+                    @foreach (var recommendation in Model.Recommendations)
+                    {
+                        <div class="grid grid-cols-[20%_80%] gap-4">
+                            <div class="border-r-2 text-center">
+                                <div class="w-full mb-2">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="w-full">
+                                    <vc:user-name user-id="recommendation.CreatedBy"></vc:user-name>
+                                </div>
+                            </div>
+                            <div class="text-wrap">
+                                @recommendation.Details
+                            </div>
+                        </div>
+                        <hr class="h-px my-2 bg-neutral-quaternary">
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<vc:customer-selection></vc:customer-selection>
+
+<div id="divAccountSelection">
+    <vc:account-selection customer-id="@Model.AddEditRequest.CustomerId"></vc:account-selection>
+</div>
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+        var alert = new Alert();
+
+        const btnDetails = document.getElementById("accordion-button-item-1");
+        btnDetails.addEventListener("click", (evt) => {
+            evt.preventDefault();
+            const accordionItem = document.getElementById("accordion-collapse-body-1");
+            const icon = document.getElementById("accordion-icon-item-1");
+            accordionItem.classList.toggle("hidden");
+            icon.classList.toggle("rotate-180");
+        });
+
+        const btnRecommendation = document.getElementById("accordion-button-item-2");
+        btnRecommendation.addEventListener("click", (evt) => {
+            evt.preventDefault();
+            const accordionItem = document.getElementById("accordion-collapse-body-2");
+            const icon = document.getElementById("accordion-icon-item-2");
+            accordionItem.classList.toggle("hidden");
+            icon.classList.toggle("rotate-180");
+        });
+        
+        var checkBoxes = document.querySelectorAll('input[type="checkbox"]');
+
+        [...checkBoxes].forEach((checkbox) => {
+            checkbox.addEventListener("change", (evt) => {
+                evt.preventDefault();
+                var targetId = evt.target.id;
+                var typeId = evt.target.dataset.id;
+                var withDetail = evt.target.dataset.withdetail;
+                var requiredAccount = evt.target.dataset.requiredaccount;
+                if(requiredAccount == 'False'){
+                    [...checkBoxes].forEach((checkbox) => {
+                        if(checkbox.id != targetId){
+                            checkbox.checked = false;
+                        }
+                    });
+                }
+                else{
+                    var checkBoxesNoAccount = document.querySelectorAll('[data-requiredaccount="False"]');
+                    [...checkBoxesNoAccount].forEach((checkbox) => {
+                        checkbox.checked = false;
+                    });
+                }
+            });
+        });
+
+        const saveRequestUrl = '@Url.Action("SaveRequest", "CustomerSupport")';
+        
+
+        const btnSubmit = document.getElementById("btnSubmit");
+        btnSubmit.addEventListener("click", async (evt) => {
+            evt.preventDefault();
+            
+            
+            const requestId = + document.getElementById("hdRequestId").value;
+            const customerId = + document.getElementById("hdAddEditCustomerId").value;
+            const userId = + document.getElementById("hdCurrentUserId").value;
+            const dateCreated = document.getElementById("hdDateCreated").value;
+            const accountId = + document.getElementById("hdAccountId").value;
+
+            if(accountId <= 0 || customerId <= 0){
+                alert.show({
+                    type: 'warning',
+                    content: 'Please select customer and account before saving the request',
+                    autoHide: true
+                });
+                return;
+            }
+
+            var requestDetails = [];
+
+            const serviceCheckBoxes = document.querySelectorAll('input[type="checkbox"]');
+
+            [...serviceCheckBoxes].forEach((checkbox) => {
+                if(checkbox.checked){
+                    var id = + checkbox.dataset.id;
+                    var typeDetailId = "txtDetail-" + id;
+                    var typeDetail = document.getElementById(typeDetailId)?.value ?? '';
+                    requestDetails.push({
+                        Id: 0,
+                        RequestId: 0,
+                        RequestTypeId: id,
+                        InspectionTypeDetail: typeDetail,
+                        DateCreated: new Date(),
+                        DateUpdated: new Date()
+                    });
+                }
+            });
+
+            if(requestDetails.length <= 0){
+                alert.show({
+                    type: 'warning',
+                    content: 'Please select at least one service.',
+                    autoHide: true,
+                    timeOut: 3000
+                });
+                return;
+            }
+
+            var data = {
+                Id: + requestId,
+                CustomerId: + customerId,
+                AccountId: + accountId,
+                Status: 1,
+                CreatedBy: + userId,
+                DateCreated: new Date(dateCreated)
+            };
+
+            const saveRequestClient = new WebClient(saveRequestUrl, data);
+            var resultRequestId = + await saveRequestClient.postAsync();
+            console.log('Request ID:', resultRequestId);
+            const saveDetailUrl = '@Url.Action("SaveRequestDetails", "CustomerSupport")' + "?requestId=" + resultRequestId;
+            if(resultRequestId > 0){
+                const saveRequestDetailClient = new WebClient(saveDetailUrl, requestDetails);
+                var isSuccess = await saveRequestDetailClient.postAsync();
+                if(isSuccess) window.location.href = '@Url.Action("Requests", "CustomerSupport")'
+            }
+
+        });
+
+        //customerSelectionDialog
+        const lnkAccountName = document.getElementById("lnkAccountName");
+        lnkAccountName.addEventListener("click", (evt) => {
+            evt.preventDefault();
+            
+            var customerSelectionDialog = new CustomerSelect({
+                getCustomerUrl: '@Url.Action("SearchCustomer", "CustomerSupport")',
+                selectCallback: async (customerId, customerName, phone, email) => {
+                    // var classNames = encodeURIComponent("bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body");
+                    // var refreshUrl = '@Url.Action("RefreshCustomerNameComponent", "CustomerSupport")' + "?customerId=" + customerId + "&pId=pAccountName&pClass=" + classNames;
+                    // const response = await fetch(refreshUrl);
+                    // document.getElementById("divCustomerName").innerHTML = await response.text();
+                    document.getElementById("pCustomerName").innerText = decodeURIComponent(customerName);
+                    document.getElementById("pPhone").innerText = decodeURIComponent(phone);
+                    document.getElementById("pEmail").innerText = decodeURIComponent(email);
+                    document.getElementById("hdAddEditCustomerId").value = customerId;
+
+                    var accountRefreshUrl = '@Url.Action("RefreshAccountSelectComponent", "CustomerSupport")' + "?customerId=" + customerId;
+                    const response = await fetch(accountRefreshUrl);
+                    document.getElementById("divAccountSelection").innerHTML = await response.text();
+                } 
+            });
+
+            customerSelectionDialog.show();
+
+        });
+
+        //account selection dialog
+        const lnkAccountNo = document.getElementById("lnkAccountNo");
+        lnkAccountNo.addEventListener("click", (evt) => {
+            evt.preventDefault();
+            const customerId = + document.getElementById("hdAddEditCustomerId").value;
+            const accountId = + document.getElementById("hdAccountId").value;
+            if(+ customerId <= 0){
+                alert.show({
+                    type: 'warning',
+                    content: 'Please select a customer first before selecting an account.',
+                    autoHide: true,
+                    timeOut: 3000
+                });
+            }
+            else {
+                var accountSelect = new AccountSelect({
+                    customerid: document.getElementById("hdAddEditCustomerId").value,
+                    addAccountUrl: '@Url.Action("AddAccount", "Account")',
+                    submitCallback: (accountId, accountNumber, accountAddress) => {
+                        console.log('Address:', accountAddress);
+                        document.getElementById("hdAccountId").value = + accountId;
+                        document.getElementById("pAccountNo").innerText = decodeURIComponent(accountNumber);
+                        document.getElementById("pAddress").innerText = decodeURIComponent(accountAddress);
+                    }
+                });
+
+                accountSelect.show();
+            }
+        });
+
+        const btnAddRecommendation = document.getElementById("btnAddRecommendation");
+        btnAddRecommendation.addEventListener("click", async (evt) => {
+            evt.preventDefault();
+            const txtRecommendation = document.getElementById("txtRecommendation");
+            var saveRecommendationUrl = '@Url.Action("SaveRecommendation", "CustomerSupport")';
+            var saveRecommendationdata = {
+                requestId: '@Model.AddEditRequest.Id',
+                details: encodeURIComponent(txtRecommendation.value)
+            };
+
+            var recommendationClient = new WebClient(saveRecommendationUrl, saveRecommendationdata);
+            var recommendationResponse = await recommendationClient.postAsync();
+
+            if(recommendationResponse == null) return;
+
+            var userUrl = '@Url.Action("GetUserByIdForTable", "CustomerSupport")' + '?userId=' + recommendationResponse.createdBy;
+            var userClient = new WebClient(userUrl, null);
+            var userResponse = await userClient.getAsync();
+
+            if(userResponse == null) return;
+
+            const divRecommendation = document.getElementById("divRecommendation");
+            const columnParentDiv = document.createElement("div");
+            columnParentDiv.classList.add("grid", "grid-cols-[20%_80%]", "gap-4");
+
+            //column 1
+            const column1 = document.createElement("div");
+            column1.classList.add("border-r-2", "text-center");
+
+            const column1Child1 = document.createElement("div");
+            column1Child1.classList.add("w-full", "mb-2");
+
+            const userIcon = document.createElement("i");
+            userIcon.classList.add("fa-solid", "fa-user");
+            column1Child1.appendChild(userIcon);
+
+            const column1Child2 = document.createElement("div");
+            column1Child2.classList.add("w-full");
+            column1Child2.innerText = userResponse.name;
+
+            column1.appendChild(column1Child1);
+            column1.appendChild(column1Child2);
+            //end column 1
+
+            //column 2
+
+            const column2 = document.createElement("div");
+            column2.classList.add("text-wrap");
+            column2.innerText = txtRecommendation.value
+
+            //end column 2
+
+            columnParentDiv.appendChild(column1);
+            columnParentDiv.appendChild(column2);
+
+            //hr
+            const hr = document.createElement("hr");
+            hr.classList.add("h-px", "my-2", "bg-neutral-quaternary");
+
+            const noRecordDiv = document.getElementById("divRecommendationNoRecord");
+            noRecordDiv.classList.add("hidden");
+
+            divRecommendation.appendChild(columnParentDiv);
+            divRecommendation.appendChild(hr);
+
+            txtRecommendation.value = '';
+        });
+
+    });
+</script>

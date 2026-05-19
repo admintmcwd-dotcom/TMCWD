@@ -1,6 +1,7 @@
 ﻿using TMCWD.CustomerSupport;
 using TMCWD.Model.CustomerSupport;
 using TMCWD.Model.Administrator;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TMCWD.Application.Models
 {
@@ -8,32 +9,20 @@ namespace TMCWD.Application.Models
     {
 
         private readonly int _customerId;
-        private Customer? _customer;
-        private List<Account> _accountList;
 
         public AccountViewModel()
         {
             this._customerId = 0;
-            this._customer = new Customer();
-            this._accountList = new List<Account>();
         }
 
         public AccountViewModel(int customerId)
         {
             _customerId = customerId;
-            _customer = new Customer();
-            _accountList = new List<Account>();
         }
 
         public User? CurrentUser { get; set; }
 
-        public Customer? Customer
-        {
-            get
-            {
-                return this._customer;
-            }
-        }
+        public Customer Customer { get; set; }
 
         public int CustomerId
         {
@@ -45,24 +34,14 @@ namespace TMCWD.Application.Models
 
         public Account AddEditAccount { get; set; } = new Account();
 
-        public List<Account> PagedAccountList { 
-            get 
-            {
-                return _accountList;
-            } 
-        }
+        public List<Account> PagedAccountList { get; set; }
 
-        public void GetCustomerDetails()
-        {
-            CustomerTransaction trans = new();
-            this._customer = trans.GetById(_customerId);
-        }
-
-        public void GetAccounts()
-        {
-            AccountTransaction trans = new();
-            this._accountList = trans.GetByCustomerId(this._customerId);
-        }
-
+        public List<SelectListItem> AccountStatuses { get; set; } = new List<SelectListItem>() 
+        { 
+            new SelectListItem { Text = AccountStatus.Pending.ToString(), Value = $"{(int)AccountStatus.Pending}" },
+            new SelectListItem { Text = AccountStatus.Active.ToString(), Value = $"{(int)AccountStatus.Active}" },
+            new SelectListItem { Text = AccountStatus.Suspended.ToString(), Value = $"{(int)AccountStatus.Suspended}" },
+            new SelectListItem { Text = AccountStatus.Closed.ToString(), Value = $"{(int)AccountStatus.Closed}" }
+        };
     }
 }

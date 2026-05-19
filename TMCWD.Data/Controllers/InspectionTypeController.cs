@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
+using TMCWD.Data.Services;
+using TMCWD.Model.Administrator.Interface;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.Data.Controllers
@@ -9,81 +13,47 @@ namespace TMCWD.Data.Controllers
     [Route("api/[controller]")]
     public class InspectionTypeController : Controller
     {
+
+        private readonly IInspectionTypeService _inspectionTypeService;
+
+        public InspectionTypeController(IInspectionTypeService service)
+        {
+            _inspectionTypeService = service;
+        }
+
         [HttpGet("GetTypes")]
-        public ActionResult<IEnumerable<InspectionType>> GetTypes()
+        public async Task<ActionResult<IEnumerable<InspectionType>>> GetTypes()
         {
-            IEnumerable<InspectionType> types = new List<InspectionType>();
+            var inspectionTypes = await _inspectionTypeService.GetTypes();
 
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    types = dbContext.InspectionTypes;
-                    if (!types.Any()) return NotFound("No incident type found");
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+            if (inspectionTypes == null || !inspectionTypes.Any()) return NotFound("No inspection type(s) found.");
 
-            return Ok(types);
+            return Ok(inspectionTypes);
         }
 
-        [HttpGet("GetById")]
-        public ActionResult<InspectionType> Get(int id)
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<InspectionType>> Get(int id)
         {
-            InspectionType type = new();
+            var inspectionType = await _inspectionTypeService.Get(id);
 
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    var res = dbContext.InspectionTypes.Where(x => x.Id == id).FirstOrDefault();
-                    if (res == null) return NotFound($"Incident type id {id} not found");
+            if (inspectionType == null) return NotFound($"Inspection type with id {id} was not found.");
 
-                    type.Id = res.Id;
-                    type.Name = res.Name;
-                    type.DateCreated = res.DateCreated;
-                    type.DateUpdated = res.DateUpdated;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
-
-            return Ok(type);
+            return Ok(inspectionType);
         }
 
-        [HttpPost("SaveUpdate")]
-        public ActionResult<bool> SaveUpdate([FromBody] InspectionType type)
+        [HttpPost("SaveUpdate/{userId}")]
+        public async Task<ActionResult<InspectionType>> SaveUpdate(int userId, [FromBody] InspectionType type)
         {
-            try
-            {
-                using(var dbContext = new UserDbContext())
-                {
-                    if (type.Id == 0)
-                    {
-                        dbContext.InspectionTypes.Add(type);
-                    }
-                    else
-                    {
-                        dbContext.InspectionTypes.Update(type);
-                    }
-                    int res = dbContext.SaveChanges();
-                    if(res > 0) return Ok(true);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-                return Problem(ex.Message, ErrorModule.Data.ToString(), StatusCodes.Status500InternalServerError, ErrorType.Error.ToString(), ErrorType.Error.ToString());
-            }
+            StringBuilder sb = new();
 
-            return Ok(false);
+            if (String.IsNullOrEmpty(type.Name.Trim())) return BadRequest("Name is required in creating inspection type.");
+
+            var updatedType = await _inspectionTypeService.SaveUpdate(userId, type);
+
+            if (updatedType == null || updatedType?.Id <= 0) return BadRequest("Problem(s) were encountered while saving inspection type");
+
+            return Ok(updatedType);
         }
+
     }
 }

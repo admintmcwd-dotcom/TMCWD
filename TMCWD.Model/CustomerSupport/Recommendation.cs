@@ -9,9 +9,10 @@ namespace TMCWD.Model.CustomerSupport
     {
         public int Id { get; set; }
         public int RequestId { get; set; }
-        public int RecommendationUserId { get; set; }
         public string Details { get; set; } = string.Empty;
+        public int CreatedBy { get; set; }
         public DateTime DateCreated { get; set; }
+        public int UpdatedBy { get; set; }
         public DateTime DateUpdated { get; set; }
     }
 }

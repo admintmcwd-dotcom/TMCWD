@@ -14,15 +14,21 @@ namespace TMCWD.Model.Engineering.Interfaces
 
         public int Division { get; set; }
 
-        public string Unit { get; set; }
+        public string UOM { get; set; }
 
         public decimal Quantity { get; set; }
 
         public decimal UnitCost { get; set; }
 
+        public bool IsActive { get; set; }
+
         public DateTime DateCreated { get; set; }
 
+        public int CreatedBy { get; set; }
+
         public DateTime DateUpdated { get; set; }
+
+        public int UpdatedBy { get; set; }
 
 
         #endregion
