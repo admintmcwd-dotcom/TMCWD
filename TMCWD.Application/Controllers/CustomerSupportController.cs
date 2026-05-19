@@ -177,11 +177,6 @@ namespace TMCWD.Application.Controllers
                     model.CurrentAccount = getAccountTask.Result;
                     requestDetails = getRequestDetailsTask.Result;
                     model.Recommendations = getRecommendationsTask.Result;
-
-                    //model.CurrentCustomer = await _customerTransaction.Get(model.AddEditRequest.CustomerId);
-                    //model.CurrentAccount = await _accountTransaction.Get(model.AddEditRequest.AccountId);
-                    //requestDetail = await _requestTransaction.GetRequestDetailByRequestId(model.AddEditRequest.Id) ?? new();
-                    //model.Recommendations = await _recommendationTransaction.GetByRequestId(model.AddEditRequest.Id) ?? new();
                 }
             }
 

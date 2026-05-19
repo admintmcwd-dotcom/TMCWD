@@ -34,10 +34,10 @@ namespace TMCWD.Data.Services
 
         public async Task<Inventory?> SaveUpdate(int userId, Inventory inventory)
         {
-            if(inventory.Id > 0)
+            inventory.DateUpdated = DateTime.Now;
+            if (inventory.Id > 0)
             {
                 inventory.UpdatedBy = userId;
-                inventory.DateUpdated = DateTime.Now;
                 _dbContext.Inventories.Update(inventory);
             }
             else

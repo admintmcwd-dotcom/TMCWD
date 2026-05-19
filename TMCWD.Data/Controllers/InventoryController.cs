@@ -20,13 +20,13 @@ namespace TMCWD.Data.Controllers
         [HttpPost("SaveUpdate/{userId}")]
         public async Task<ActionResult<Inventory>> SaveUpdate(int userId, [FromBody] Inventory inventory)
         {
-            StringBuilder sb = new();
-            if (String.IsNullOrEmpty(inventory.Name.Trim())) sb.AppendLine("Inventory item name is required to create inventory");
-            if (inventory.Quantity <= 0) sb.AppendLine("Quantity must be greater than zero (0)");
-            if(inventory.UnitCost <= 0) sb.AppendLine("Unit cost must be greater than zero (0)");
-            if (String.IsNullOrEmpty(inventory.UOM.Trim())) sb.AppendLine("Please specify unit of measurement (UOM)");
+            //StringBuilder sb = new();
+            //if (String.IsNullOrEmpty(inventory.Name.Trim())) sb.AppendLine("Inventory item name is required to create inventory");
+            //if (inventory.Quantity <= 0) sb.AppendLine("Quantity must be greater than zero (0)");
+            //if(inventory.UnitCost <= 0) sb.AppendLine("Unit cost must be greater than zero (0)");
+            //if (String.IsNullOrEmpty(inventory.UOM.Trim())) sb.AppendLine("Please specify unit of measurement (UOM)");
 
-            if (String.IsNullOrEmpty(sb.ToString().Trim())) return BadRequest(sb.ToString());
+            //if (String.IsNullOrEmpty(sb.ToString().Trim())) return BadRequest(sb.ToString());
 
             var updatedInventory = await _inventoryService.SaveUpdate(userId, inventory);
             if (inventory == null) return BadRequest("Problem(s) encountered while saving inventory item");
