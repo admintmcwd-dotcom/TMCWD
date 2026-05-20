@@ -2,6 +2,7 @@
 using TMCWD.CustomerSupport;
 using TMCWD.Model.Administrator;
 using TMCWD.Model.CustomerSupport;
+using TMCWD.Model.Engineering;
 namespace TMCWD.Application.Models
 {
     public class RequestViewModel
@@ -23,13 +24,11 @@ namespace TMCWD.Application.Models
 
         public List<RequestDetail> CurrentRequestDetails { get; set; } = new List<RequestDetail>();
 
-        public CustomerTransaction CustomerTransaction { get; set; } = new CustomerTransaction();
-
-        public AccountTransaction AccountTransaction { get; set; } = new AccountTransaction();
-
         public IEnumerable<SelectListItem> AccountSelectionList { get; set; } = new List<SelectListItem>();
 
         public List<Recommendation> Recommendations { get; set; } = new List<Recommendation>();
+
+        public List<Inventory> InventoryItems { get; set; } = new List<Inventory>();
 
     }
 }

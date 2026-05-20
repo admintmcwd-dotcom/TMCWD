@@ -215,41 +215,72 @@
             </button>
         </h2>
         <div id="accordion-collapse-body-3" class="hidden bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-3">
-            <div class="w-full grid grid-cols-[90%_10%] gap-4">
+            <div class="w-full grid grid-cols-[50%_50%] gap-4">
                 <div>
                     <!-- autocomplete -->
-                    <div class="mx-auto w-full max-w-xs">
 
-                        <el-autocomplete class="relative mt-2 block" style="--button-width: 36px; --input-width: 320px;">
-                            <input id="combobox" type="text" class="block w-full rounded-md bg-white py-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="autocomplete-listbox-1" aria-activedescendant="" autocomplete="off">
-                            <button type="button" class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden" id="autocomplete-button-0" aria-haspopup="listbox" aria-controls="autocomplete-listbox-1" aria-expanded="false" tabindex="-1" popovertarget="autocomplete-listbox-1">
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 text-gray-400">
-                                    <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd"></path>
-                                </svg>
-                            </button>
-
-                            <el-options anchor="bottom end" popover="manual" data-initial-popover-open="" class="max-h-56 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10" id="autocomplete-listbox-1" role="listbox" style="left: calc(188px + var(--anchor-offset, 0px)); top: calc(100px + var(--anchor-gap, 0px));">
-                                <el-option value="Leslie Alexander" class="block px-3 py-2 text-gray-900 select-none aria-selected:bg-indigo-600 aria-selected:text-white dark:text-gray-200 dark:aria-selected:bg-indigo-500" id="option-2" role="option" aria-selected="false" tabindex="-1" hidden="" aria-hidden="true">
-                                    <div class="flex items-center">
-                                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" alt="" class="size-6 shrink-0 rounded-full bg-gray-100 outline -outline-offset-1 outline-black/5 dark:bg-gray-700 dark:outline-white/10">
-                                        <span class="ml-3 truncate">Leslie Alexander</span>
+                    <div for="cmbInventory" class="relative w-full">
+                        <select id="cmbInventory" class="w-full hidden"></select>
+                        <input type="hidden" class="selected-value" />
+                        <div class="w-full border rounded-md">
+                            <div class="grid grid-cols-[93%_7%] border-0 gap-1 p-2">
+                                <div>
+                                    <input type="text" class="dropdown-input w-full bg-white text-sm focus:outline-none" />
+                                </div>
+                                <div>
+                                    <button type="button" class="border-0 text-center w-full text-sm">
+                                        <i class="fa-solid fa-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden dropdown-options absolute w-full bg-white border rounded-md p-3 text-sm mt-1">
+                            @if (Model.InventoryItems == null || Model.InventoryItems.Count <= 0)
+                            {
+                                <span class="w-full text-center">No inventory found</span>
+                            }
+                            else
+                            {
+                                foreach (var item in Model.InventoryItems)
+                                {
+                                    <div id="item-@item.Id" class="w-full mb-1 hover:bg-blue-600 hover:text-white p-1">
+                                        <a data-itemid="@item.Id" data-itemname="@item.Name" href="#" class="w-full">
+                                            <p class="w-full">@item.Name</p>
+                                        </a>
                                     </div>
-                                </el-option>
-                            </el-options>
-                        </el-autocomplete>
-
+                                }
+                            }
+                        </div>
                     </div>
+
                     <!-- end autocomplete -->
                 </div>
                 <div>
-                    <button id="btnAddRecommendation" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <button id="btnAddInventory" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
             </div>
             <hr class="h-px my-8 bg-neutral-quaternary">
-            <div id="divRecommendationNoRecord" class="w-full h-32 pt-16 text-center align-middle">
-                No record(s) found . . .
+            <div id="divInventory" class="w-full h-32 pt-16 text-center align-middle">
+                <table id="tblCustomerList" class="customer-select-list w-full text-sm text-left rtl:text-right text-body">
+                    <thead class=" text-sm text-body bg-neutral-secondary-soft border-b rounded-lg border-default">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 font-medium text-center">Item</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center">Unit Cost</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center">Quantity</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center">Amount</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td scope="col" class="px-6 py-3 text-center" colspan="5">
+                                No record(s) found...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     }
@@ -265,6 +296,8 @@
     document.addEventListener("DOMContentLoaded", function(event) {
 
         var alert = new Alert();
+
+        document.getElementById("cmbInventory").setDropdown(null);
 
         const btnDetails = document.getElementById("accordion-button-item-1");
         btnDetails.addEventListener("click", (evt) => {
@@ -516,6 +549,8 @@
 
             txtRecommendation.value = '';
         });
+
+        const 
 
     });
 </script>

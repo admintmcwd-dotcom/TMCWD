@@ -7,6 +7,8 @@ using TMCWD.Model.CustomerSupport;
 using TMCWD.CustomerSupport;
 using TMCWD.Services;
 using System.Net;
+using TMCWD.Model.Engineering;
+using TMCWD.Engineering;
 
 namespace TMCWD.Application.Controllers
 {
@@ -23,6 +25,7 @@ namespace TMCWD.Application.Controllers
         private readonly InspectionTypeTransaction _inspectionTypeTransaction;
         private readonly UserTransaction _userTransaction;
         private readonly RecommendationTransaction _recommendationTransaction;
+        private readonly InventoryTransaction _inventoryTransaction;
 
         #endregion
 
@@ -35,7 +38,7 @@ namespace TMCWD.Application.Controllers
             RequestTransaction requestTransaction,
             InspectionTypeTransaction inspectionTypeTransaction,
             UserTransaction userTransaction,
-            RecommendationTransaction recommendationTrasaction)
+            RecommendationTransaction recommendationTrasaction, InventoryTransaction inventoryTransaction)
         {
             _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
@@ -57,6 +60,9 @@ namespace TMCWD.Application.Controllers
 
             _recommendationTransaction = recommendationTrasaction;
             _recommendationTransaction.SetClient(_client);
+
+            _inventoryTransaction = inventoryTransaction;
+            _inventoryTransaction.SetClient(_client);
         }
 
         #endregion
@@ -146,8 +152,6 @@ namespace TMCWD.Application.Controllers
             model.CurrentUser = currentUser;
             ViewBag.Role = currentUser.Role;
             model.Requests = await _requestTransaction.GetRequests();
-            model.CustomerTransaction =_customerTransaction;
-            model.AccountTransaction = _accountTransaction;
             return View(model);
         }
 
@@ -158,9 +162,17 @@ namespace TMCWD.Application.Controllers
             model.CurrentUser = currentUser;
             ViewBag.Role = currentUser?.Role;
 
-            var types = await _inspectionTypeTransaction.GetTypes() ?? new();
-
             List<RequestDetail> requestDetails = new();
+            List<InspectionType> types = new();
+
+            Task<List<InspectionType>> getInspectionTypesTask = _inspectionTypeTransaction.GetTypes();
+            Task<List<Inventory>> getInventoryTask = _inventoryTransaction.GetAll();
+
+            await Task.WhenAll(getInspectionTypesTask, getInspectionTypesTask);
+
+            types = getInspectionTypesTask.Result ?? new();
+
+            model.InventoryItems = getInventoryTask.Result ?? new();
 
             if (requestId > 0)
             {

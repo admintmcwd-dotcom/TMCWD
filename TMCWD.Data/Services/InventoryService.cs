@@ -50,5 +50,6 @@ namespace TMCWD.Data.Services
             await _dbContext.SaveChangesAsync();
             return inventory;
         }
+
     }
 }
