@@ -18,7 +18,7 @@ namespace TMCWD.Model.Engineering.Interfaces
 
         public decimal Quantity { get; set; }
 
-        public decimal UnitCost { get; set; }
+        public float UnitCost { get; set; }
 
         public bool IsActive { get; set; }
 
@@ -35,7 +35,7 @@ namespace TMCWD.Model.Engineering.Interfaces
 
         #region methods
 
-        protected decimal CalculateAmount();
+        protected float CalculateAmount();
 
         #endregion
     }

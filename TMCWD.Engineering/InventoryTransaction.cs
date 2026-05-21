@@ -61,7 +61,7 @@ namespace TMCWD.Engineering
             if (inventory.UnitCost <= 0) sb.AppendLine("Please specify the unit cost");
 
             if(!String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
-
+             
             var content = JsonContent.Create(inventory);
 
             var response = await _client.PostAsync($"api/Inventory/SaveUpdate/{userId}", content);

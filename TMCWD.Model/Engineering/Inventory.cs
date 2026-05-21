@@ -20,9 +20,9 @@ namespace TMCWD.Model.Engineering
         [DisplayName("Quantity")]
         public decimal Quantity { get; set; }
         [DisplayName("Unit Cost")]
-        public decimal UnitCost { get; set; }
+        public float UnitCost { get; set; }
         [DisplayName("Amout")]
-        public decimal Amount { 
+        public float Amount { 
             get
             {
                 return CalculateAmount();
@@ -39,9 +39,9 @@ namespace TMCWD.Model.Engineering
         [DisplayName("Updated By")]
         public int UpdatedBy { get; set; }
 
-        public decimal CalculateAmount()
+        public float CalculateAmount()
         {
-            return this.Quantity * this.UnitCost;
+            return (float)this.Quantity * this.UnitCost;
         }
     }
 }

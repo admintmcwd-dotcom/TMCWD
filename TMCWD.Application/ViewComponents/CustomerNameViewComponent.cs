@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TMCWD.Application.Models;
 using TMCWD.CustomerSupport;
+using TMCWD.Model.CustomerSupport;
 
 namespace TMCWD.Application.ViewComponents
 {
@@ -24,7 +25,9 @@ namespace TMCWD.Application.ViewComponents
             if (customerId <= 0) model.Customer = new();
             else
             {
-                model.Customer = await _customerTransaction.Get(customerId);
+                Task<Customer> getCustomer = _customerTransaction.Get(customerId);
+                await Task.WhenAll(getCustomer);
+                model.Customer = getCustomer.Result;
             }
             return View("Default", model);
         }

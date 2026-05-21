@@ -3,6 +3,88 @@
 
 // Write your JavaScript code.
 
+HTMLElement.prototype.setDropdown = function (selectCallBack) {
+    const elSelect = this;
+    var isListenersAttached = false;
+
+    if (elSelect.tagName.toLowerCase() === "select") {
+        
+        const parentDiv = elSelect.parentElement;
+        var btnCollapse = null;
+        var icon = null;
+        var elContent = null;
+        var elOptions = null;
+
+        if (parentDiv) {
+            btnCollapse = parentDiv.querySelector("button");
+            if (btnCollapse) {
+                btnCollapse.addEventListener("click", (evt) => {
+                    evt.preventDefault();
+                    icon = btnCollapse.querySelector("i");
+                    elContent = parentDiv.getElementsByClassName("dropdown-options");
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                    elContent[0].classList.toggle("hidden");
+
+                    const inputs = parentDiv.getElementsByClassName("dropdown-input");
+
+                    if (isListenersAttached) return;
+
+                    var contents = elContent[0].children;
+                    var elOptions = [];
+
+                    [...contents].forEach((element) => {
+                        elOptions.push(element);
+                    });
+
+                    var links = elContent[0].querySelectorAll('a');
+                    if (links) {
+
+                        [...links].forEach((link) => {
+                            link.addEventListener("click", (evt) => {
+                                evt.preventDefault();
+                                evt.stopPropagation();
+                                
+                                const elSelectedValues = parentDiv.getElementsByClassName("selected-value");
+                                var itemId = evt.target.parentElement.dataset.itemid;
+                                var itemName = evt.target.parentElement.dataset.itemname;
+                                if (inputs) inputs[0].value = itemName;
+                                if (elSelectedValues) elSelectedValues[0].value = itemId;
+                                if (selectCallBack) selectCallBack(itemId, itemName);
+                                icon.classList.toggle('fa-chevron-down');
+                                icon.classList.toggle('fa-chevron-up');
+                                elContent[0].classList.toggle("hidden");
+                            });
+                        });
+                    }
+
+
+                    if (inputs) {
+                        inputs[0].addEventListener("input", (evt) => {
+                            evt.preventDefault();
+                            evt.stopPropagation();
+                            var searchString = evt.target.value.toLowerCase();
+                            const elFiltered = [...elOptions].filter((element, index, array) => {
+                                var parContent = element.querySelector("p");
+                                return parContent.textContent.toLowerCase().includes(searchString.toLowerCase());
+                            });
+                            elContent[0].replaceChildren();
+
+                            var result = searchString.trim() == '' ? elOptions : elFiltered;
+                            [...result].forEach((el) => {
+                                elContent[0].appendChild(el);
+                            });
+                        });
+                    }
+
+                    isListenersAttached = true;
+
+                });
+            }
+        }
+    }
+};
+
 class WebClient {
 
     url = "";
@@ -28,6 +110,24 @@ class WebClient {
             returnResult = result;
         });
         
+        return returnResult;
+    }
+
+    async patchAsync() {
+        var returnResult = null;
+        await fetch(this.url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.data)
+        }).then(response => {
+            if (!response.ok) return null;
+            return response.json();
+        }).then(result => {
+            returnResult = result;
+        });
+
         return returnResult;
     }
 

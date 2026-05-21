@@ -29,6 +29,8 @@ namespace TMCWD.Data.Context
 
         public DbSet<Inventory> Inventories { get; set; }
 
+        public DbSet<Material> Materials { get; set; }
+
         #endregion
 
         #region constructors

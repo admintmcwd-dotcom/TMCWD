@@ -7,6 +7,8 @@ using TMCWD.Model.CustomerSupport;
 using TMCWD.CustomerSupport;
 using TMCWD.Services;
 using System.Net;
+using TMCWD.Model.Engineering;
+using TMCWD.Engineering;
 
 namespace TMCWD.Application.Controllers
 {
@@ -23,6 +25,8 @@ namespace TMCWD.Application.Controllers
         private readonly InspectionTypeTransaction _inspectionTypeTransaction;
         private readonly UserTransaction _userTransaction;
         private readonly RecommendationTransaction _recommendationTransaction;
+        private readonly InventoryTransaction _inventoryTransaction;
+        private readonly MaterialTransaction _materialTransaction;
 
         #endregion
 
@@ -35,7 +39,9 @@ namespace TMCWD.Application.Controllers
             RequestTransaction requestTransaction,
             InspectionTypeTransaction inspectionTypeTransaction,
             UserTransaction userTransaction,
-            RecommendationTransaction recommendationTrasaction)
+            RecommendationTransaction recommendationTrasaction, 
+            InventoryTransaction inventoryTransaction,
+            MaterialTransaction materialTransaction)
         {
             _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
@@ -57,6 +63,12 @@ namespace TMCWD.Application.Controllers
 
             _recommendationTransaction = recommendationTrasaction;
             _recommendationTransaction.SetClient(_client);
+
+            _inventoryTransaction = inventoryTransaction;
+            _inventoryTransaction.SetClient(_client);
+
+            _materialTransaction = materialTransaction;
+            _materialTransaction.SetClient(_client);
         }
 
         #endregion
@@ -146,8 +158,6 @@ namespace TMCWD.Application.Controllers
             model.CurrentUser = currentUser;
             ViewBag.Role = currentUser.Role;
             model.Requests = await _requestTransaction.GetRequests();
-            model.CustomerTransaction =_customerTransaction;
-            model.AccountTransaction = _accountTransaction;
             return View(model);
         }
 
@@ -158,9 +168,17 @@ namespace TMCWD.Application.Controllers
             model.CurrentUser = currentUser;
             ViewBag.Role = currentUser?.Role;
 
-            var types = await _inspectionTypeTransaction.GetTypes() ?? new();
-
             List<RequestDetail> requestDetails = new();
+            List<InspectionType> types = new();
+
+            Task<List<InspectionType>> getInspectionTypesTask = _inspectionTypeTransaction.GetTypes();
+            Task<List<Inventory>> getInventoryTask = _inventoryTransaction.GetAll();
+
+            await Task.WhenAll(getInspectionTypesTask, getInspectionTypesTask);
+
+            types = getInspectionTypesTask.Result ?? new();
+
+            model.InventoryItems = getInventoryTask.Result ?? new();
 
             if (requestId > 0)
             {
@@ -171,17 +189,16 @@ namespace TMCWD.Application.Controllers
                     Task<Account> getAccountTask = _accountTransaction.Get(model.AddEditRequest.AccountId);
                     Task<List<RequestDetail>> getRequestDetailsTask = _requestTransaction.GetRequestDetailByRequestId(model.AddEditRequest.Id);
                     Task<List<Recommendation>> getRecommendationsTask = _recommendationTransaction.GetByRequestId(model.AddEditRequest.Id);
+                    Task<List<Material>> getMaterial = _materialTransaction.GetByRequestId(model.AddEditRequest.Id);
 
-                    await Task.WhenAll(getCustomerTask, getAccountTask, getRequestDetailsTask, getRecommendationsTask);
+                    await Task.WhenAll(getCustomerTask, getAccountTask, getRequestDetailsTask, getRecommendationsTask, getMaterial);
                     model.CurrentCustomer = getCustomerTask.Result;
                     model.CurrentAccount = getAccountTask.Result;
                     requestDetails = getRequestDetailsTask.Result;
                     model.Recommendations = getRecommendationsTask.Result;
-
-                    //model.CurrentCustomer = await _customerTransaction.Get(model.AddEditRequest.CustomerId);
-                    //model.CurrentAccount = await _accountTransaction.Get(model.AddEditRequest.AccountId);
-                    //requestDetail = await _requestTransaction.GetRequestDetailByRequestId(model.AddEditRequest.Id) ?? new();
-                    //model.Recommendations = await _recommendationTransaction.GetByRequestId(model.AddEditRequest.Id) ?? new();
+                    var materials = getMaterial.Result;
+                    if (model.InventoryItems == null || materials == null) model.Materials = new();
+                    else model.Materials = GetMaterialDetails(materials, model.InventoryItems);
                 }
             }
 
@@ -318,6 +335,92 @@ namespace TMCWD.Application.Controllers
             return Ok(user);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SaveMaterial(int requestId, [FromBody] object data)
+        {
+            if (requestId == 0 || data == null) return BadRequest();
+
+            string content = JsonSerializer.Serialize(data);
+
+            if (String.IsNullOrEmpty(content.Trim())) return NoContent();
+
+            using var doc = JsonDocument.Parse(content);
+            var root = doc.RootElement;
+
+            if (root.ValueKind == JsonValueKind.Null) return NoContent();
+
+            var inventoryIdProp = root.GetProperty("inventoryId");
+            var quantityProp = root.GetProperty("quantity");
+
+            if (inventoryIdProp.ValueKind == JsonValueKind.Null || quantityProp.ValueKind == JsonValueKind.Null) return NoContent();
+
+            int invId = inventoryIdProp.GetInt32();
+            int quant = quantityProp.GetInt32();
+            //int.TryParse(inventoryIdProp.GetString(), out int inventoryId);
+            //int.TryParse(quantityProp.GetString(), out int quantity);
+
+            Task<Inventory> getInventoryItemTask = _inventoryTransaction.Get(invId);
+            await Task.WhenAll(getInventoryItemTask);
+
+            var inventoryItem = getInventoryItemTask.Result;
+
+            Material material = new()
+            {
+                InventoryId = invId,
+                UnitCost = inventoryItem.UnitCost,
+                RequestedQuantity = quant,
+            };
+
+            var savedMaterial = _materialTransaction.SaveUpdate(_authenticatedUserService.User.Id, requestId, material);
+
+            return Ok(savedMaterial);
+
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateUnitCostQuantity([FromBody] object param)
+        {
+
+            if (param == null) return NoContent();
+            string jsonData = JsonSerializer.Serialize(param);
+
+            if (String.IsNullOrEmpty(jsonData.Trim())) return NoContent();
+
+            using var doc = JsonDocument.Parse(jsonData);
+
+            if(doc == null) return NoContent();
+
+            var root = doc.RootElement;
+
+            if (root.ValueKind == JsonValueKind.Null) return NoContent();
+            // int inventoryId, int requestId, int id, int quantity = 0, float unitCost = 0
+
+            var inventoryIdProp = root.GetProperty("inventoryId");
+            var requestIdProp = root.GetProperty("requestId");
+            var idProp = root.GetProperty("id");
+            var quantityProp = root.GetProperty("quantity");
+            var unitCostProp = root.GetProperty("unitCost");
+
+            if (inventoryIdProp.ValueKind == JsonValueKind.Null || requestIdProp.ValueKind == JsonValueKind.Null || idProp.ValueKind == JsonValueKind.Null || quantityProp.ValueKind == JsonValueKind.Null || unitCostProp.ValueKind == JsonValueKind.Null) return NoContent();
+
+            int id = idProp.GetInt32();
+            int requestId = requestIdProp.GetInt32();
+            int inventoryId = inventoryIdProp.GetInt32();
+            int quantity = quantityProp.GetInt32();
+            float unitCost = (float)unitCostProp.GetDouble();
+
+            Task <Material> patchQuantityOrNewUnitCost = _materialTransaction.UpdateQuantityOrNewUnitCost(_authenticatedUserService.User.Id, requestId, id, quantity, unitCost);
+            Task<Inventory> getInventory = _inventoryTransaction.Get(inventoryId);
+
+            await Task.WhenAll(patchQuantityOrNewUnitCost, getInventory);
+
+            var newMaterial = patchQuantityOrNewUnitCost.Result;
+            var inventory = getInventory.Result;
+            
+
+            return Ok(new { material = newMaterial, inventory = inventory });
+        }
+
         public IActionResult RefreshCustomerNameComponent(int customerId, string pId = "", string pClass = "")
         {
             return ViewComponent("CustomerName", new { customerId = customerId, pId = pId, pClass = pClass });
@@ -352,6 +455,18 @@ namespace TMCWD.Application.Controllers
             }
 
             return types;
+        }
+
+        private List<MaterialDetailViewModel> GetMaterialDetails(List<Material> materials, List<Inventory> inventory)
+        {
+            List<MaterialDetailViewModel> details = (from m in materials
+                                                    join i in inventory on m.InventoryId equals i.Id
+                                                    select new MaterialDetailViewModel
+                                                    {
+                                                        InventoryItem = i,
+                                                        Material = m
+                                                    }).ToList();
+            return details;
         }
 
         #endregion

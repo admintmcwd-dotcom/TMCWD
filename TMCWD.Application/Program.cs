@@ -14,6 +14,7 @@ builder.Services.AddTransient<CustomerTransaction>();
 builder.Services.AddTransient<RequestTransaction>();
 builder.Services.AddTransient<InventoryTransaction>();
 builder.Services.AddTransient<RecommendationTransaction>();
+builder.Services.AddTransient<MaterialTransaction>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 
