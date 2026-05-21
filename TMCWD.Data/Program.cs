@@ -21,6 +21,7 @@ builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IRequestDetailService, RequestDetailService>();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<IInspectionReportService, InspectionReportService>();
+builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 

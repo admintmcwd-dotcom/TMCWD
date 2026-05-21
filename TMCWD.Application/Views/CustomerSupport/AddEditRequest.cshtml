@@ -215,7 +215,7 @@
             </button>
         </h2>
         <div id="accordion-collapse-body-3" class="hidden bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-3">
-            <div class="w-full grid grid-cols-[50%_50%] gap-4">
+            <div class="w-full grid grid-cols-[50%_30%_20%] gap-4">
                 <div>
                     <!-- autocomplete -->
 
@@ -256,29 +256,99 @@
                     <!-- end autocomplete -->
                 </div>
                 <div>
-                    <button id="btnAddInventory" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <input id="txtQuantity" type="number" class="w-1/2 border rounded-md py-2.5 text-center text-sm" />
+                </div>
+                <div>
+                    <button id="btnAddMaterial" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
             </div>
-            <hr class="h-px my-8 bg-neutral-quaternary">
-            <div id="divInventory" class="w-full h-32 pt-16 text-center align-middle">
-                <table id="tblCustomerList" class="customer-select-list w-full text-sm text-left rtl:text-right text-body">
+            <hr class="h-px my-4 bg-neutral-quaternary">
+            <div id="divInventory" class="w-full h-32 text-center">
+                <table id="tblMaterialList" class="customer-select-list w-full text-sm text-left rtl:text-right text-body">
                     <thead class=" text-sm text-body bg-neutral-secondary-soft border-b rounded-lg border-default">
                         <tr>
-                            <th scope="col" class="px-6 py-3 font-medium text-center">Item</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center">Unit Cost</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center">Quantity</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center">Amount</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center"></th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">Item</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">On Hand</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">Quantity</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">Unit Cost</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">New Unit Cost</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">Amount</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td scope="col" class="px-6 py-3 text-center" colspan="5">
-                                No record(s) found...
-                            </td>
-                        </tr>
+                        @if (Model.Materials == null || !Model.Materials.Any())
+                        {
+                            <tr>
+                                <td scope="col" class="px-6 py-3 text-center" colspan="7">
+                                    No record(s) found...
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var material in Model.Materials)
+                            {
+                                <tr>
+                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.InventoryItem.Name</td>
+                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.InventoryItem.Quantity</td>
+                                    <td scope="col" class="px-6 py-3 font-base text-sm">
+                                        <p id="material-item-quantity-@material.Material.Id" class="w-full">
+                                            @material.Material.RequestedQuantity
+                                        </p>
+                                        <p id="material-quantity-input-@material.Material.Id" class="w-full hidden">
+                                            <input type="number" id="material-text-quantity-item-@material.Material.Id" class="w-full border rounded-md p-2" value="@material.Material.RequestedQuantity" />
+                                        </p>
+                                    </td>
+                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.Material.UnitCost</td>
+                                    <td scope="col" class="px-6 py-3 font-base text-sm">
+                                        <p id="material-item-unitcost-@material.Material.Id" class="w-full">
+                                            @material.Material.NewUnitCost
+                                        </p>
+                                        <p id="material-unitcost-input-@material.Material.Id" class="w-full hidden">
+                                            <input type="number" id="material-text-unitcost-item-@material.Material.Id" class="w-full border rounded-md p-2" value="@material.Material.NewUnitCost" />
+                                        </p>
+                                    </td>
+                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.Material.Amount</td>
+                                    <td scope="col" class="px-6 py-3 font-base text-sm">
+                                        <div class="w-full grid grid-cols-3 gap-2 text-center">
+                                            <div>
+                                                <a id="material-edit-@material.Material.Id" 
+                                                   data-id="@material.Material.Id"
+                                                   data-quantity="@material.Material.RequestedQuantity"
+                                                   data-unitcost="@material.Material.NewUnitCost"
+                                                   href="#"
+                                                   class="material-edit">
+                                                    <p class="w-full">
+                                                        <i class="fa-solid fa-pencil"></i>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a id="material-save-@material.Material.Id" 
+                                                   data-id="@material.Material.Id"
+                                                   data-inventoryid="@material.InventoryItem.Id"
+                                                   data-requestid="@material.Material.RequestId"
+                                                   href="#" class="material-save">
+                                                    <p class="w-full">
+                                                        <i class="fa-solid fa-save"></i>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a id="material-delete-@material.Material.Id" href="#" class="material-delete">
+                                                    <p class="w-full">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
                     </tbody>
                 </table>
             </div>
@@ -550,7 +620,121 @@
             txtRecommendation.value = '';
         });
 
-        const 
+        const btnAddMaterial = document.getElementById("btnAddMaterial");
+        btnAddMaterial.addEventListener("click", async (evt) => {
+            evt.preventDefault();
+            evt.stopPropagation();
+
+            const selectedInventoryItem = document.getElementsByClassName("selected-value");
+            const txtQuantity = document.getElementById("txtQuantity");
+            const hdRequestId = document.getElementById("hdRequestId");
+            if(selectedInventoryItem && txtQuantity && hdRequestId){
+                var inventoryId = + selectedInventoryItem[0].value;
+                var quantity = + txtQuantity.value;
+                var requestId = + hdRequestId.value;
+
+                var url = '@Url.Action("SaveMaterial", "CustomerSupport")' + "?requestId=" + requestId;
+                var data = {
+                    inventoryId: inventoryId,
+                    quantity: quantity
+                };
+
+                var client = new WebClient(url, data);
+                var response = await client.postAsync();
+            }
+        });
+
+        const tblMaterials = document.getElementById("tblMaterialList");
+        const lnkEditMaterials = tblMaterials.getElementsByClassName("material-edit");
+        const lnkSaveMaterials = tblMaterials.getElementsByClassName("material-save");
+        var isEditLnksSet = false;
+        var isSaveLnksSet = false;
+
+        [...lnkEditMaterials].forEach((lnkEdit) => {
+
+            if(isEditLnksSet) return;
+
+            lnkEdit.addEventListener("click", (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                var materialId = evt.target.parentElement.parentElement.dataset.id;
+                var quantity = evt.target.parentElement.parentElement.dataset.quantity;
+                var cost = evt.target.parentElement.parentElement.dataset.unitcost;
+
+                evt.target.classList.toggle('fa-pencil');
+                evt.target.classList.toggle('fa-xmark')
+                evt.target.classList.toggle('text-red-500');
+
+                const pLabelQuantity = tblMaterials.querySelector("#material-item-quantity-" + materialId);
+                const pLabelInputQuantity = tblMaterials.querySelector("#material-quantity-input-" + materialId);
+
+                const pLabelUnitCost = tblMaterials.querySelector("#material-item-unitcost-" + materialId);
+                const pLabelInputUnitCost = tblMaterials.querySelector("#material-unitcost-input-" + materialId);
+
+                const txtRequiredQuantity =  pLabelInputQuantity.querySelector("#material-text-quantity-item-" + materialId);
+                const txtUnitCost = pLabelInputUnitCost.querySelector("#material-text-unitcost-item-" + materialId);
+
+                pLabelQuantity.classList.toggle("hidden");
+                pLabelInputQuantity.classList.toggle("hidden");
+                txtRequiredQuantity.value = quantity;
+                
+                pLabelUnitCost.classList.toggle("hidden");
+                txtUnitCost.value = cost;
+                pLabelInputUnitCost.classList.toggle("hidden");
+
+                isEditLnksSet = true;
+                
+            });
+        });
+
+        [...lnkSaveMaterials].forEach((lnkSave) => {
+
+            if(isSaveLnksSet) return;
+
+            lnkSave.addEventListener("click", async (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                var lnk = evt.target.parentElement.parentElement;
+                const id = lnk.dataset.id;
+                const requestId = lnk.dataset.requestid;
+                const inventoryId = lnk.dataset.inventoryid;
+
+                evt.target.classList.toggle('fa-pencil');
+                evt.target.classList.toggle('fa-xmark')
+                evt.target.classList.toggle('text-red-500');
+
+                const pLabelQuantity = tblMaterials.querySelector("#material-item-quantity-" + id);
+                const pLabelInputQuantity = tblMaterials.querySelector("#material-quantity-input-" + id);
+
+                const pLabelUnitCost = tblMaterials.querySelector("#material-item-unitcost-" + id);
+                const pLabelInputUnitCost = tblMaterials.querySelector("#material-unitcost-input-" + id);
+
+                const txtRequiredQuantity =  pLabelInputQuantity.querySelector("#material-text-quantity-item-" + id);
+                const txtUnitCost = pLabelInputUnitCost.querySelector("#material-text-unitcost-item-" + id);
+
+                pLabelQuantity.classList.toggle("hidden");
+                pLabelInputQuantity.classList.toggle("hidden");
+                var quantity = txtRequiredQuantity.value;
+                
+                pLabelUnitCost.classList.toggle("hidden");
+                var unitCost = txtUnitCost.value;
+                pLabelInputUnitCost.classList.toggle("hidden");
+
+                var url = '@Url.Action("UpdateUnitCostQuantity", "CustomerSupport")'
+                var data = {
+                    id: + id,
+                    requestId: + requestId,
+                    inventoryId: + inventoryId,
+                    quantity: + quantity,
+                    unitCost: + unitCost
+                };
+                var editClient = new WebClient(url, data);
+                var response = await editClient.patchAsync()
+                console.log('Response:', response);
+            });
+        });
 
     });
 </script>

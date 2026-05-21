@@ -30,5 +30,7 @@ namespace TMCWD.Application.Models
 
         public List<Inventory> InventoryItems { get; set; } = new List<Inventory>();
 
+        public List<MaterialDetailViewModel> Materials { get; set; } = new List<MaterialDetailViewModel>();
+
     }
 }

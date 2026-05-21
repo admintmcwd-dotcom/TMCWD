@@ -113,6 +113,24 @@ class WebClient {
         return returnResult;
     }
 
+    async patchAsync() {
+        var returnResult = null;
+        await fetch(this.url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.data)
+        }).then(response => {
+            if (!response.ok) return null;
+            return response.json();
+        }).then(result => {
+            returnResult = result;
+        });
+
+        return returnResult;
+    }
+
     async getAsync() {
         var returnResult = null;
         await fetch(this.url, {

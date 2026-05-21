@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TMCWD.CustomerSupport;
+using TMCWD.Model.CustomerSupport;
 
 namespace TMCWD.Application.ViewComponents
 {
@@ -18,7 +19,9 @@ namespace TMCWD.Application.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(int accountId)
         {
-            var account = await _accountTransaction.Get(accountId);
+            Task<Account> getAccount = _accountTransaction.Get(accountId);
+            await Task.WhenAll(getAccount);
+            var account = getAccount.Result;
             return View("Default", $"{account.AccountNumber}");
         }
 

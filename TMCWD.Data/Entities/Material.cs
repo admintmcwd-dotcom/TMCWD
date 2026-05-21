@@ -23,8 +23,14 @@ namespace TMCWD.Data.Entities
         [Required, Column("InventoryId")]
         public System.Int64 InventoryId { get; set; }
 
+        [Required, Column("RequestId")]
+        public System.Int64 RequestId { get; set; }
+
         [Required, Column("RequestedQuantity")]
-        public int RequestedQuantity { get; set; } = 0;
+        public System.Int64 RequestedQuantity { get; set; } = 0;
+
+        [Required, Column("UnitCost")]
+        public float UnitCost { get; set; }
 
         [Column("NewUnitCost")]
         public float NewUnitCost { get; set; }
@@ -38,9 +44,8 @@ namespace TMCWD.Data.Entities
         [Column("UpdatedBy")]
         public System.Int64 UpdatedBy { get; set; }
 
-        [Column("UpdatedBy")]
+        [Column("DateUpdated")]
         public DateTime DateUpdated { get; set; }
-
 
         #endregion
 
