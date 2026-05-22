@@ -31,6 +31,8 @@ namespace TMCWD.Data.Context
 
         public DbSet<Material> Materials { get; set; }
 
+        public DbSet<OtherFeeType> OtherFeeTypes { get; set;  }
+
         #endregion
 
         #region constructors

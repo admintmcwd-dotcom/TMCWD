@@ -149,6 +149,25 @@ class WebClient {
         return returnResult;
     }
 
+    async putAsync() {
+        var returnResult = null;
+        await fetch(this.url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.data)
+        }).then(response => {
+            if (!response.ok)
+                return null;
+            return response.json();
+        }).then(result => {
+            returnResult = result;
+        });
+
+        return returnResult;
+    }
+
 };
 
 class ModalDialog {

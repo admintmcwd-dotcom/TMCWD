@@ -271,6 +271,8 @@ namespace TMCWD.Application.Controllers
                 requestDetail.RequestId = requestId;
             }
 
+            await _requestTransaction.DeleteRequestDetails(requestId);
+
             var res = await _requestTransaction.SaveMulipleRequestDetail(currentUser.Id, requestId, requestDetails);
 
             return Ok(res);
@@ -360,9 +362,18 @@ namespace TMCWD.Application.Controllers
             //int.TryParse(quantityProp.GetString(), out int quantity);
 
             Task<Inventory> getInventoryItemTask = _inventoryTransaction.Get(invId);
-            await Task.WhenAll(getInventoryItemTask);
+            Task<List<Material>> getRequestMaterialsTask = _materialTransaction.GetByRequestId(requestId);
 
-            var inventoryItem = getInventoryItemTask.Result;
+            await Task.WhenAll(getInventoryItemTask, getRequestMaterialsTask);
+
+            Inventory inventoryItem = getInventoryItemTask.Result;
+            List<Material> requestMaterials = getRequestMaterialsTask.Result;
+
+            if(requestMaterials != null || requestMaterials.Any())
+            {
+                var existingMaterial = requestMaterials.Where(x => x.InventoryId == invId).FirstOrDefault();
+                if (existingMaterial != null) return NoContent();
+            }
 
             Material material = new()
             {
@@ -371,13 +382,13 @@ namespace TMCWD.Application.Controllers
                 RequestedQuantity = quant,
             };
 
-            var savedMaterial = _materialTransaction.SaveUpdate(_authenticatedUserService.User.Id, requestId, material);
+            var savedMaterial = await _materialTransaction.SaveUpdate(_authenticatedUserService.User.Id, requestId, material);
 
-            return Ok(savedMaterial);
+            return Ok(new { material = savedMaterial, inventory = inventoryItem });
 
         }
 
-        [HttpPatch]
+        [HttpPut]
         public async Task<IActionResult> UpdateUnitCostQuantity([FromBody] object param)
         {
 

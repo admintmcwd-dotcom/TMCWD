@@ -17,8 +17,13 @@ namespace TMCWD.Application.Controllers
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly UserTransaction _userTransaction;
         private readonly InspectionTypeTransaction _inspectionTypeTransaction;
+        private readonly OtherFeeTypeTransaction _otherFeeTypeTransaction;
         
-        public AdminController(IHttpClientFactory factory, AuthenticatedUserService authenticatedUserService, UserTransaction userTransaction, InspectionTypeTransaction inspectionTypeTransaction) 
+        public AdminController(IHttpClientFactory factory, 
+            AuthenticatedUserService authenticatedUserService, 
+            UserTransaction userTransaction, 
+            InspectionTypeTransaction inspectionTypeTransaction,
+            OtherFeeTypeTransaction otherFeeTypeTransaction) 
         {
             _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
@@ -26,6 +31,8 @@ namespace TMCWD.Application.Controllers
             _userTransaction.SetClient(_client);
             _inspectionTypeTransaction = inspectionTypeTransaction;
             _inspectionTypeTransaction.SetClient(_client);
+            _otherFeeTypeTransaction = otherFeeTypeTransaction;
+            _otherFeeTypeTransaction.SetClient(_client);
         }
 
         public async Task<IActionResult> Index(string searchString = "")
@@ -166,5 +173,12 @@ namespace TMCWD.Application.Controllers
             return RedirectToAction("InspectionTypes", "Admin");
         }
 
+        public IActionResult OtherFeeTypes()
+        {
+
+            return View("OtherFeeTypes");
+        }
+
     }
+
 }
