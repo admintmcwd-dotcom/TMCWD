@@ -173,10 +173,11 @@ namespace TMCWD.Application.Controllers
             return RedirectToAction("InspectionTypes", "Admin");
         }
 
-        public IActionResult OtherFeeTypes()
+        public async Task<IActionResult> OtherFeeTypes()
         {
-
-            return View("OtherFeeTypes");
+            OtherFeeTypeViewModel model = new();
+            model.OtherFeeTypes = await _otherFeeTypeTransaction.GetAll();
+            return View("OtherFeeTypes", model);
         }
 
     }
