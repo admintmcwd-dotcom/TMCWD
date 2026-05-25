@@ -2,24 +2,26 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
-using TMCWD.Model.Administrator.Interface;
+using TMCWD.Model.CustomerSupport.Interfaces;
 
-namespace TMCWD.Model.Administrator
+namespace TMCWD.Model.CustomerSupport
 {
-    public class OtherFeeType : IOtherFeeType
+    public class JobOrder : IJobOrder
     {
-        public OtherFeeType() { }
+
+        public JobOrder() { }
 
         [DisplayName("Id")]
         public int Id { get; set; }
-        [DisplayName("Name")]
-        public string Name { get; set; } = string.Empty;
-
-        [DisplayName("Default Value")]
-        public decimal DefaultValue { get; set; }
+        [DisplayName("Request Id")]
+        public int RequestId { get; set; }
+        [DisplayName("Job Order Number")]
+        public string JobOrderNumber { get; set; } = string.Empty;
+        [DisplayName("Status")]
+        public int Status { get; set; }
         [DisplayName("Enrolled By")]
         public int CreatedBy { get; set; }
-        [DisplayName("Date Created")]
+        [DisplayName("Date Enrolled")]
         public DateTime DateCreated { get; set; }
         [DisplayName("Updated By")]
         public int UpdatedBy { get; set; }

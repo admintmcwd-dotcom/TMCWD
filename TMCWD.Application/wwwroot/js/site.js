@@ -85,6 +85,165 @@ HTMLElement.prototype.setDropdown = function (selectCallBack) {
     }
 };
 
+HTMLElement.prototype.DataTable = async function(options){
+    const table = this;
+    if (table.tagName !== "TABLE" || options.columns == null) return;
+
+    var columnCount = options.columns.length;
+
+    if (options.buttons != null && options.buttons.length > 0) columnCount++;
+
+    const tdNoRecord = document.createElement("td");
+    tdNoRecord.scope = "col";
+    tdNoRecord.colSpan = columnCount;
+    tdNoRecord.classList.add('px-6', 'py-3', 'text-center');
+    tdNoRecord.textContent = "No record(s) found . . .";
+
+    const trDefault = document.createElement("tr");
+
+    var tbody = table.querySelector("tbody");
+    if (tbody == null) {
+        tbody = document.createElement("tbody");
+        table.appendChild(tbody);
+    }
+
+    if (options.getUrl == '') {
+        trDefault.appendChild(tdNoRecord);
+        tbody.appendChild(trDefault);
+        return;
+    }
+
+    if (options.processing) {
+        trDefault.innerHTML = `
+        <td colspan="${columnCount}" class="w-full h-32 text-center align-middle">
+            <div class="place-items-center">
+               <svg class="w-12 h-12 text-gray-300 animate-spin" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                  <path
+                    d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+                    stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path
+                    d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+                    stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-900">
+                  </path>
+               </svg>
+            </div>
+        </td>`;
+        tbody.appendChild(trDefault);
+    }
+    else {
+        trDefault.appendChild(tdNoRecord);
+        tbody.appendChild(trDefault);
+    }
+
+    var client = new WebClient(options.getUrl, null);
+    var response = await client.getAsync();
+
+    if (response == null || response.length == 0) {
+        trDefault.replaceChildren();
+        trDefault.appendChild(tdNoRecord);
+        return;
+    }
+
+    var fragment = document.createDocumentFragment();
+
+    response.forEach((item) => {
+        const tr = document.createElement("tr");
+
+        options.columns.forEach((column) => {
+            const itemValue = item[column.dataMember];
+            const td = document.createElement("td");
+            td.classList.add('px-6', 'py-3');
+            if (column.isEditable) {
+                td.innerHTML = `<p class='editable-content-text w-full'>${itemValue}</p>
+                    <p class='editable-content-input w-full hidden'>
+                        <input type="text" data-member="${column.dataMember}" class='w-full text-md input-col-${column.dataMember}' />
+                    </p>`;
+            }
+            else td.textContent = itemValue;
+            tr.appendChild(td);
+        });
+
+        if (options.buttons != null && options.buttons.length > 0) {
+            const buttonTd = document.createElement("td");
+            options.buttons.forEach((button) => {
+                const anchor = document.createElement("a");
+                anchor.href = button.location == null || button.location == '' ? '#' : button.location;
+                anchor.dataset.isset = false;
+                const icon = document.createElement("i");
+                icon.className = button.className;
+                anchor.appendChild(icon);
+                buttonTd.appendChild(anchor);
+
+                if (button.isEditButton) {
+                    anchor.addEventListener("click", (evt) => {
+                        evt.preventDefault();
+                        evt.stopPropagation();
+
+                        const contents = tr.querySelectorAll('p');
+
+                        [...contents].forEach((paragraph) => {
+                            const input = paragraph.querySelector('input');
+                            if (input) {
+                                paragraph.classList.toggle('hidden');
+                                var member = input.dataset.member;
+                                input.value = item[member];
+                            }
+                            else paragraph.classList.toggle('hidden');
+                        });
+                        const icon = evt.target;
+                        if (icon) {
+                            button.toggleIcons.forEach((toggleIcon) => {
+                                icon.classList.toggle(toggleIcon);
+                            });
+                        }
+                        evt.target.parentElement.dataset.isset = true;
+                    });
+                }
+                else if (button.isSaveButton) {
+                    anchor.addEventListener("click", (evt) => {
+                        evt.preventDefault();
+                        evt.stopPropagation();
+
+                        const inputs = tr.querySelectorAll('input');
+
+                        if (inputs) {
+                            options.columns.forEach((col) => {
+                                const inp = [...inputs].filter((element, index, array) => {
+                                    return element.classList.contains('input-col-' + col.dataMember);
+                                });
+                                
+                                if (inp.length > 0) {
+                                    console.log('Input:', inp);
+                                    item[col.dataMember] = inp.value;
+                                    console.log('Data Member:', item[col.dataMember]);
+                                }
+                            });
+                        }
+
+                    });
+                }
+                else {
+                    anchor.addEventListener("click", (evt) => {
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                        if (button.clickCallback) button.clickCallback(item);
+                        evt.target.parentElement.dataset.isset = true;
+                    });
+                }
+
+            });
+            tr.appendChild(buttonTd);
+        }
+
+        fragment.appendChild(tr);
+
+    });
+
+    tbody.replaceChildren();
+    tbody.appendChild(fragment);
+
+};
+
 class WebClient {
 
     url = "";
@@ -103,7 +262,7 @@ class WebClient {
             },
             body: JSON.stringify(this.data)
         }).then(response => {
-            if (!response.ok)
+            if (!response.ok || response.status == 204)
                 return null;
             return response.json();
         }).then(result => {
@@ -122,7 +281,7 @@ class WebClient {
             },
             body: JSON.stringify(this.data)
         }).then(response => {
-            if (!response.ok) return null;
+            if (!response.ok || response.status == 204) return null;
             return response.json();
         }).then(result => {
             returnResult = result;
@@ -139,7 +298,7 @@ class WebClient {
                 'Content-Type': 'application/json'
             }
         }).then(response => {
-            if (!response.ok)
+            if (!response.ok || response.status == 204)
                 return null;
             return response.json();
         }).then(result => {

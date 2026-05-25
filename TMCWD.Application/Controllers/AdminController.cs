@@ -176,8 +176,26 @@ namespace TMCWD.Application.Controllers
         public async Task<IActionResult> OtherFeeTypes()
         {
             OtherFeeTypeViewModel model = new();
-            model.OtherFeeTypes = await _otherFeeTypeTransaction.GetAll();
+            model.OtherFeeTypes = new();
+            ViewBag.Role = _authenticatedUserService.User.Role;
             return View("OtherFeeTypes", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOtherFeeTypes()
+        {
+
+            var otherFeeTypes = await _otherFeeTypeTransaction.GetAll();
+            if (otherFeeTypes == null || otherFeeTypes.Count <= 0) return NoContent();
+
+            return Ok(otherFeeTypes);
+        }
+
+        public async Task<IActionResult> SaveUpdateOtherFeeType(OtherFeeTypeViewModel model)
+        {
+            var otherFeeTypeUpdate = await _otherFeeTypeTransaction.SaveUpdate(_authenticatedUserService.User.Id, model.AddEditOtherViewType);
+            if(otherFeeTypeUpdate == null) return NoContent();
+            return RedirectToAction("OtherFeeTypes", "Admin");
         }
 
     }

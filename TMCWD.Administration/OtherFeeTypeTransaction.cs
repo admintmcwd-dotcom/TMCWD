@@ -30,7 +30,7 @@ namespace TMCWD.Administration
 
         public async Task<OtherFeeType> Get(int id)
         {
-            var response = await _client.GetAsync($"api/Get/{id}");
+            var response = await _client.GetAsync($"api/OtherFeeType/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToOtherFeeType(data);
@@ -38,7 +38,7 @@ namespace TMCWD.Administration
 
         public async Task<List<OtherFeeType>> GetAll()
         {
-            var response = await _client.GetAsync("api/GetAll");
+            var response = await _client.GetAsync("api/OtherFeeType/GetAll");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToOtherFeeTypes(data);
@@ -48,7 +48,7 @@ namespace TMCWD.Administration
         {
 
             if (String.IsNullOrEmpty(name.Trim())) throw new Exception("Name is required to get other fee type by name");
-            var response = await _client.GetAsync($"api/GetByName/{name}");
+            var response = await _client.GetAsync($"api/OtherFeeType/GetByName/{name}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToOtherFeeTypes(data);
@@ -58,7 +58,7 @@ namespace TMCWD.Administration
         {
             if (String.IsNullOrEmpty(otherFeeType.Name.Trim())) throw new Exception("Name is required to save other fee type");
             var content = JsonContent.Create(otherFeeType);
-            var response = await _client.PostAsync($"api/SaveUpdate/{userId}", content);
+            var response = await _client.PostAsync($"api/OtherFeeType/SaveUpdate/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToOtherFeeType(data);
@@ -67,7 +67,7 @@ namespace TMCWD.Administration
         public async Task<bool> Delete(int id)
         {
             if (id <= 0) throw new Exception("Other fee type id is required to delete.");
-            var response = await _client.DeleteAsync($"api/Delete/{id}");
+            var response = await _client.DeleteAsync($"api/OtherFeeType/Delete/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if(!response.IsSuccessStatusCode) return false;
             bool.TryParse(data, out bool isSuccess);

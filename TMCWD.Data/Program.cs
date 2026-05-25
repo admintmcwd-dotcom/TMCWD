@@ -22,6 +22,8 @@ builder.Services.AddScoped<IRequestDetailService, RequestDetailService>();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<IInspectionReportService, InspectionReportService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
+builder.Services.AddScoped<IOtherFeeTypeService, OtherFeeTypeService>();
+builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 

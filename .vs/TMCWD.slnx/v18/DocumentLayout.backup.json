@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Projects\\TMCWD\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\views\\admin\\otherfeetypes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\views\\admin\\otherfeetypes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\views\\engineering\\inventory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\views\\engineering\\inventory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\views\\admin\\otherfeetypes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\views\\admin\\otherfeetypes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,28 +30,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "OtherFeeTypes.cshtml",
               "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Views\\Admin\\OtherFeeTypes.cshtml",
               "RelativeDocumentMoniker": "TMCWD.Application\\Views\\Admin\\OtherFeeTypes.cshtml",
               "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Views\\Admin\\OtherFeeTypes.cshtml",
               "RelativeToolTip": "TMCWD.Application\\Views\\Admin\\OtherFeeTypes.cshtml",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAAwB0AAAAvAAAAAAAAAA==",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAEQAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-22T08:51:58.917Z",
+              "WhenOpened": "2026-05-25T07:02:26.012Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Inventory.cshtml",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Views\\Engineering\\Inventory.cshtml",
-              "RelativeDocumentMoniker": "TMCWD.Application\\Views\\Engineering\\Inventory.cshtml",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Views\\Engineering\\Inventory.cshtml",
-              "RelativeToolTip": "TMCWD.Application\\Views\\Engineering\\Inventory.cshtml",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-22T08:51:45.082Z",
+              "DocumentIndex": 0,
+              "Title": "site.js",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\wwwroot\\js\\site.js",
+              "RelativeDocumentMoniker": "TMCWD.Application\\wwwroot\\js\\site.js",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\wwwroot\\js\\site.js",
+              "RelativeToolTip": "TMCWD.Application\\wwwroot\\js\\site.js",
+              "ViewState": "AgIAAL4AAAAAAAAAAAAjwM0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-05-25T06:26:35.591Z",
               "EditorCaption": ""
             }
           ]

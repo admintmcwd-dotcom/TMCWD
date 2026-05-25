@@ -33,6 +33,10 @@ namespace TMCWD.Data.Context
 
         public DbSet<OtherFeeType> OtherFeeTypes { get; set;  }
 
+        public DbSet<Workflow> Workflows { get; set; }
+
+        public DbSet<JobOrder> JobOrders { get; set; }
+
         #endregion
 
         #region constructors

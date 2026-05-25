@@ -24,7 +24,7 @@ namespace TMCWD.Application.Controllers
 
         public IActionResult Index()
         {
-            return View(new LoginViewModel() { Email = string.Empty, Password = string.Empty });
+            return View(new LoginViewModel() { Email = string.Empty, Password = "password123" });
         }
 
         [HttpPost]
