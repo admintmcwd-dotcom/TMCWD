@@ -149,35 +149,76 @@ HTMLElement.prototype.DataTable = async function(options){
     response.forEach((item) => {
         const tr = document.createElement("tr");
 
+        if (options.stockCheck) {
+            if (options.stockCheck.srcDataMember.trim() != '' && options.stockCheck.compareToDataMember.trim() != '') {
+                var srcValue = item[options.stockCheck.srcDataMember.trim()];
+                var compareValue = item[options.stockCheck.compareToDataMember.trim()];
+                if (compareValue > srcValue) {
+                    tr.classList.toggle('bg-red-300');
+                }
+            }
+            else {
+                if (tr.classList.contains('bg-red-300')) {
+                    tr.classList.toggle('bg-red-300');
+                }
+            }
+        }
+
         options.columns.forEach((column) => {
             const itemValue = item[column.dataMember];
             const td = document.createElement("td");
             td.classList.add('px-6', 'py-3');
+            console.log('Is Centered:', column.isCentered);
+            if (column.isCentered) td.classList.add('text-center');
             if (column.isEditable) {
                 td.innerHTML = `<p class='editable-content-text w-full'>${itemValue}</p>
                     <p class='editable-content-input w-full hidden'>
-                        <input type="text" data-member="${column.dataMember}" class='w-full text-md input-col-${column.dataMember}' />
+                        <input type="text" data-member="${column.dataMember}" class='w-full border rounded-md p-1 text-md input-col-${column.dataMember}' value="${itemValue}" />
                     </p>`;
             }
-            else td.textContent = itemValue;
+            else {
+                if (column.displays && column.displays.length > 0) {
+                    const displays = column.displays.filter((item, index, array) => {
+                        return (item.value + '').toLowerCase() === (itemValue + '').toLowerCase();
+                    });
+
+                    if (displays && displays.length > 0) {
+                        const toDisplay = displays[0];
+                        const icon = document.createElement("i");
+                        icon.className = toDisplay.icon;
+                        td.appendChild(icon);
+                    }
+                    else {
+                        td.textContent = itemValue;
+                    }
+                }
+                else td.textContent = itemValue;
+            }
             tr.appendChild(td);
         });
 
         if (options.buttons != null && options.buttons.length > 0) {
             const buttonTd = document.createElement("td");
+            buttonTd.classList.add("w-64");
             options.buttons.forEach((button) => {
-                const anchor = document.createElement("a");
-                anchor.href = button.location == null || button.location == '' ? '#' : button.location;
-                anchor.dataset.isset = false;
+                const elButton = document.createElement("button");
+                //elButton.onclick = button.location == null || button.location == '' ? '' : 'window.location.href="' + button.location + '"';
+                elButton.dataset.isset = false;
+                elButton.className = "text-center hover:rounded p-2.5 hover:bg-blue-900 hover:text-white mr-2";
                 const icon = document.createElement("i");
                 icon.className = button.className;
-                anchor.appendChild(icon);
-                buttonTd.appendChild(anchor);
+                elButton.appendChild(icon);
+                buttonTd.appendChild(elButton);
 
                 if (button.isEditButton) {
-                    anchor.addEventListener("click", (evt) => {
+                    elButton.addEventListener("click", (evt) => {
                         evt.preventDefault();
                         evt.stopPropagation();
+
+                        if (button.location && button.location.trim().length > 0) {
+                            window.location.href = button.location;
+                            return;
+                        }
 
                         const contents = tr.querySelectorAll('p');
 
@@ -200,30 +241,37 @@ HTMLElement.prototype.DataTable = async function(options){
                     });
                 }
                 else if (button.isSaveButton) {
-                    anchor.addEventListener("click", (evt) => {
+                    elButton.addEventListener("click", (evt) => {
                         evt.preventDefault();
                         evt.stopPropagation();
 
                         const inputs = tr.querySelectorAll('input');
+                        var newItem = item;
 
                         if (inputs) {
                             options.columns.forEach((col) => {
-                                const inp = [...inputs].filter((element, index, array) => {
+                                const inps = [...inputs].filter((element, index, array) => {
                                     return element.classList.contains('input-col-' + col.dataMember);
                                 });
-                                
-                                if (inp.length > 0) {
-                                    console.log('Input:', inp);
-                                    item[col.dataMember] = inp.value;
-                                    console.log('Data Member:', item[col.dataMember]);
+
+                                if (inps == null || inps.length == 0) return;
+
+                                const inp = inps[0];
+
+                                if (inp) {
+                                    newItem[col.dataMember] = inp.value;
                                 }
                             });
+
+                            if (button.clickCallback) {
+                                button.clickCallback(newItem);
+                            }
                         }
 
                     });
                 }
                 else {
-                    anchor.addEventListener("click", (evt) => {
+                    elButton.addEventListener("click", (evt) => {
                         evt.preventDefault();
                         evt.stopPropagation();
                         if (button.clickCallback) button.clickCallback(item);
@@ -431,7 +479,7 @@ class ModalDialog {
         var elDialog = document.getElementsByClassName(dialogClassName);
         var elCancel = document.getElementsByClassName(cancelButtonClassName);
         var elSubmit = document.getElementsByClassName(submitButtonClassName);
-        var elText = document.getElementsByClassName(inputNumberClassName);
+        var elText = document.getElementsByClassName(inputClassName);
         if (elDialog) this.dialog = elDialog[0];
         if (elCancel) this.cancelButton = elCancel[0];
         if (elSubmit) this.submitButton = elSubmit[0];

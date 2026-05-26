@@ -39,13 +39,13 @@ namespace TMCWD.Application.Controllers
         {
             User currentUser = _authenticatedUserService.User;
 
-            var userList = await _userTransaction.SearchUser(searchString);
-            if (userList == null) userList = await _userTransaction.GetUsers();
+            //var userList = await _userTransaction.SearchUser(searchString);
+            //if (userList == null) userList = await _userTransaction.GetUsers();
 
             AdminViewModel model = new()
             {
                 CurrentUser = currentUser,
-                PagedUserList = userList ?? new List<User>(),
+                PagedUserList = new List<User>(),
                 SearchString = searchString
             };
 
@@ -53,12 +53,20 @@ namespace TMCWD.Application.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> GetUsers(string searchString)
+        {
+            var userList = await _userTransaction.SearchUser(searchString);
+            if (userList == null) userList = await _userTransaction.GetUsers();
+            if (userList == null) return NotFound();
+            return Ok(userList);
+        }
+
         public IActionResult Users()
         {
             return View();
         }
 
-        public async Task<IActionResult> AddEditUser(int currentUserId, int editUserId = 0)
+        public async Task<IActionResult> AddEditUser(int editUserId = 0)
         {
 
             User editUser = new();
@@ -120,10 +128,17 @@ namespace TMCWD.Application.Controllers
             User currentUser = _authenticatedUserService.User;
             ViewBag.Role = currentUser.Role;
 
-            var inspectionTypes = await _inspectionTypeTransaction.GetTypes();
-            if (inspectionTypes != null && inspectionTypes.Any()) model.InspectionTypes = inspectionTypes;
+            //var inspectionTypes = await _inspectionTypeTransaction.GetTypes();
+            //if (inspectionTypes != null && inspectionTypes.Any()) model.InspectionTypes = inspectionTypes;
 
             return View(model);
+        }
+
+        public async Task<IActionResult> GetInspectionTypes()
+        {
+            var inspectionTypes = await _inspectionTypeTransaction.GetTypes();
+            if(inspectionTypes == null || !inspectionTypes.Any()) return NotFound();
+            return Ok(inspectionTypes);
         }
 
         public async Task<IActionResult> AddEditInspectionType(int inspectionTypeId = 0)
@@ -159,16 +174,16 @@ namespace TMCWD.Application.Controllers
             return RedirectToAction("InspectionTypes", "Admin");
         }
 
-        public async Task<IActionResult> DeactivateInspectionType(int inspectionTypeId, int currentUserId)
+        public async Task<IActionResult> DeactivateInspectionType(int inspectionTypeId)
         {
             InspectionType inspType = new();
             inspType = await _inspectionTypeTransaction.Get(inspectionTypeId);
             if (inspType != null)
             {
                 inspType.IsActive = false;
-                inspType.UpdatedBy = currentUserId;
+                inspType.UpdatedBy = _authenticatedUserService.User.Id;
                 inspType.DateUpdated = DateTime.Now;
-                await _inspectionTypeTransaction.SaveUpdate(currentUserId, inspType);
+                await _inspectionTypeTransaction.SaveUpdate(_authenticatedUserService.User.Id, inspType);
             }
             return RedirectToAction("InspectionTypes", "Admin");
         }
@@ -189,6 +204,14 @@ namespace TMCWD.Application.Controllers
             if (otherFeeTypes == null || otherFeeTypes.Count <= 0) return NoContent();
 
             return Ok(otherFeeTypes);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveOtherFeeType([FromBody]  OtherFeeType otherFeeType)
+        {
+            var updatedOtherFeeType = await _otherFeeTypeTransaction.SaveUpdate(_authenticatedUserService.User.Id, otherFeeType);
+            if (updatedOtherFeeType == null) return NoContent();
+            return Ok(updatedOtherFeeType);
         }
 
         public async Task<IActionResult> SaveUpdateOtherFeeType(OtherFeeTypeViewModel model)

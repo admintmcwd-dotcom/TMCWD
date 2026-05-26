@@ -7,6 +7,12 @@
 
 @model TMCWD.Application.Models.OtherFeeTypeViewModel
 
+<style>
+    .negative-stock[data-negativestock="True"] {
+        color: red;
+    }
+</style>
+
 @using (Html.BeginForm("SaveUpdateOtherFeeType", "Admin"))
 {
     <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
@@ -48,10 +54,10 @@
             <table id="tblOtherFeeTypes" class="customer-select-list w-full text-sm text-left rtl:text-right text-body">
                 <thead class=" text-sm text-body bg-neutral-secondary-soft border-b rounded-lg border-default">
                     <tr>
-                        <th scope="col" class="px-6 py-3 font-medium text-center">#</th>
-                        <th scope="col" class="px-6 py-3 font-medium text-center">Name</th>
-                        <th scope="col" class="px-6 py-3 font-medium text-center">Default Value</th>
-                        <th scope="col" class="px-6 py-3 font-medium text-center"></th>
+                        <th scope="col" class="px-6 py-3 font-medium">#</th>
+                        <th scope="col" class="px-6 py-3 font-medium">Name</th>
+                        <th scope="col" class="px-6 py-3 font-medium">Default Value</th>
+                        <th scope="col" class="px-6 py-3 font-medium"></th>
                     </tr>
                 </thead>
             </table>
@@ -64,6 +70,7 @@
     const table = document.getElementById("tblOtherFeeTypes");
     table.DataTable({
         processing: true,
+        stockCheck: { srcDataMember: 'quantity', compareToDataMember: 'requiredQuantity' },
         getUrl: '@Url.Action("GetOtherFeeTypes", "Admin")',
         columns: [
             {dataMember: 'id', isEditable: false, classNames: '' },
@@ -71,14 +78,19 @@
             {dataMember: 'defaultValue', isEditable: false, classNames: '' },
         ],
         buttons:[
-            { className: 'fa-solid fa-pencil pr-3', toggleIcons: ['fa-pencil', 'fa-xmark'], isEditButton: true },
-            { className: 'fa-solid fa-floppy-disk pr-3', isSaveButton: true, clickCallback: (data) => { console.log('Save Data:', data); } },
-            { className: 'fas fa-trash pr-3', clickCallback: (data) => { console.log('Delete Data:', data); } }
+            { className: 'fa-solid fa-pencil', toggleIcons: ['fa-pencil', 'fa-xmark'], isEditButton: true },
+            { className: 'fa-solid fa-floppy-disk', isSaveButton: true, clickCallback: (data) => saveData(data) },
+            { className: 'fas fa-trash', clickCallback: (data) => deleteData(data) }
         ]
     });
     
-    function editData(data){
-        console.log('Edit Data:', data);
+    async function saveData(data){
+        console.log('Save Data:', data);
+
+        var saveUrl = '@Url.Action("SaveOtherFeeType", "Admin")'
+        var client = new WebClient(saveUrl, data);
+        var response = await client.postAsync();
+        if(response) window.location.reload();
     };
 
     function deleteData(data){

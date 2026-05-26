@@ -1,0 +1,75 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_insideLayout";
+}
+
+@model TMCWD.Application.Models.NewApplicationViewModel
+
+<div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm mt-1">
+    <h5 class="mb-2 text-2xl font-bold text-gray-900">New Connection</h5>
+    <hr class="h-px my-8 bg-neutral-quaternary">
+    <p class="text-gray-700">
+        <h4 class="mb-2 text-lg font-bold text-gray-900">Personal Information</h4>
+        <div class="grid grid-cols-3 gap-4">
+            <div>
+                <label for="txtLastname" class="text-sm pl-2 font-medium">Lastname</label>
+                @Html.TextBoxFor(x => x.Lastname, new { id = "txtLastname", maxlength = "50", type = "text", @class = "block pl-4 w-full border rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder = "Lastname", required="true" })
+                @* <input id="txtLastname" maxlength="50" type="text" class="block pl-4 w-full border rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Lastname" required /> *@
+            </div>
+            <div>
+                <label for="txtFirstname" class="text-sm pl-2 font-medium">Firstname</label>
+                @Html.TextBoxFor(x => x.Firstname, new { id = "txtFirstname", maxlength = "50", type = "text", @class = "block pl-4 w-full border rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder = "Firstname", required = "true" })
+            </div>
+            <div>
+                <label for="txtMiddlename" class="text-sm pl-2 font-medium">Middlename</label>
+                @Html.TextBoxFor(x => x.Middlename, new { id = "txtMiddlename", maxlength = "50", type = "text", @class = "block pl-4 w-full border rounded-md rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder = "Middlename" })
+            </div>
+            <div>
+                <label for="txtPhone" class="text-sm pl-2 font-medium">Phone Number</label>
+                @Html.TextBoxFor(x => x.Phone, new { id = "txtPhone", maxlength = "11", type = "text", @class = "block w-full pl-4 border rounded-md rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder = "Phone Number", required = "true" })
+            </div>
+            <div>
+                <label for="txtEmail" class="text-sm pl-2 font-medium">Email</label>
+                @Html.TextBoxFor(x => x.Email, new { id = "txtEmail", maxlength = "100", type = "email", @class = "block w-full pl-4 border rounded-md rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder = "Email Address", required = "true" })
+            </div>
+        </div>
+        <h4 class="my-4 text-lg font-bold text-gray-900">Address</h4>
+        <div class="grid grid-cols-3 gap-4">
+            <div>
+                <label for="txtUnitNo" class="text-sm pl-2 font-medium">Unit No.</label>
+                @Html.TextBoxFor(x => x.UnitNo, new { id = "txtUnitNo", maxlength = "4", type = "number", @class = "block w-full pl-4 border rounded-md rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder = "Unit No." })
+            </div>
+            <div>
+                <label for="txtBuilding" class="text-sm pl-2 font-medium">Appartment / Building</label>
+                @Html.TextBoxFor(x => x.Building, new { id = "txtBuilding", maxlength = "50", type = "text", @class = "block w-full pl-4 border rounded-md rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder = "Building / Apartment" })
+            </div>
+            <div>
+                <label for="txtHouseNo" class="text-sm pl-2 font-medium">House No.</label>
+                @Html.TextBoxFor(x => x.HouseNo, new { id = "txtHouseNo", maxlength = "10", type = "number", @class = "block w-full border rounded-md rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder = "House No.", required = "true" })
+            </div>
+            <div>
+                <label for="txtStreet" class="text-sm pl-2 font-medium">Street</label>
+                @Html.TextBoxFor(x => x.Street, new { id = "txtStreet", type = "text", maxlength = "150", @class = "block w-full pl-4 border rounded-md rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder = "Street", required = "true" })
+            </div>
+            <div>
+                <label for="txtBarangay" class="text-sm pl-2 font-medium">Barangay</label>
+                @Html.TextBoxFor(x => x.Barangay, new { id = "txtBarangay", type = "text", maxlength = "150", @class = "block w-full pl-4 border rounded-md rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder = "Barangay", required = "true" })
+                <input id="txtBarangay" type="text" class="block w-full pl-4 border rounded-md rounded-md min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Barangay" required />
+            </div>
+        </div>
+    </p>
+    <hr class="h-px my-8 bg-neutral-quaternary">
+    <div class="w-full text-right">
+        <button type="button" class="border p-3 rounded-md bg-red-400 mr-4 hover:border-black text-white">
+            <i class="fa-solid fa-xmark mr-2"></i>Cancel
+        </button>
+        <button type="button" class="border p-3 rounded-md bg-yellow-400 mr-4 hover:border-black">
+            <i class="fab fa-firstdraft mr-2"></i>Save as Draft
+        </button>
+        <button type="button" class="border p-3 rounded-md bg-green-400 mr-4 hover:border-black">
+            <i class="fa-solid fa-floppy-disk mr-2"></i>Submit
+        </button>
+    </div>
+</div>

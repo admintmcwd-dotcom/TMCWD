@@ -23,8 +23,9 @@ public enum ErrorModule
 
 public enum RequestStatus
 {
-    InProgress = 1,
-    Completed = 2
+    Draft = 1,
+    InProgress = 2,
+    Completed = 3
 }
 
 public enum AccountStatus
