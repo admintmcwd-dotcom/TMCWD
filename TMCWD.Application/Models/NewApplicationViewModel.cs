@@ -18,6 +18,7 @@
         public string City { get; set; } = "Trece Martires City";
         public string Province { get; set; } = "Cavite";
         public string ZipCode { get; set; } = "4109";
+        public string FullAddress => $"{UnitNo.ToString()} {Building}, {HouseNo.ToString()} {Street}, {Barangay}, {City}, {Province}, {ZipCode}";
 
     }
 }

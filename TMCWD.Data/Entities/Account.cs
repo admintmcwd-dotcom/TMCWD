@@ -28,8 +28,20 @@ namespace TMCWD.Data.Entities
         [MaxLength(50), Column("MeterNumber")]
         public string MeterNumber { get; set; } = string.Empty;
 
-        [Required, MaxLength(255), Column("Address")]
-        public string Address { get; set; } = string.Empty;
+        [Column("UnitNo")]
+        public string UnitNumber { get; set; } = string.Empty;
+
+        [Column("Building")]
+        public string Building { get; set; } = string.Empty;
+
+        [Required, Column("HouseNo")]
+        public string HouseNumber { get; set; } = string.Empty;
+
+        [Required, Column("Street")]
+        public string Street { get; set; } = string.Empty;
+
+        [Required, Column("Barangay")]
+        public string Barangay { get; set; } = string.Empty;
 
         [Required, Column("IsCurrentAddress")]
         public bool IsCurrentAddress { get; set; }

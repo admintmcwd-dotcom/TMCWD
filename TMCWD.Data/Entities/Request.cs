@@ -22,7 +22,7 @@ namespace TMCWD.Data.Entities
         [Required, MaxLength(50), Column("ControlNumber")]
         public string ControlNumber { get; set; } = string.Empty;
 
-        [Required, Column("CustomerId")]
+        [Column("CustomerId")]
         public System.Int64 CustomerId { get; set; }
 
         [Column("AccountId")]

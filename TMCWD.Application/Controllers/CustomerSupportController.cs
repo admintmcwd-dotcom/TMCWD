@@ -9,6 +9,7 @@ using TMCWD.Services;
 using System.Net;
 using TMCWD.Model.Engineering;
 using TMCWD.Engineering;
+using TMCWD.Model.Extensions;
 
 namespace TMCWD.Application.Controllers
 {
@@ -27,6 +28,7 @@ namespace TMCWD.Application.Controllers
         private readonly RecommendationTransaction _recommendationTransaction;
         private readonly InventoryTransaction _inventoryTransaction;
         private readonly MaterialTransaction _materialTransaction;
+        private readonly FindingTransaction _findingTransaction;
 
         #endregion
 
@@ -41,7 +43,8 @@ namespace TMCWD.Application.Controllers
             UserTransaction userTransaction,
             RecommendationTransaction recommendationTrasaction, 
             InventoryTransaction inventoryTransaction,
-            MaterialTransaction materialTransaction)
+            MaterialTransaction materialTransaction,
+            FindingTransaction findingTransaction)
         {
             _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
@@ -69,6 +72,9 @@ namespace TMCWD.Application.Controllers
 
             _materialTransaction = materialTransaction;
             _materialTransaction.SetClient(_client);
+
+            _findingTransaction = findingTransaction;
+            _findingTransaction.SetClient(_client);
         }
 
         #endregion
@@ -78,10 +84,8 @@ namespace TMCWD.Application.Controllers
         {
             CustomerViewModel model = new();
             User currentUser = _authenticatedUserService.User;
-
             model.CurrentUser = currentUser ?? new User();
             //model.PagedCustomerList = await _customerTransaction.GetCustomers();
-            ViewBag.Role = model.CurrentUser.Role;
 
             return View(model);
         }
@@ -103,8 +107,6 @@ namespace TMCWD.Application.Controllers
                 AddEditCustomer = await _customerTransaction.Get(editCustomerId) ?? new Customer(),
                 CustomerAccounts = editCustomerId > 0 ? await _accountTransaction.GetByCustomerId(editCustomerId) : new List<Account>()
             };
-
-            ViewBag.Role = currentUser.Role;
 
             return View(model);
         }
@@ -235,7 +237,6 @@ namespace TMCWD.Application.Controllers
             User currentUser = _authenticatedUserService.User;
             RequestViewModel model = new();
             model.CurrentUser = currentUser;
-            ViewBag.Role = currentUser?.Role;
 
             List<RequestDetail> requestDetails = new();
             List<InspectionType> types = new();
@@ -474,10 +475,12 @@ namespace TMCWD.Application.Controllers
 
         public async Task<IActionResult> NewConnection()
         {
-            ViewBag.Role = _authenticatedUserService.User.Role;
             return View();
         }
 
+        #endregion
+
+        #region findings
         #endregion
 
         #region private methods

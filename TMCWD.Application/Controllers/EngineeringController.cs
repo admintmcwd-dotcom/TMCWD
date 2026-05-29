@@ -34,7 +34,6 @@ namespace TMCWD.Application.Controllers
 
             InventoryViewModel model = new();
             model.CurrentUser = currentUser;
-            ViewBag.Role = currentUser.Role;
 
             model.Inventory = await _inventoryTransaction.GetAll();
 
@@ -46,7 +45,6 @@ namespace TMCWD.Application.Controllers
             User currentUser = _authenticatedUserService.User;
             InventoryViewModel model = new();
             model.CurrentUser = currentUser;
-            ViewBag.Role = currentUser?.Role;
 
             if(inventoryId > 0)
             {

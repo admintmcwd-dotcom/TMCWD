@@ -292,6 +292,65 @@ HTMLElement.prototype.DataTable = async function(options){
 
 };
 
+HTMLElement.prototype.Collapsible = function () {
+    const div = this;
+    if (div.tagName !== "DIV") return;
+    if (div.dataset.accordion == null || div.dataset.accordion.toLowerCase() != 'collapse') return;
+
+    //write code here
+    const buttons = div.getElementsByClassName('accordion-button');
+    if (buttons == null || buttons.length <= 0) return;
+
+    [...buttons].forEach((button) => {
+        button.addEventListener('click', (evt) => {
+            evt.preventDefault();
+            evt.stopPropagation();
+            const h2 = evt.target.closest('h2');
+            if (h2 == null) return;
+            const bodyDiv = h2.nextSibling();
+            if (bodyDiv == null) return;
+            const icon = evt.target.querySelector('svg');
+            if (icon == null) return;
+            bodyDiv.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        });
+    });
+};
+
+HTMLElement.prototype.SetServices = function () {
+    const div = this;
+    if (div.tagName !== "DIV") return;
+    if (div.dataset.services == null || div.dataset.services != 'details') return;
+
+    const checkboxes = div.querySelectorAll("input[type='checkbox']");
+
+    if (checkboxes == null || checkboxes.length <= 0) return;
+
+    // [...checkBoxes].forEach((checkbox) => {
+    //     checkbox.addEventListener("change", (evt) => {
+    //         evt.preventDefault();
+    //         var targetId = evt.target.id;
+    //         var typeId = evt.target.dataset.id;
+    //         var withDetail = evt.target.dataset.withdetail;
+    //         var requiredAccount = evt.target.dataset.requiredaccount;
+    //         if (requiredAccount == 'False') {
+    //             [...checkBoxes].forEach((checkbox) => {
+    //                 if (checkbox.id != targetId) {
+    //                     checkbox.checked = false;
+    //                 }
+    //             });
+    //         }
+    //         else {
+    //             var checkBoxesNoAccount = document.querySelectorAll('[data-requiredaccount="False"]');
+    //             [...checkBoxesNoAccount].forEach((checkbox) => {
+    //                 checkbox.checked = false;
+    //             });
+    //         }
+    //     });
+    // });
+
+};
+
 class WebClient {
 
     url = "";
@@ -542,6 +601,7 @@ class CustomerSelect {
     txtSearch = null;
     tbodyList = null;
     dialog = null;
+    currentData = null;
 
     constructor(params) {
         this.getCustomerUrl = params.getCustomerUrl;
@@ -607,13 +667,12 @@ class CustomerSelect {
                 if (this.tbodyList) {
                     this.tbodyList.replaceChildren();
 
-                    for (var ctr = 0; ctr < result.length; ctr++) {
-                        var customer = result[ctr];
+                    result.forEach((customer) => {
                         var tr = document.createElement("tr");
                         tr.classList.add("bg-white", "border-b", "hover:bg-gray-50");
                         tr.innerHTML = `
                         <td class="px-6 py-4 text-center">
-                            <input data-email="${customer.email}" data-phone="${customer.phoneNumber}" data-customerid="${customer.id}" data-customername="${customer.lastname + ', ' + customer.firstname + ' ' + customer.middlename}" type="radio" name="customerSelect" value="${customer.id}">
+                            <input data-email="${customer.email}" data-phone="${customer.phoneNumber}" data-customerid="${customer.id}" data-lastname="${customer.lastname}" data-firstname="${customer.firstname}" data-middlename="${customer.middlename}" type="radio" name="customerSelect" value="${customer.id}">
                         </td>
                         <td class="px-6 py-4">${customer.firstname} ${customer.lastname}</td>
                         <td class="px-6 py-4">${customer.email}</td>
@@ -621,9 +680,44 @@ class CustomerSelect {
                         <td class="px-6 py-4 text-center">
                             ${customer.isActive ? '<i class="fa-solid fa-check text-green-500"></i>' : '<i class="fa-solid fa-xmark text-red-500"></i>'}
                         </td>
-                    `;
+                        `;
                         this.tbodyList.appendChild(tr);
-                    }
+                        var selectInput = tr.querySelector('input');
+                        if (selectInput) {
+                            selectInput.addEventListener('click', (evt) => {
+                                //evt.preventDefault();
+                                evt.stopPropagation();
+                                this.currentData = customer;
+                                //console.log('Customer Data:', customer);
+                            });
+                        }
+                    });
+
+                    // for (var ctr = 0; ctr < result.length; ctr++) {
+                    //     var customer = result[ctr];
+                    //     var tr = document.createElement("tr");
+                    //     tr.classList.add("bg-white", "border-b", "hover:bg-gray-50");
+                    //     tr.innerHTML = `
+                    //     <td class="px-6 py-4 text-center">
+                    //         <input data-email="${customer.email}" data-phone="${customer.phoneNumber}" data-customerid="${customer.id}" data-lastname="${customer.lastname}" data-firstname="${customer.firstname}" data-middlename="${customer.middlename}" type="radio" name="customerSelect" value="${customer.id}">
+                    //     </td>
+                    //     <td class="px-6 py-4">${customer.firstname} ${customer.lastname}</td>
+                    //     <td class="px-6 py-4">${customer.email}</td>
+                    //     <td class="px-6 py-4">${customer.phoneNumber}</td>
+                    //     <td class="px-6 py-4 text-center">
+                    //         ${customer.isActive ? '<i class="fa-solid fa-check text-green-500"></i>' : '<i class="fa-solid fa-xmark text-red-500"></i>'}
+                    //     </td>
+                    //     `;
+                    //     this.tbodyList.appendChild(tr);
+                    //     var selectInput = tr.querySelector('input');
+                    //     if (selectInput) {
+                    //         selectInput.addEventListener('click', (evt) => {
+                    //             //evt.preventDefault();
+                    //             evt.stopPropagation();
+                    //             console.log('Customer Data:', customer);
+                    //         });
+                    //     }
+                    // }
                 }
             }
         }
@@ -634,8 +728,10 @@ class CustomerSelect {
         var customerId = selectedRadio[0].dataset.customerid;
         var phone = encodeURIComponent(selectedRadio[0].dataset.phone);
         var email = encodeURIComponent(selectedRadio[0].dataset.email);
-        var customerName = encodeURIComponent(selectedRadio[0].dataset.customername);
-        this.fnCallback(customerId, customerName, phone, email);
+        var firstname = encodeURIComponent(selectedRadio[0].dataset.firstname);
+        var lastname = encodeURIComponent(selectedRadio[0].dataset.lastname);
+        var middlename = encodeURIComponent(selectedRadio[0].dataset.middlename);
+        this.fnCallback(this.currentData);
     }
 };
 

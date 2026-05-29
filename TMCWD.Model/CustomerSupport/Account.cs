@@ -14,20 +14,43 @@ namespace TMCWD.Model.CustomerSupport
         public int CustomerId { get; set; }
         [DisplayName("Account Number")]
         public string AccountNumber { get; set; } = string.Empty;
+
+        [DisplayName("Unit No")]
+        public string UnitNumber { get; set; } = string.Empty;
+
+        [DisplayName("Building / Apartment")]
+        public string Building { get; set; } = string.Empty;
+
+        [DisplayName("House No")]
+        public string HouseNumber { get; set; } = string.Empty;
+
+        [DisplayName("Street")]
+        public string Street { get;set;  } = string.Empty;
+
+        [DisplayName("Barangay")]
+        public string Barangay { get; set; } = string.Empty;
+
         [DisplayName("Meter Number")]
         public string MeterNumber { get; set; } = string.Empty;
+
         [DisplayName("Address")]
-        public string Address { get; set; } = string.Empty;
+        public string FullAddress => $"{UnitNumber} {Building} {HouseNumber} {Street} {Barangay}";
+
         [DisplayName("Current")]
         public bool IsCurrentAddress { get; set; }
+
         [DisplayName("Date Enrolled")]
         public DateTime DateCreated { get; set; }
+
         [DisplayName("Date Updated")]
         public DateTime DateUpdated { get; set; }
+
         [DisplayName("Status")]
         public AccountStatus Status { get; set; }
+
         [DisplayName("Created By")]
         public int CreatedBy { get; set; }
+
         [DisplayName("Updated By")]
         public int UpdatedBy { get; set; }
     }

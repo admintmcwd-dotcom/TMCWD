@@ -283,72 +283,25 @@
     <div class="flex h-screen">
 
         <aside class="w-64 bg-blue-900 text-white">
-                    <div class="p-6">
-                        @switch (ViewBag.Role)
-                            {
-                                case 1:
-                                    <h1 class="text-2xl font-bold">TMCWD Admin</h1>
-                                    break;
-                                case 2:
-                                    <h1 class="text-2xl font-bold">TMCWD Customer</h1>
-                                    break;
-                                case 3:
-                                    <h1 class="text-2xl font-bold">TMCWD Engineering</h1>
-                                    break;
-                            }
-                    </div>
-            
-                    <nav class="mt-6">
-                            @switch (ViewBag.Role)
-                            {
-                                case 1:
-                                    <a href="@Url.Action("Index", "Admin")" class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                        <i class="fas fa-home mr-3"></i>User
-                                    </a>
-                                    <a href="@Url.Action("InspectionTypes", "Admin")" class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                        <i class="fas fa-home mr-3"></i>Inspection Type
-                                    </a>
-                                    <a href="@Url.Action("OtherFeeTypes", "Admin")" class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                        <i class="fas fa-home mr-3"></i>Other Fee Type
-                                    </a>
-                                    break;
-                                case 2:
-                                    <a href="@Url.Action("Index", "CustomerSupport")" class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                        <i class="fas fa-home mr-3"></i>Customers
-                                    </a>
-                                    <a href="@Url.Action("NewConnection", "CustomerSupport")" class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                        <i class="fa-solid fa-faucet-drip mr-3"></i>New Connection
-                                    </a>
-                                    <a href='@Url.Action("Requests", "CustomerSupport")' class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                        <i class="fa fa-ticket mr-3" aria-hidden="true"></i>Requests
-                                    </a>
-                                    break;
-                                case 3:
-                                    <a href="@Url.Action("Inventory", "Engineering")" class="flex items-center px-6 py-3 hover:bg-blue-800">
-                                        <i class="fas fa-home mr-3"></i>Inventory
-                                    </a>
-                                    break;
-                            }
-                        <div class="border-t border-blue-800 my-4"></div>
-                        <form method="POST" action="{{ route('admin.logout') }}">
-                            @* @csrf *@
-                            <input type="hidden" name="token" value="{{ session('admin_auth_token') ?? request('token') }}">
-                            <button type="submit" class="w-full flex items-center px-6 py-3 hover:bg-blue-800 text-left">
-                                <i class="fas fa-sign-out-alt mr-3"></i>
-                                Logout
-                            </button>
-                        </form>
-                    </nav>
+            <vc:left-side-menu></vc:left-side-menu>
         </aside>
 
         <!-- Main Content -->
         <div class="flex-1 overflow-y-auto">
             <!-- Top Bar -->
             <header class="bg-white shadow-sm">
-                <div class="flex items-center justify-between px-8 py-4">
-                    <h2 class="text-xl font-semibold text-gray-800">TMCWD</h2>
-                    <div class="flex items-center space-x-4">
-                        <span class="text-gray-600">{{ Auth::user()->name }}</span>
+                @* <div class="flex flex-col items-center justify-normal px-8 py-4"> *@
+                <div class="grid grid-cols-2 justify-normal px-8 py-4">
+                    <div>
+                        <img src="~/images/logo.png" class="inline mr-1 h-16 w-16" />
+                        <h2 class="inline text-xl font-semibold text-gray-800">Trece Martires Water District</h2>
+                    </div>
+                    <div>
+                        <div class="flex w-full items-center space-x-4 px-8 py-4">
+                            <span class="w-full font-semibold text-right text-gray-800">
+                                <vc:logged-in-user></vc:logged-in-user>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -359,111 +312,5 @@
         </div>
 </div>
 <vc:modal-dialog></vc:modal-dialog>
-    <script type="text/javascript">
-
-        // const infoAlert = document.getElementById("infoAlert");
-        // const errorAlert = document.getElementById("errorAlert");
-        // const successAlert = document.getElementById("successAlert");
-        // const warningAlert = document.getElementById("warningAlert");
-
-        // var showAlert = function(options){
-        //     if(options){
-        //         const alertWindow = document.getElementById(options.type + 'Alert');
-        //         var alertSpan = document.querySelector('#' + options.type + 'Alert span');
-        //         alertSpan.innerText = options.content;
-        //         alertWindow.classList.remove('hidden');
-        //         if(options.autoHide){
-        //             setTimeout((elem) => {
-        //                 elem.classList.add('hidden');
-        //             }, 3000, alertWindow);
-        //         }
-        //     }
-        // };
-        //end alert dialogs
-
-        //confirm dialogs
-
-        //parameters are type, submitUrl, title, content
-        // var showModalDialog = function(options){
-        //     var returnValue;
-        //     switch(options.type){
-        //         case 'deactivate':
-        //             if(options){
-        //                 const deactivateDialog = document.getElementById("deactivateModal");
-        //                 const btnSubmitDeactivateDialog = document.getElementById("btnSubmitDeactivateDialog");
-        //                 const btnCancelDeactivateDialog = document.getElementById("btnCancelDeactivateDialog");
-        //                 const dialogDeactivateContent = document.getElementById("dialogDeactivateContent");
-        //                 const dialogDeactivateTitle = document.getElementById("dialogDeactivateTitle");
-
-        //                 if(options.title) dialogDeactivateTitle.innerText = options.title;
-        //                 if(options.content) dialogDeactivateContent.innerText = options.content;
-        //                 deactivateDialog.showModal();
-        //                 btnSubmitDeactivateDialog.addEventListener("click", (evt) => {
-        //                     evt.preventDefault();
-        //                     if(options.submitUrl) window.location.href = options.submitUrl;
-        //                 }, { once: true });
-
-        //                 btnCancelDeactivateDialog.addEventListener("click", (evt) => {
-        //                     deactivateDialog.close();
-        //                 }, { once: true });
-        //             }
-        //             break;
-        //         case 'success':
-        //             if(options){
-        //                 const successDialog = document.getElementById("successModal");
-        //                 const btnCloseSuccessModal = document.getElementById("btnCloseSuccessModal");
-        //                 const dialogSuccessTitle = document.getElementById("dialogSuccessTitle");
-        //                 const dialogSuccessContent = document.getElementById("dialogSuccessContent");
-
-        //                 if(options.title) dialogSuccessTitle.innerText = options.title;
-        //                 if(options.content) dialogSuccessContent.innerText = options.content;
-        //                 successDialog.showModal();
-
-        //                 btnCloseSuccessModal.addEventListener("click", (evt) => {
-        //                     evt.preventDefault();
-        //                     successDialog.close();
-        //                 }, { once: true });
-        //             }
-        //             break;
-        //         case 'quantity':
-
-        //             if(options){
-        //                 const numberDialog = document.getElementById("numberModal");
-        //                 const dialogNumberTitle = document.getElementById("dialogNumberTitle");
-        //                 const dialogNumberContent = document.getElementById("dialogNumberContent");
-        //                 const txtQuantity = document.getElementById("txtQuantity");
-        //                 const btnSubmitNumberDialog = document.getElementById("btnSubmitNumberDialog");
-        //                 const btnCancelNumberDialog = document.getElementById("btnCancelNumberDialog");
-
-        //                 if(options.title) dialogNumberTitle.innerText = options.title;
-        //                 if(options.content) dialogNumberContent.innerText = options.content;
-        //                 if(options.currentValueForInputText) txtQuantity.value = options.currentValueForInputText;
-
-        //                 numberDialog.showModal();
-
-        //                 btnSubmitNumberDialog.addEventListener("click", (evt) => {
-        //                     evt.preventDefault();
-        //                     if(options.submitUrl) window.location.href = submitUrl;
-        //                     if(options.submitCallBack){
-        //                         var intValue = txtQuantity.value;
-        //                         options.submitCallBack(intValue);
-        //                     }
-        //                 }, { once: true });
-
-        //                 btnCancelNumberDialog.addEventListener("click", (evt) => {
-        //                     evt.preventDefault();
-        //                     numberDialog.close();
-        //                 }, { once: true });
-
-        //             }
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // };
-
-        //end confirm dialogs
-
-    </script>
 </body>
 </html>

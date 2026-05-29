@@ -13,6 +13,8 @@ namespace TMCWD.Data.Entities
         public int RequestId { get; set; }
         [Required, MaxLength(20), Column("JobOrderNumber")]
         public string JobOrderNumber { get; set; } = string.Empty;
+        [Column("HasCharges")]
+        public bool HasCharges { get; set; }
         [Required, Column("Status")]
         public int Status { get; set; }
         [Required, Column("CreatedBy")]

@@ -16,6 +16,7 @@ builder.Services.AddTransient<InventoryTransaction>();
 builder.Services.AddTransient<RecommendationTransaction>();
 builder.Services.AddTransient<MaterialTransaction>();
 builder.Services.AddTransient<OtherFeeTypeTransaction>();
+builder.Services.AddTransient<FindingTransaction>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 
@@ -56,6 +57,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+app.UseStaticFiles();
 
 
 app.Run();

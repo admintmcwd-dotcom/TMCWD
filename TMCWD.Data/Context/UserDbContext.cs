@@ -37,6 +37,8 @@ namespace TMCWD.Data.Context
 
         public DbSet<JobOrder> JobOrders { get; set; }
 
+        public DbSet<Finding> Findings { get; set; }
+
         #endregion
 
         #region constructors

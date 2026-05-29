@@ -17,7 +17,15 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
 
         public string MeterNumber { get; set; }
 
-        public string Address { get; set; }
+        public string UnitNumber { get; set; }
+
+        public string Building { get; set; }
+
+        public string HouseNumber { get; set; }
+
+        public string Street { get; set; }
+
+        public string Barangay { get; set; }
 
         public bool IsCurrentAddress { get; set; }
         

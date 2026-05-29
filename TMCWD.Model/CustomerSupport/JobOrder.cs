@@ -8,7 +8,6 @@ namespace TMCWD.Model.CustomerSupport
 {
     public class JobOrder : IJobOrder
     {
-
         public JobOrder() { }
 
         [DisplayName("Id")]
@@ -17,6 +16,8 @@ namespace TMCWD.Model.CustomerSupport
         public int RequestId { get; set; }
         [DisplayName("Job Order Number")]
         public string JobOrderNumber { get; set; } = string.Empty;
+        [DisplayName("Has Charges")]
+        public bool HasCharges { get; set; }
         [DisplayName("Status")]
         public int Status { get; set; }
         [DisplayName("Enrolled By")]

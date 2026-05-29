@@ -24,10 +24,10 @@ namespace TMCWD.Data.Controllers
         [HttpPost("SaveUpdate/{userId}")]
         public async Task<ActionResult<Account>> SaveUpdate(int userId, [FromBody] Account account)
         {
-            StringBuilder sb = new();
+            //StringBuilder sb = new();
 
-            if (String.IsNullOrEmpty(account.Address.Trim())) sb.AppendLine("Address is required to create an account.");
-            if (String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required to create an account.");
+            //if (String.IsNullOrEmpty(account.FullAddress.Trim())) sb.AppendLine("Address is required to create an account.");
+            //if (String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required to create an account.");
 
             var updatedAccount = await _accountService.SaveUpdate(userId, account);
             if (updatedAccount == null || updatedAccount.Id <= 0) return BadRequest("Account was not created due to some issue(s).");

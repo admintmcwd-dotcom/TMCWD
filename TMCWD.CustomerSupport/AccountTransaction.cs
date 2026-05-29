@@ -52,7 +52,7 @@ namespace TMCWD.CustomerSupport
             if (String.IsNullOrEmpty(account.AccountNumber.Trim())) sb.AppendLine("Äccount number is required");
             if (String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required");
             if (account.CustomerId <= 0) sb.AppendLine("No customer has been selected for this account");
-            if (String.IsNullOrEmpty(account.Address.Trim())) sb.AppendLine("Account address is required for account creation");
+            if (String.IsNullOrEmpty(account.HouseNumber.Trim())) sb.AppendLine("Account house number is required for account creation");
 
             if (String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
 

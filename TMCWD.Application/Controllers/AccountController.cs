@@ -31,7 +31,6 @@ namespace TMCWD.Application.Controllers
         {
 
             User currentUser = _authenticatedUserService.User;
-            ViewBag.Role = currentUser.Role;
 
             AccountViewModel model = new(customerId);
             model.Customer = await _customerTransaction.Get(customerId);

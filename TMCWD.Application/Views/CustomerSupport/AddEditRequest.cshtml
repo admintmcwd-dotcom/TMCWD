@@ -13,15 +13,14 @@
     }
 </style>
 
-
 <div id="accordion-collapse-request" data-accordion="collapse" class="rounded-lg border border-default overflow-hidden shadow-xs">
     <h2 id="accordion-collapse-heading-1" class="bg-gray-300">
-        <button id="accordion-button-item-1" type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+        <button id="accordion-button-item-1" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Request Details</span>
             <svg id="accordion-icon-item-1" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
         </button>
     </h2>
-    <div id="accordion-collapse-body-1" class="bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-1">
+    <div id="accordion-collapse-body-1" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-1">
         <div class="p-4 md:p-5">
             <!-- Request Details -->
 
@@ -137,7 +136,7 @@
                         <p id="pAddress" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
                             @if (Model.CurrentAccount.Id > 0)
                             {
-                                @Model.CurrentAccount.Address
+                                @Model.CurrentAccount.FullAddress
                             }
                             else
                             {
@@ -146,7 +145,7 @@
                         </p>
                     </div>
                     <div class="grid col-span-2 gap-6">
-                        <div class="grid gap-4 mb-6 md:grid-cols-4">
+                        <div id="service-details" data-services="details" class="grid gap-4 mb-6 md:grid-cols-4">
                             @foreach (var inspectionType in Model.InspectionTypes)
                             {
                                 <div class="group flex items-center ps-4 pr-4 bg-neutral-primary-soft border border-default rounded-lg shadow-xs hover:bg-blue-900 hover:text-white hover:cursor-pointer">
@@ -183,12 +182,12 @@
     @if (Model.AddEditRequest.Id > 0)
     {
         <h2 id="accordion-collapse-heading-2" class="bg-gray-300">
-            <button id="accordion-button-item-2" type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <button id="accordion-button-item-2" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
                 <span>Recommendations</span>
                 <svg id="accordion-icon-item-2" data-accordion-icon class="w-5 h-5 shrink-0 rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
             </button>
         </h2>
-        <div id="accordion-collapse-body-2" class="hidden bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-2">
+        <div id="accordion-collapse-body-2" class="collapsible-body hidden bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-2">
             <div class="w-full grid grid-cols-[90%_10%] gap-4">
                 <div>
                     <textarea id="txtRecommendation" rows="2" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-3.5 shadow-xs placeholder:text-body" placeholder="Write recommendation here . . ."></textarea>
@@ -231,12 +230,12 @@
         </div>
 
         <h2 id="accordion-collapse-heading-3" class="bg-gray-300">
-            <button id="accordion-button-item-3" type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <button id="accordion-button-item-3" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
                 <span>Materials</span>
                 <svg id="accordion-icon-item-3" data-accordion-icon class="w-5 h-5 shrink-0 rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
             </button>
         </h2>
-        <div id="accordion-collapse-body-3" class="hidden min-h-64 bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-3">
+        <div id="accordion-collapse-body-3" class="collapsible-body hidden min-h-64 bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-3">
             <div class="w-full grid grid-cols-[50%_30%_20%] gap-4">
                 <div>
                     <!-- autocomplete -->
@@ -395,7 +394,10 @@
 
         document.getElementById("cmbInventory").setDropdown(null);
 
-        const btnDetails = document.getElementById("accordion-button-item-1");
+        const accordion = document.getElementById('accordion-collapse-request');
+        accordion.Collapsible();
+
+        @* const btnDetails = document.getElementById("accordion-button-item-1");
         btnDetails.addEventListener("click", (evt) => {
             evt.preventDefault();
             const accordionItem = document.getElementById("accordion-collapse-body-1");
@@ -420,11 +422,11 @@
             const icon = document.getElementById("accordion-icon-item-3");
             accordionItem.classList.toggle("hidden");
             icon.classList.toggle("rotate-180");
-        });
+        }); *@
         
         var checkBoxes = document.querySelectorAll('input[type="checkbox"]');
 
-        [...checkBoxes].forEach((checkbox) => {
+        @* [...checkBoxes].forEach((checkbox) => {
             checkbox.addEventListener("change", (evt) => {
                 evt.preventDefault();
                 var targetId = evt.target.id;
@@ -445,7 +447,7 @@
                     });
                 }
             });
-        });
+        }); *@
 
         const saveRequestUrl = '@Url.Action("SaveRequest", "CustomerSupport")';
         
@@ -528,17 +530,13 @@
             
             var customerSelectionDialog = new CustomerSelect({
                 getCustomerUrl: '@Url.Action("SearchCustomer", "CustomerSupport")',
-                selectCallback: async (customerId, customerName, phone, email) => {
-                    // var classNames = encodeURIComponent("bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body");
-                    // var refreshUrl = '@Url.Action("RefreshCustomerNameComponent", "CustomerSupport")' + "?customerId=" + customerId + "&pId=pAccountName&pClass=" + classNames;
-                    // const response = await fetch(refreshUrl);
-                    // document.getElementById("divCustomerName").innerHTML = await response.text();
-                    document.getElementById("pCustomerName").innerText = decodeURIComponent(customerName);
-                    document.getElementById("pPhone").innerText = decodeURIComponent(phone);
-                    document.getElementById("pEmail").innerText = decodeURIComponent(email);
-                    document.getElementById("hdAddEditCustomerId").value = customerId;
+                selectCallback: async (customer) => {
+                    document.getElementById("pCustomerName").innerText = customer.fullName;
+                    document.getElementById("pPhone").innerText = customer.phoneNumber
+                    document.getElementById("pEmail").innerText = customer.email;
+                    document.getElementById("hdAddEditCustomerId").value = customer.id;
 
-                    var accountRefreshUrl = '@Url.Action("RefreshAccountSelectComponent", "CustomerSupport")' + "?customerId=" + customerId;
+                    var accountRefreshUrl = '@Url.Action("RefreshAccountSelectComponent", "CustomerSupport")' + "?customerId=" + customer.id;
                     const response = await fetch(accountRefreshUrl);
                     document.getElementById("divAccountSelection").innerHTML = await response.text();
                 } 

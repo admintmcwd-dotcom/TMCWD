@@ -49,7 +49,6 @@ namespace TMCWD.Application.Controllers
                 SearchString = searchString
             };
 
-            ViewBag.Role = currentUser?.Role ?? 0;
             return View(model);
         }
 
@@ -89,7 +88,6 @@ namespace TMCWD.Application.Controllers
 
             model.Roles = _userTransaction.GetRoles();
 
-            ViewBag.Role = currentUser.Role;
             return View(model);
         }
 
@@ -192,7 +190,6 @@ namespace TMCWD.Application.Controllers
         {
             OtherFeeTypeViewModel model = new();
             model.OtherFeeTypes = new();
-            ViewBag.Role = _authenticatedUserService.User.Role;
             return View("OtherFeeTypes", model);
         }
 
