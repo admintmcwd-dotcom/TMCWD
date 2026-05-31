@@ -22,7 +22,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPost("SaveUpdate/{userId}")]
-        public async Task<ActionResult<Account>> SaveUpdate(int userId, [FromBody] Account account)
+        public async Task<ActionResult> SaveUpdate(int userId, [FromBody] Account account)
         {
             //StringBuilder sb = new();
 
@@ -36,7 +36,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<Account>> Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
             var account = await _accountService.Get(id);
 
@@ -46,7 +46,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetByAccountNumber/{accountNumber}")]
-        public async Task<ActionResult<Account>> GetByAccountNumber(string accountNumber)
+        public async Task<ActionResult> GetByAccountNumber(string accountNumber)
         {
             var account = await _accountService.GetByAccountNumber(accountNumber);
 
@@ -56,7 +56,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetByCustomerId/{customerId}")]
-        public async Task<ActionResult<IEnumerable<Account>>> GetByCustomerId(int customerId)
+        public async Task<ActionResult> GetByCustomerId(int customerId)
         {
             var accounts = await _accountService.GetByCustomerId(customerId);
 
@@ -66,9 +66,9 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetByMeterNumber/{meterNumber}")]
-        public ActionResult<Account> GetByMeterNumber(string meterNumber)
+        public async Task<ActionResult> GetByMeterNumber(string meterNumber)
         {
-            var account = _accountService.GetByMeterNumber(meterNumber);
+            var account = await _accountService.GetByMeterNumber(meterNumber);
 
             if (account == null) return NotFound($"Account with meter number {meterNumber} was not found.");
 
