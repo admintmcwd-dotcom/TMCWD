@@ -317,39 +317,40 @@ HTMLElement.prototype.Collapsible = function () {
     });
 };
 
-HTMLElement.prototype.SetServices = function () {
-    const div = this;
-    if (div.tagName !== "DIV") return;
-    if (div.dataset.services == null || div.dataset.services != 'details') return;
+// HTMLElement.prototype.SetServices = function () {
+//     const div = this;
+//     if (div.tagName !== "DIV") return;
+//     if (div.dataset.services == null || div.dataset.services != 'details') return;
 
-    const checkboxes = div.querySelectorAll("input[type='checkbox']");
+//     const checkboxes = div.querySelectorAll("input[type='checkbox']");
 
-    if (checkboxes == null || checkboxes.length <= 0) return;
+//     if (checkboxes == null || checkboxes.length <= 0) return;
 
-    // [...checkBoxes].forEach((checkbox) => {
-    //     checkbox.addEventListener("change", (evt) => {
-    //         evt.preventDefault();
-    //         var targetId = evt.target.id;
-    //         var typeId = evt.target.dataset.id;
-    //         var withDetail = evt.target.dataset.withdetail;
-    //         var requiredAccount = evt.target.dataset.requiredaccount;
-    //         if (requiredAccount == 'False') {
-    //             [...checkBoxes].forEach((checkbox) => {
-    //                 if (checkbox.id != targetId) {
-    //                     checkbox.checked = false;
-    //                 }
-    //             });
-    //         }
-    //         else {
-    //             var checkBoxesNoAccount = document.querySelectorAll('[data-requiredaccount="False"]');
-    //             [...checkBoxesNoAccount].forEach((checkbox) => {
-    //                 checkbox.checked = false;
-    //             });
-    //         }
-    //     });
-    // });
+//     // [...checkBoxes].forEach((checkbox) => {
+//     //     checkbox.addEventListener("change", (evt) => {
+//     //         evt.preventDefault();
+//     //         var targetId = evt.target.id;
+//     //         var typeId = evt.target.dataset.id;
+//     //         var withDetail = evt.target.dataset.withdetail;
+//     //         var requiredAccount = evt.target.dataset.requiredaccount;
+//     //         if (requiredAccount == 'False') {
+//     //             [...checkBoxes].forEach((checkbox) => {
+//     //                 if (checkbox.id != targetId) {
+//     //                     checkbox.checked = false;
+//     //                 }
+//     //             });
+//     //         }
+//     //         else {
+//     //             var checkBoxesNoAccount = document.querySelectorAll('[data-requiredaccount="False"]');
+//     //             [...checkBoxesNoAccount].forEach((checkbox) => {
+//     //                 checkbox.checked = false;
+//     //             });
+//     //         }
+//     //     });
+//     // });
+//     +
 
-};
+// };
 
 class WebClient {
 

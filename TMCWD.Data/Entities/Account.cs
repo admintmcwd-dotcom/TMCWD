@@ -29,18 +29,18 @@ namespace TMCWD.Data.Entities
         public string MeterNumber { get; set; } = string.Empty;
 
         [Column("UnitNo")]
-        public string UnitNumber { get; set; } = string.Empty;
+        public string? UnitNumber { get; set; } = string.Empty;
 
         [Column("Building")]
-        public string Building { get; set; } = string.Empty;
+        public string? Building { get; set; } = string.Empty;
 
-        [Required, Column("HouseNo")]
+        [Column("HouseNo")]
         public string HouseNumber { get; set; } = string.Empty;
 
-        [Required, Column("Street")]
+        [Column("Street")]
         public string Street { get; set; } = string.Empty;
 
-        [Required, Column("Barangay")]
+        [Column("Barangay")]
         public string Barangay { get; set; } = string.Empty;
 
         [Required, Column("IsCurrentAddress")]

@@ -122,7 +122,7 @@
                             <p id="pAccountNo" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
                             @if (Model.AddEditRequest.AccountId > 0)
                             {
-                                @Model.CurrentAccount.AccountNumber
+                                @(Model.CurrentAccount.AccountNumber ?? "")
                             }
                             else
                             {
@@ -395,9 +395,9 @@
         document.getElementById("cmbInventory").setDropdown(null);
 
         const accordion = document.getElementById('accordion-collapse-request');
-        accordion.Collapsible();
+        @* accordion.Collapsible(); *@
 
-        @* const btnDetails = document.getElementById("accordion-button-item-1");
+        const btnDetails = document.getElementById("accordion-button-item-1");
         btnDetails.addEventListener("click", (evt) => {
             evt.preventDefault();
             const accordionItem = document.getElementById("accordion-collapse-body-1");
@@ -422,11 +422,11 @@
             const icon = document.getElementById("accordion-icon-item-3");
             accordionItem.classList.toggle("hidden");
             icon.classList.toggle("rotate-180");
-        }); *@
+        });
         
         var checkBoxes = document.querySelectorAll('input[type="checkbox"]');
 
-        @* [...checkBoxes].forEach((checkbox) => {
+        [...checkBoxes].forEach((checkbox) => {
             checkbox.addEventListener("change", (evt) => {
                 evt.preventDefault();
                 var targetId = evt.target.id;
@@ -447,10 +447,9 @@
                     });
                 }
             });
-        }); *@
+        });
 
         const saveRequestUrl = '@Url.Action("SaveRequest", "CustomerSupport")';
-        
 
         const btnSubmit = document.getElementById("btnSubmit");
         btnSubmit.addEventListener("click", async (evt) => {
