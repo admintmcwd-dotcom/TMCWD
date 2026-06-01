@@ -9,6 +9,7 @@ using TMCWD.Services;
 using System.Net;
 using TMCWD.Model.Engineering;
 using TMCWD.Engineering;
+using TMCWD.Model.Extensions;
 
 namespace TMCWD.Application.Controllers
 {
@@ -27,6 +28,7 @@ namespace TMCWD.Application.Controllers
         private readonly RecommendationTransaction _recommendationTransaction;
         private readonly InventoryTransaction _inventoryTransaction;
         private readonly MaterialTransaction _materialTransaction;
+        private readonly FindingTransaction _findingTransaction;
 
         #endregion
 
@@ -41,7 +43,8 @@ namespace TMCWD.Application.Controllers
             UserTransaction userTransaction,
             RecommendationTransaction recommendationTrasaction, 
             InventoryTransaction inventoryTransaction,
-            MaterialTransaction materialTransaction)
+            MaterialTransaction materialTransaction,
+            FindingTransaction findingTransaction)
         {
             _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
@@ -69,22 +72,29 @@ namespace TMCWD.Application.Controllers
 
             _materialTransaction = materialTransaction;
             _materialTransaction.SetClient(_client);
+
+            _findingTransaction = findingTransaction;
+            _findingTransaction.SetClient(_client);
         }
 
         #endregion
 
-        #region public methods
-
+        #region customer
         public async Task<IActionResult> Index()
         {
             CustomerViewModel model = new();
             User currentUser = _authenticatedUserService.User;
-
             model.CurrentUser = currentUser ?? new User();
-            model.PagedCustomerList = await _customerTransaction.GetCustomers();
-            ViewBag.Role = model.CurrentUser.Role;
+            //model.PagedCustomerList = await _customerTransaction.GetCustomers();
 
             return View(model);
+        }
+
+        public async Task<IActionResult> GetCustomers()
+        {
+            var customers = await _customerTransaction.GetCustomers();
+            if (customers == null || !customers.Any()) return NotFound();
+            return Ok(customers);
         }
 
         public async Task<IActionResult> AddEditCustomer(int editCustomerId = 0)
@@ -98,22 +108,14 @@ namespace TMCWD.Application.Controllers
                 CustomerAccounts = editCustomerId > 0 ? await _accountTransaction.GetByCustomerId(editCustomerId) : new List<Account>()
             };
 
-            ViewBag.Role = currentUser.Role;
-
             return View(model);
-        }
-
-        public IActionResult AddEditAccount()
-        {
-
-            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> SaveCustomer(CustomerViewModel model)
         {
 
-            if(model.AddEditCustomer == null) return BadRequest("Customer data is required");
+            if (model.AddEditCustomer == null) return BadRequest("Customer data is required");
 
             await _customerTransaction.SaveUpdate(_authenticatedUserService.User.Id, model.AddEditCustomer);
 
@@ -127,7 +129,7 @@ namespace TMCWD.Application.Controllers
             currentUser = _authenticatedUserService.User;
             cust = await _customerTransaction.Get(customerId);
 
-            if(cust != null)
+            if (cust != null)
             {
                 cust.IsActive = false;
                 await _customerTransaction.SaveUpdate(currentUser.Id, cust);
@@ -136,13 +138,52 @@ namespace TMCWD.Application.Controllers
             return RedirectToAction("Index", "CustomerSupport");
         }
 
+        public async Task<IActionResult> GetCustomerName(int customerId)
+        {
+            var customer = await _customerTransaction.Get(customerId);
+            return ViewComponent("CustomerName", $"{customer.Firstname} {customer.Lastname}");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchCustomer(string searchString)
+        {
+            var customers = await _customerTransaction.Search(searchString);
+            if (customers == null || !customers.Any()) return NotFound();
+            return Ok(customers);
+        }
+
+        public IActionResult RefreshCustomerNameComponent(int customerId, string pId = "", string pClass = "")
+        {
+            return ViewComponent("CustomerName", new { customerId = customerId, pId = pId, pClass = pClass });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCustomerById(int customerId)
+        {
+
+            Customer customer = new();
+            customer = await _customerTransaction.Get(customerId);
+
+            return View(customer);
+        }
+
+        #endregion
+
+        #region account
+
+        public IActionResult AddEditAccount()
+        {
+
+            return View();
+        }
+
         public async Task<IActionResult> DeactivateAccount(int accountId)
         {
             AccountTransaction acctTrans = new();
             Account acct = new();
             acct = await _accountTransaction.Get(accountId);
 
-            if(acct != null)
+            if (acct != null)
             {
                 acct.Status = AccountStatus.Closed;
                 await acctTrans.SaveUpdate(_authenticatedUserService.User.Id, acct);
@@ -150,6 +191,36 @@ namespace TMCWD.Application.Controllers
 
             return RedirectToAction("AddEditCustomer", "CustomerSupport", new { editCustomerId = acct.CustomerId });
         }
+
+        public IActionResult RefreshAccountSelectComponent(int customerId)
+        {
+            return ViewComponent("AccountSelection", new { customerId = customerId });
+        }
+
+        #endregion
+
+        #region user
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserById(int userId)
+        {
+            User user = new();
+            user = await _userTransaction.Get(userId);
+            return View(user);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserByIdForTable(int userId)
+        {
+            User user = new();
+            user = await _userTransaction.Get(userId);
+            if (user == null) return NoContent();
+            return Ok(user);
+        }
+
+        #endregion
+
+        #region request
 
         public async Task<IActionResult> Requests()
         {
@@ -166,7 +237,6 @@ namespace TMCWD.Application.Controllers
             User currentUser = _authenticatedUserService.User;
             RequestViewModel model = new();
             model.CurrentUser = currentUser;
-            ViewBag.Role = currentUser?.Role;
 
             List<RequestDetail> requestDetails = new();
             List<InspectionType> types = new();
@@ -183,7 +253,7 @@ namespace TMCWD.Application.Controllers
             if (requestId > 0)
             {
                 model.AddEditRequest = await _requestTransaction.Get(requestId);
-                if(model.AddEditRequest != null)
+                if (model.AddEditRequest != null)
                 {
                     Task<Customer> getCustomerTask = _customerTransaction.Get(model.AddEditRequest.CustomerId);
                     Task<Account> getAccountTask = _accountTransaction.Get(model.AddEditRequest.AccountId);
@@ -205,24 +275,6 @@ namespace TMCWD.Application.Controllers
             model.InspectionTypes = ConvertToInspectionTypeToViewModel(types, requestDetails);
 
             return View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetCustomerById(int customerId)
-        {
-
-            Customer customer = new();
-            customer = await _customerTransaction.Get(customerId);
-
-            return View(customer);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetUserById(int userId)
-        {
-            User user = new();
-            user = await _userTransaction.Get(userId);
-            return View(user);
         }
 
         [HttpPost]
@@ -271,69 +323,16 @@ namespace TMCWD.Application.Controllers
                 requestDetail.RequestId = requestId;
             }
 
+            await _requestTransaction.DeleteRequestDetails(requestId);
+
             var res = await _requestTransaction.SaveMulipleRequestDetail(currentUser.Id, requestId, requestDetails);
 
             return Ok(res);
         }
 
-        public async Task<IActionResult> GetCustomerName(int customerId)
-        {
-            var customer = await _customerTransaction.Get(customerId);
-            return ViewComponent("CustomerName", $"{customer.Firstname} {customer.Lastname}");
-        }
+        #endregion
 
-        [HttpGet]
-        public async Task<IActionResult> SearchCustomer(string searchString)
-        {
-            var customers = await _customerTransaction.Search(searchString);
-            if (customers == null || !customers.Any()) return NotFound();
-            return Ok(customers);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SaveRecommendation([FromBody] object data)
-        {
-
-            if (data == null) return NoContent();
-            string stringRequest = JsonSerializer.Serialize(data);
-
-            if (String.IsNullOrEmpty(stringRequest.Trim())) return NoContent();
-
-            using var doc = JsonDocument.Parse(stringRequest);
-            if (doc == null) return NoContent();
-
-            JsonElement root = doc.RootElement;
-
-            if(root.ValueKind == JsonValueKind.Null) return NoContent();
-            var requestIdAttr = root.GetProperty("requestId");
-            var detailsAttr = root.GetProperty("details");
-
-            if(requestIdAttr.ValueKind == JsonValueKind.Null || detailsAttr.ValueKind == JsonValueKind.Null) return NoContent();
-            int.TryParse(requestIdAttr.GetString(), out int requestId);
-            string details = detailsAttr.GetString();
-
-            Recommendation recommendation = new()
-            {
-                RequestId = requestId,
-                Details = WebUtility.UrlDecode(details)
-            };
-
-            recommendation.DateCreated = DateTime.Now;
-            recommendation.DateUpdated = DateTime.Now;
-
-            var updatedRecommendation = await _recommendationTransaction.SaveUpdate(recommendation.RequestId, _authenticatedUserService.User.Id, recommendation);
-
-            return Ok(updatedRecommendation);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetUserByIdForTable(int userId)
-        {
-            User user = new();
-            user = await _userTransaction.Get(userId);
-            if (user == null) return NoContent();
-            return Ok(user);
-        }
+        #region material
 
         [HttpPost]
         public async Task<IActionResult> SaveMaterial(int requestId, [FromBody] object data)
@@ -360,9 +359,18 @@ namespace TMCWD.Application.Controllers
             //int.TryParse(quantityProp.GetString(), out int quantity);
 
             Task<Inventory> getInventoryItemTask = _inventoryTransaction.Get(invId);
-            await Task.WhenAll(getInventoryItemTask);
+            Task<List<Material>> getRequestMaterialsTask = _materialTransaction.GetByRequestId(requestId);
 
-            var inventoryItem = getInventoryItemTask.Result;
+            await Task.WhenAll(getInventoryItemTask, getRequestMaterialsTask);
+
+            Inventory inventoryItem = getInventoryItemTask.Result;
+            List<Material> requestMaterials = getRequestMaterialsTask.Result;
+
+            if (requestMaterials != null || requestMaterials.Any())
+            {
+                var existingMaterial = requestMaterials.Where(x => x.InventoryId == invId).FirstOrDefault();
+                if (existingMaterial != null) return NoContent();
+            }
 
             Material material = new()
             {
@@ -371,13 +379,13 @@ namespace TMCWD.Application.Controllers
                 RequestedQuantity = quant,
             };
 
-            var savedMaterial = _materialTransaction.SaveUpdate(_authenticatedUserService.User.Id, requestId, material);
+            var savedMaterial = await _materialTransaction.SaveUpdate(_authenticatedUserService.User.Id, requestId, material);
 
-            return Ok(savedMaterial);
+            return Ok(new { material = savedMaterial, inventory = inventoryItem });
 
         }
 
-        [HttpPatch]
+        [HttpPut]
         public async Task<IActionResult> UpdateUnitCostQuantity([FromBody] object param)
         {
 
@@ -388,7 +396,7 @@ namespace TMCWD.Application.Controllers
 
             using var doc = JsonDocument.Parse(jsonData);
 
-            if(doc == null) return NoContent();
+            if (doc == null) return NoContent();
 
             var root = doc.RootElement;
 
@@ -409,28 +417,70 @@ namespace TMCWD.Application.Controllers
             int quantity = quantityProp.GetInt32();
             float unitCost = (float)unitCostProp.GetDouble();
 
-            Task <Material> patchQuantityOrNewUnitCost = _materialTransaction.UpdateQuantityOrNewUnitCost(_authenticatedUserService.User.Id, requestId, id, quantity, unitCost);
+            Task<Material> patchQuantityOrNewUnitCost = _materialTransaction.UpdateQuantityOrNewUnitCost(_authenticatedUserService.User.Id, requestId, id, quantity, unitCost);
             Task<Inventory> getInventory = _inventoryTransaction.Get(inventoryId);
 
             await Task.WhenAll(patchQuantityOrNewUnitCost, getInventory);
 
             var newMaterial = patchQuantityOrNewUnitCost.Result;
             var inventory = getInventory.Result;
-            
+
 
             return Ok(new { material = newMaterial, inventory = inventory });
         }
 
-        public IActionResult RefreshCustomerNameComponent(int customerId, string pId = "", string pClass = "")
+        #endregion
+
+        #region recommendation
+
+        [HttpPost]
+        public async Task<IActionResult> SaveRecommendation([FromBody] object data)
         {
-            return ViewComponent("CustomerName", new { customerId = customerId, pId = pId, pClass = pClass });
+
+            if (data == null) return NoContent();
+            string stringRequest = JsonSerializer.Serialize(data);
+
+            if (String.IsNullOrEmpty(stringRequest.Trim())) return NoContent();
+
+            using var doc = JsonDocument.Parse(stringRequest);
+            if (doc == null) return NoContent();
+
+            JsonElement root = doc.RootElement;
+
+            if (root.ValueKind == JsonValueKind.Null) return NoContent();
+            var requestIdAttr = root.GetProperty("requestId");
+            var detailsAttr = root.GetProperty("details");
+
+            if (requestIdAttr.ValueKind == JsonValueKind.Null || detailsAttr.ValueKind == JsonValueKind.Null) return NoContent();
+            int.TryParse(requestIdAttr.GetString(), out int requestId);
+            string details = detailsAttr.GetString();
+
+            Recommendation recommendation = new()
+            {
+                RequestId = requestId,
+                Details = WebUtility.UrlDecode(details)
+            };
+
+            recommendation.DateCreated = DateTime.Now;
+            recommendation.DateUpdated = DateTime.Now;
+
+            var updatedRecommendation = await _recommendationTransaction.SaveUpdate(recommendation.RequestId, _authenticatedUserService.User.Id, recommendation);
+
+            return Ok(updatedRecommendation);
         }
 
-        public IActionResult RefreshAccountSelectComponent(int customerId)
+        #endregion
+
+        #region new connection
+
+        public async Task<IActionResult> NewConnection()
         {
-            return ViewComponent("AccountSelection", new { customerId = customerId });
+            return View();
         }
 
+        #endregion
+
+        #region findings
         #endregion
 
         #region private methods

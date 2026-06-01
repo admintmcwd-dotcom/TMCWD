@@ -14,25 +14,25 @@ namespace TMCWD.Data.Services
             _dbContext = context;
         }
 
-        public async Task<Account?> Get(int id)
+        public async Task<Account> Get(int id)
         {
             var account = await _dbContext.Accounts.Where(x => x.Id == id).FirstOrDefaultAsync();
             return account;
         }
 
-        public async Task<Account?> GetByAccountNumber(string accountNumber)
+        public async Task<Account> GetByAccountNumber(string accountNumber)
         {
             var account = await _dbContext.Accounts.Where(x => x.AccountNumber.ToLower() == accountNumber.ToLower()).FirstOrDefaultAsync();
             return account;
         }
 
-        public async Task<IEnumerable<Account>?> GetByCustomerId(int customerId)
+        public async Task<IEnumerable<Account>> GetByCustomerId(int customerId)
         {
             var accounts = _dbContext.Accounts.Where(x => x.CustomerId == customerId);
             return await accounts.ToListAsync();
         }
 
-        public async Task<Account?> GetByMeterNumber(string meterNumber)
+        public async Task<Account> GetByMeterNumber(string meterNumber)
         {
             var account = await _dbContext.Accounts.Where(x => x.MeterNumber.ToLower() == meterNumber.ToLower()).FirstOrDefaultAsync();
             return account;

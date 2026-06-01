@@ -39,18 +39,18 @@
     <h5 class="mb-2 text-2xl font-bold text-gray-900">Users</h5>
     <p class="text-gray-700">
         <!-- Users Table -->
-        <table class="border-collapse border border-gray-full w-full ...">
-            <thead>
+        <table id="tblUsers" class="w-full text-sm text-left rtl:text-right text-body">
+            <thead class="text-sm text-body bg-neutral-secondary-soft border-b rounded-lg border-default">
                 <tr>
-                    <th class="border border-gray-300 p-3 ...">Id #</th>
-                    <th class="border border-gray-300 p-3 ...">Name</th>
-                    <th class="border border-gray-300 p-3 ...">Email</th>
-                    <th class="border border-gray-300 p-3 ...">Date Enrolled</th>
-                    <th class="border border-gray-300 p-3 ...">Active</th>
-                    <th class="border border-gray-300 p-3 ..."></th>
+                    <th scope="col" class="px-6 py-3 font-medium">Id #</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Name</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Email</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Date Enrolled</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Active</th>
+                    <th scope="col" class="px-6 py-3 font-medium"></th>
                 </tr>
             </thead>
-            <tbody>
+            @* <tbody>
                 @if(Model.PagedUserList == null || Model.PagedUserList.Count <= 0)
                 {
                     <tr>
@@ -88,7 +88,7 @@
                         </tr>
                     }
                 }
-            </tbody>
+            </tbody> *@
         </table>
     </p>
 </div>
@@ -130,15 +130,49 @@
 
 <script type="text/javascript">
 
-    var deactivateLinks = document.getElementsByClassName("deactivateLink");
-        
-    [...deactivateLinks].forEach((link) => {
-        link.addEventListener("click", (event) => {
-            event.preventDefault();
-            var currentLink = event.target.parentElement;
-            var dataId = currentLink.dataset.id;
+    //var deactivateLinks = document.getElementsByClassName("deactivateLink");
+    const table = document.getElementById("tblUsers");
+    const searchText = document.getElementById("txtSearchString");
+    //stockCheck: { srcDataMember: 'quantity', compareToDataMember: 'requiredQuantity' },
+    table.DataTable({
+        processing: true,
+        getUrl: '@Url.Action("GetUsers", "Admin")' + '?searchString=' + searchText.value,
+        columns: 
+        [
+            { dataMember: 'id', isEditable: false },
+            { dataMember: 'name', isEditable: false },
+            { dataMember: 'email', isEditable: false },
+            { dataMember: 'dateCreated', isEditable: false },
+            {
+                dataMember: 'isActive', 
+                isEditable: false,
+                displays:
+                [
+                    {
+                        value: 'True',
+                        icon: 'fa-solid fa-check text-green-500'
+                    },
+                    {
+                        value: 'False',
+                        icon: 'fa-solid fa-xmark text-red-500'
+                    }
+                ],
+                isCentered: true
+            }
+        ],
+        buttons:
+        [
+            { className: 'fa-solid fa-pencil', isEditButton: false, clickCallback: (data) => editUser(data) },
+            { className: 'fa-solid fa-trash', isSaveButton: true, clickCallback: (data) => deactivateUser(data) }
+        ]
+    });
+    
+    function editUser(data){
+        window.location.href = '@Url.Action("AddEditUser", "Admin")' + '?editUserId=' + data.id; //, editUserId = user.Id  })'
+    }
 
-            var modal = new ModalDialog({
+    function deactivateUser(data){
+        var modal = new ModalDialog({
                 type: 'deactivate',
                 title: 'Deactivate User',
                 content: 'Are you sure you want to deactivate user? All of the user data will be permanently removed. This action cannot be undone.',
@@ -148,14 +182,32 @@
             });
 
             modal.show();
+    }
+        
+    // [...deactivateLinks].forEach((link) => {
+    //     link.addEventListener("click", (event) => {
+    //         event.preventDefault();
+    //         var currentLink = event.target.parentElement;
+    //         var dataId = currentLink.dataset.id;
 
-            // showModalDialog({
-            //     type: "deactivate",
-            //     submitUrl: deactivateUrl,
-            //     title: "Deactivate User",
-            //     content: "Are you sure you want to deactivate user? All of the user data will be permanently removed. This action cannot be undone."
-            // });
-        });
-    });
+    //         var modal = new ModalDialog({
+    //             type: 'deactivate',
+    //             title: 'Deactivate User',
+    //             content: 'Are you sure you want to deactivate user? All of the user data will be permanently removed. This action cannot be undone.',
+    //             submitCallback: () => {
+    //                 window.location.href = "@Url.Action("DeactivateUser", "Admin")" + "?userId=" + dataId;
+    //             }
+    //         });
+
+    //         modal.show();
+
+    //         // showModalDialog({
+    //         //     type: "deactivate",
+    //         //     submitUrl: deactivateUrl,
+    //         //     title: "Deactivate User",
+    //         //     content: "Are you sure you want to deactivate user? All of the user data will be permanently removed. This action cannot be undone."
+    //         // });
+    //     });
+    // });
 
 </script>

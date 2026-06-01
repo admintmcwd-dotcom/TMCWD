@@ -31,6 +31,14 @@ namespace TMCWD.Data.Context
 
         public DbSet<Material> Materials { get; set; }
 
+        public DbSet<OtherFeeType> OtherFeeTypes { get; set;  }
+
+        public DbSet<Workflow> Workflows { get; set; }
+
+        public DbSet<JobOrder> JobOrders { get; set; }
+
+        public DbSet<Finding> Findings { get; set; }
+
         #endregion
 
         #region constructors

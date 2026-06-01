@@ -31,7 +31,6 @@ namespace TMCWD.Application.Controllers
         {
 
             User currentUser = _authenticatedUserService.User;
-            ViewBag.Role = currentUser.Role;
 
             AccountViewModel model = new(customerId);
             model.Customer = await _customerTransaction.Get(customerId);
@@ -94,7 +93,6 @@ namespace TMCWD.Application.Controllers
                     {
                         AccountNumber = "TMCWD-" + DateTime.Now.Ticks.ToString(),
                         CreatedBy = _authenticatedUserService.User.Id,
-                        Address = WebUtility.UrlDecode(address),
                         CustomerId = customerId,
                         DateCreated = DateTime.Now,
                         Status = AccountStatus.Pending,

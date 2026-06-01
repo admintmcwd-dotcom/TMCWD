@@ -23,8 +23,10 @@ public enum ErrorModule
 
 public enum RequestStatus
 {
-    InProgress = 1,
-    Completed = 2
+    Draft = 1,
+    InProgress = 2,
+    Completed = 3,
+    Rejected = 4
 }
 
 public enum AccountStatus
@@ -33,4 +35,16 @@ public enum AccountStatus
     Suspended = 2,
     Active = 3,
     Closed = 4
+}
+
+public enum JobOrderStatus
+{
+    Inspection = 1,
+    Charging = 2,
+    Payment = 3,
+    Releasing = 4,
+    Installation = 5,
+    Verification = 6,
+    Completed = 7,
+    Rejected = 8
 }

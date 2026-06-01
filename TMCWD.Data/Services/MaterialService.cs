@@ -55,19 +55,15 @@ namespace TMCWD.Data.Services
 
         public async Task<Material> UpdateQuantityOrNewUnitCost(int userId, int requestId, Material updateMaterial)
         {
-            var material = _context.Materials.Where(x => x.RequestId == updateMaterial.RequestId && x.Id == updateMaterial.Id).FirstOrDefault();
 
-            if (material == null) return null;
+            updateMaterial.UpdatedBy = userId;
+            updateMaterial.DateUpdated = DateTime.Now;
 
-            material.UpdatedBy = userId;
-            material.DateUpdated = DateTime.Now;
-            if(material.RequestedQuantity !=  updateMaterial.RequestedQuantity) material.RequestedQuantity = updateMaterial.RequestedQuantity;
-            if (material.NewUnitCost != updateMaterial.NewUnitCost) material.NewUnitCost = updateMaterial.NewUnitCost;
-            _context.Materials.Update(material);
+            _context.Materials.Update(updateMaterial);
 
             await _context.SaveChangesAsync();
 
-            return material;
+            return updateMaterial;
         }
 
     }

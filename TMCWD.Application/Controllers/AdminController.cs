@@ -17,8 +17,13 @@ namespace TMCWD.Application.Controllers
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly UserTransaction _userTransaction;
         private readonly InspectionTypeTransaction _inspectionTypeTransaction;
+        private readonly OtherFeeTypeTransaction _otherFeeTypeTransaction;
         
-        public AdminController(IHttpClientFactory factory, AuthenticatedUserService authenticatedUserService, UserTransaction userTransaction, InspectionTypeTransaction inspectionTypeTransaction) 
+        public AdminController(IHttpClientFactory factory, 
+            AuthenticatedUserService authenticatedUserService, 
+            UserTransaction userTransaction, 
+            InspectionTypeTransaction inspectionTypeTransaction,
+            OtherFeeTypeTransaction otherFeeTypeTransaction) 
         {
             _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
@@ -26,24 +31,33 @@ namespace TMCWD.Application.Controllers
             _userTransaction.SetClient(_client);
             _inspectionTypeTransaction = inspectionTypeTransaction;
             _inspectionTypeTransaction.SetClient(_client);
+            _otherFeeTypeTransaction = otherFeeTypeTransaction;
+            _otherFeeTypeTransaction.SetClient(_client);
         }
 
         public async Task<IActionResult> Index(string searchString = "")
         {
             User currentUser = _authenticatedUserService.User;
 
-            var userList = await _userTransaction.SearchUser(searchString);
-            if (userList == null) userList = await _userTransaction.GetUsers();
+            //var userList = await _userTransaction.SearchUser(searchString);
+            //if (userList == null) userList = await _userTransaction.GetUsers();
 
             AdminViewModel model = new()
             {
                 CurrentUser = currentUser,
-                PagedUserList = userList ?? new List<User>(),
+                PagedUserList = new List<User>(),
                 SearchString = searchString
             };
 
-            ViewBag.Role = currentUser?.Role ?? 0;
             return View(model);
+        }
+
+        public async Task<IActionResult> GetUsers(string searchString)
+        {
+            var userList = await _userTransaction.SearchUser(searchString);
+            if (userList == null) userList = await _userTransaction.GetUsers();
+            if (userList == null) return NotFound();
+            return Ok(userList);
         }
 
         public IActionResult Users()
@@ -51,7 +65,7 @@ namespace TMCWD.Application.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AddEditUser(int currentUserId, int editUserId = 0)
+        public async Task<IActionResult> AddEditUser(int editUserId = 0)
         {
 
             User editUser = new();
@@ -74,7 +88,6 @@ namespace TMCWD.Application.Controllers
 
             model.Roles = _userTransaction.GetRoles();
 
-            ViewBag.Role = currentUser.Role;
             return View(model);
         }
 
@@ -113,10 +126,17 @@ namespace TMCWD.Application.Controllers
             User currentUser = _authenticatedUserService.User;
             ViewBag.Role = currentUser.Role;
 
-            var inspectionTypes = await _inspectionTypeTransaction.GetTypes();
-            if (inspectionTypes != null && inspectionTypes.Any()) model.InspectionTypes = inspectionTypes;
+            //var inspectionTypes = await _inspectionTypeTransaction.GetTypes();
+            //if (inspectionTypes != null && inspectionTypes.Any()) model.InspectionTypes = inspectionTypes;
 
             return View(model);
+        }
+
+        public async Task<IActionResult> GetInspectionTypes()
+        {
+            var inspectionTypes = await _inspectionTypeTransaction.GetTypes();
+            if(inspectionTypes == null || !inspectionTypes.Any()) return NotFound();
+            return Ok(inspectionTypes);
         }
 
         public async Task<IActionResult> AddEditInspectionType(int inspectionTypeId = 0)
@@ -152,19 +172,52 @@ namespace TMCWD.Application.Controllers
             return RedirectToAction("InspectionTypes", "Admin");
         }
 
-        public async Task<IActionResult> DeactivateInspectionType(int inspectionTypeId, int currentUserId)
+        public async Task<IActionResult> DeactivateInspectionType(int inspectionTypeId)
         {
             InspectionType inspType = new();
             inspType = await _inspectionTypeTransaction.Get(inspectionTypeId);
             if (inspType != null)
             {
                 inspType.IsActive = false;
-                inspType.UpdatedBy = currentUserId;
+                inspType.UpdatedBy = _authenticatedUserService.User.Id;
                 inspType.DateUpdated = DateTime.Now;
-                await _inspectionTypeTransaction.SaveUpdate(currentUserId, inspType);
+                await _inspectionTypeTransaction.SaveUpdate(_authenticatedUserService.User.Id, inspType);
             }
             return RedirectToAction("InspectionTypes", "Admin");
         }
 
+        public async Task<IActionResult> OtherFeeTypes()
+        {
+            OtherFeeTypeViewModel model = new();
+            model.OtherFeeTypes = new();
+            return View("OtherFeeTypes", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOtherFeeTypes()
+        {
+
+            var otherFeeTypes = await _otherFeeTypeTransaction.GetAll();
+            if (otherFeeTypes == null || otherFeeTypes.Count <= 0) return NoContent();
+
+            return Ok(otherFeeTypes);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveOtherFeeType([FromBody]  OtherFeeType otherFeeType)
+        {
+            var updatedOtherFeeType = await _otherFeeTypeTransaction.SaveUpdate(_authenticatedUserService.User.Id, otherFeeType);
+            if (updatedOtherFeeType == null) return NoContent();
+            return Ok(updatedOtherFeeType);
+        }
+
+        public async Task<IActionResult> SaveUpdateOtherFeeType(OtherFeeTypeViewModel model)
+        {
+            var otherFeeTypeUpdate = await _otherFeeTypeTransaction.SaveUpdate(_authenticatedUserService.User.Id, model.AddEditOtherViewType);
+            if(otherFeeTypeUpdate == null) return NoContent();
+            return RedirectToAction("OtherFeeTypes", "Admin");
+        }
+
     }
+
 }

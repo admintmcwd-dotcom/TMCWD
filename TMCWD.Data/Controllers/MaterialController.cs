@@ -55,7 +55,14 @@ namespace TMCWD.Data.Controllers
         [HttpPut("UpdateQuantityOrNewUnitCost/{userId}")]
         public async Task<IActionResult> UpdateQuantityOrNewUnitCost(int userId, int requestId, [FromBody]Material updateMaterial)
         {
-            var material = _service.UpdateQuantityOrNewUnitCost(userId, requestId, updateMaterial);
+            var forUpdate = await _service.Get((int)updateMaterial.Id);
+
+            if (forUpdate == null) return NoContent();
+
+            if(forUpdate.RequestedQuantity != updateMaterial.RequestedQuantity) forUpdate.RequestedQuantity = updateMaterial.RequestedQuantity;
+            if(forUpdate.NewUnitCost != updateMaterial.NewUnitCost) forUpdate.NewUnitCost = updateMaterial.NewUnitCost;
+
+            var material = await _service.UpdateQuantityOrNewUnitCost(userId, requestId, forUpdate);
             if(material == null) return NotFound();
             return Ok(material);
         }

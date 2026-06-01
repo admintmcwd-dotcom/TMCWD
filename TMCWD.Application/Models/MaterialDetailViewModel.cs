@@ -10,5 +10,8 @@ namespace TMCWD.Application.Models
         public Material Material { get; set; } = new Material();
 
         public Inventory InventoryItem { get; set; } = new Inventory();
+
+        public bool IsNegativeStock => this.Material.RequestedQuantity > this.InventoryItem.Quantity;
+
     }
 }

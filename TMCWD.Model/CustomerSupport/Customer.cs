@@ -17,6 +17,8 @@ namespace TMCWD.Model.CustomerSupport
         public string Lastname { get; set; } = string.Empty;
         [DisplayName("Middlename")]
         public string Middlename { get; set; } = string.Empty;
+        [DisplayName("Full Name")]
+        public string FullName => $"{Lastname}, {Firstname} {Middlename}";
         [DisplayName("Phone")]
         public string PhoneNumber { get; set; } = string.Empty;
         [DisplayName("Email Address")]
@@ -27,8 +29,9 @@ namespace TMCWD.Model.CustomerSupport
         public DateTime DateUpdated { get; set; }
         [DisplayName("Active")]
         public bool IsActive { get; set; }
-
+        [DisplayName("Enrolled By")]
         public int CreatedBy { get; set; }
+        [DisplayName("Updated By")]
         public int UpdatedBy { get; set; }
 
     }

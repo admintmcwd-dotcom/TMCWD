@@ -73,14 +73,16 @@ namespace TMCWD.CustomerSupport
 
         public async Task<Material> UpdateQuantityOrNewUnitCost(int userId, int requestId, int id, int quantity, float unitCost)
         {
-            var patchData = new
+            Material material = new()
             {
-                id = id,
-                quantity = quantity,
-                unitCost = unitCost
+                Id = id,
+                RequestedQuantity = quantity,
+                NewUnitCost = unitCost
             };
 
-            var response = await _client.PatchAsync($"api/{requestId}/Material/UpdateQuantityOrNewUnitCost/{userId}/{id}/{quantity}/{unitCost}", null);
+            var content = JsonContent.Create(material);
+
+            var response = await _client.PutAsync($"api/{requestId}/Material/UpdateQuantityOrNewUnitCost/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToMaterial(data);

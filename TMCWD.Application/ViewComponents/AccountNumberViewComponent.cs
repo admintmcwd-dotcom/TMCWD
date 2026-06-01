@@ -22,7 +22,8 @@ namespace TMCWD.Application.ViewComponents
             Task<Account> getAccount = _accountTransaction.Get(accountId);
             await Task.WhenAll(getAccount);
             var account = getAccount.Result;
-            return View("Default", $"{account.AccountNumber}");
+            if (account == null) return View("Default", "");
+            return View("Default", $"{account.AccountNumber ?? string.Empty}");
         }
 
     }

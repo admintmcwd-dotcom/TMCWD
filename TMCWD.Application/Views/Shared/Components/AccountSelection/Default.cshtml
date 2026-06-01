@@ -50,12 +50,12 @@
                                             {
                                                 foreach(var account in Model)
                                                 {
-                                                    <tr class="account-select-list-item border-b border-default hover:bg-neutral-secondary-soft cursor-pointer" data-account-id="@account.Id" data-account-number="@account.AccountNumber" data-account-address="@account.Address">
+                                                    <tr class="account-select-list-item border-b border-default hover:bg-neutral-secondary-soft cursor-pointer" data-account-id="@account.Id" data-account-number="@account.AccountNumber" data-account-address="@account.FullAddress">
                                                         <td class="px-6 py-3 text-center">
-                                                            <input data-id="@account.Id" data-accountno="@account.AccountNumber" data-address="@account.Address" data-current="@account.IsCurrentAddress" type="radio" name="customerSelect" value="@account.Id">
+                                                            <input data-id="@account.Id" data-accountno="@account.AccountNumber" data-address="@account.FullAddress" data-current="@account.IsCurrentAddress" type="radio" name="customerSelect" value="@account.Id">
                                                         </td>
                                                         <td class="px-6 py-3 text-center">@account.AccountNumber</td>
-                                                        <td class="px-6 py-3 text-center">@account.Address</td>
+                                                        <td class="px-6 py-3 text-center">@account.FullAddress</td>
                                                         <td class="px-6 py-3 text-center">
                                                             @if (account.IsCurrentAddress)
                                                             {

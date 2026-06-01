@@ -45,7 +45,7 @@
                 <tr>
                     <th class="border border-gray-300 p-3 ...">Id #</th>
                     <th class="border border-gray-300 p-3 ...">Item Name</th>
-                    <th class="border border-gray-300 p-3 ...">Unit</th>
+                    <th class="border border-gray-300 p-3 ...">UOM</th>
                     <th class="border border-gray-300 p-3 ...">Unit Cost</th>
                     <th class="border border-gray-300 p-3 ...">Quantity</th>
                     <th class="border border-gray-300 p-3 ...">Active</th>
@@ -69,7 +69,16 @@
                             <td class="border border-gray-300 p-2 ...">@item.UOM</td>
                             <td class="border border-gray-300 p-2 ...">@item.UnitCost</td>
                             <td class="border border-gray-300 p-2 ...">@item.Quantity</td>
-                            <td class="border border-gray-300 p-2 ...">@(item.IsActive ? "Yes" : "No")</td>
+                            <td class="border border-gray-300 text-center p-2 ...">
+                                @if (item.IsActive)
+                                {
+                                    <i class="fa-solid fa-check text-green-500"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-xmark text-red-500"></i>
+                                }
+                            </td>
                             <td class="border border-gray-300 p-2 ...">
                                 <a href="@Url.Action("AddEditInventory", "Engineering", new { inventoryId = item.Id })" class="text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
                                     <i class="fa fa-pencil" aria-hidden="true"></i>

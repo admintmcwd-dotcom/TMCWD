@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
+using TMCWD.Model.CustomerSupport;
+
+namespace TMCWD.CustomerSupport
+{
+    public class FindingTransaction
+    {
+
+        private HttpClient _client = new();
+
+        public FindingTransaction() { }
+
+        public void SetClient(HttpClient client)
+        {
+            _client = client;
+        }
+
+        public Finding ConvertJsonToFinding(string json)
+        {
+            var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<Finding>(json, serializerOptions) ?? new();
+        }
+
+        public List<Finding> ConvertJsonToFindings(string json)
+        {
+            var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<List<Finding>>(json, serializerOptions) ?? new();
+        }
+
+        public async Task<Finding> Get(int requestId, int id)
+        {
+            StringBuilder sb = new();
+
+            if (requestId == 0) sb.AppendLine("Request id is required to get finding");
+            if (id == 0) sb.AppendLine("Id is required to get finding");
+            var response = await _client.GetAsync($"api/{requestId}/Finding/Get/{id}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToFinding(data);
+        }
+
+        public async Task<List<Finding>> GetAll(int requestId)
+        {
+
+            if (requestId == 0) throw new Exception("Request id is required to get all findings");
+            var response = await _client.GetAsync($"api/{requestId}/Finding/GetAll");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToFindings(data);
+        }
+
+        public async Task<Finding> SaveUpdate(int userId, int requestId, Finding finding)
+        {
+
+            StringBuilder sb = new();
+
+            if (finding == null) throw new Exception("No finding data");
+            if (String.IsNullOrEmpty(finding.Detail.Trim())) sb.AppendLine("Finding detail is required.");
+            if (requestId == 0) sb.AppendLine("Request id is required to save finding");
+            if(userId == 0) sb.AppendLine("No currently logged in user");
+
+            if (sb.ToString().Trim() != String.Empty) throw new Exception(sb.ToString());
+
+            var content = JsonContent.Create(finding);
+            var response = await _client.PostAsync($"api/{requestId}/Finding/SaveUpdate/{userId}", content);
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToFinding(data);
+        }
+
+    }
+}

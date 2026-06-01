@@ -42,64 +42,17 @@
 
         <!-- Inspection Types Table -->
 
-        <table class="border-collapse border border-gray-full w-full ...">
-            <thead>
+        <table id="tblInspectionTypes" class="w-full text-sm text-left rtl:text-right text-body">
+            <thead class="text-sm text-body bg-neutral-secondary-soft border-b rounded-lg border-default">
                 <tr>
-                    <th class="border border-gray-300 p-3 ...">Id #</th>
-                    <th class="border border-gray-300 p-3 ...">Name</th>
-                    <th class="border border-gray-300 p-3 ...">Date Enrolled</th>
-                    <th class="border border-gray-300 p-3 ...">With Detail</th>
-                    <th class="border border-gray-300 p-3 ...">Active</th>
-                    <th class="border border-gray-300 p-3 ..."></th>
+                    <th scope="col" class="px-6 py-3 font-medium">Id #</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Name</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Date Enrolled</th>
+                    <th scope="col" class="px-6 py-3 font-medium">With Detail</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Active</th>
+                    <th scope="col" class="px-6 py-3 font-medium"></th>
                 </tr>
             </thead>
-            <tbody>
-                @if(Model.InspectionTypes == null || Model.InspectionTypes.Count <= 0)
-                {
-                    <tr>
-                        <td colspan="5" class="text-center border border-gray-300 p-2 ...">No record(s) found . . .</td>
-                    </tr>
-                }
-                else
-                {
-                    foreach(var inspectionType in Model.InspectionTypes)
-                    {
-                        <tr>
-                            <td class="border border-gray-300 p-2 ...">@inspectionType.Id</td>
-                            <td class="border border-gray-300 p-2 ...">@inspectionType.Name</td>
-                            <td class="border border-gray-300 p-2 ...">@inspectionType.DateCreated</td>
-                            <td class="border border-gray-300 p-2 text-center ...">
-                                @if (inspectionType.WithDetail)
-                                {
-                                    <i class="fa-solid fa-check text-green-500"></i>
-                                }
-                                else
-                                {
-                                    <i class="fa-solid fa-xmark text-red-500"></i>
-                                }
-                            </td>
-                            <td class="border border-gray-300 p-2 text-center ...">
-                                @if (inspectionType.IsActive)
-                                {
-                                    <i class="fa-solid fa-check text-green-500"></i>
-                                }
-                                else
-                                {
-                                    <i class="fa-solid fa-xmark text-red-500"></i>
-                                }
-                            </td>
-                            <td class="border border-gray-300 p-2 ...">
-                                <a href="@Url.Action("AddEditInspectionType", "Admin", new { inspectionTypeId = inspectionType.Id })" class="text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
-                                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                                </a>
-                                <a id="lnkShowModal" command="show-modal" data-id="@inspectionType.Id" commandfor="deactivateModal" href="#" class="deactivateLink text-center text-gray hover:text-blue-600 transition-colors focus:outline-none p-2">
-                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    } 
-                }
-            </tbody>
         </table>
 
         <!-- End Inspection Types Table -->
@@ -108,70 +61,91 @@
 </div>
 <vc:modal-dialog type="deactivate"></vc:modal-dialog>
 
-<!-- Deactivate Modal Window -->
-
-@* <el-dialog>
-    <dialog id="deactivateModal" aria-labelledby="dialog-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
-        <el-dialog-backdrop class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
-
-        <div tabindex="0" class="flex min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
-            <el-dialog-panel class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 text-red-600">
-                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 id="dialog-title" class="text-base font-semibold text-gray-900">Deactivate account</h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500">Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button id="btnSubmitDeactivateDialog" type="button" command="close" commandfor="dialog" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto">Deactivate</button>
-                    <button id="btnCancelDeactivateDialog" type="button" command="close" commandfor="dialog" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
-                </div>
-            </el-dialog-panel>
-        </div>
-    </dialog>
-</el-dialog> *@
-
-<!-- End Deactivate Modal Window -->
-
 <script type="text/javascript">
 
-    var inspectionTypeId = 0;
-    const deactivateLinks = document.getElementsByClassName("deactivateLink");
-    const btnSubmitDeactivateDialog = document.getElementById("btnSubmitDeactivateDialog");
-    const btnCancelDeactivateDialog = document.getElementById("btnCancelDeactivateDialog");
+    // var inspectionTypeId = 0;
+    // const deactivateLinks = document.getElementsByClassName("deactivateLink");
+    // const btnSubmitDeactivateDialog = document.getElementById("btnSubmitDeactivateDialog");
+    // const btnCancelDeactivateDialog = document.getElementById("btnCancelDeactivateDialog");
 
-    [...deactivateLinks].forEach((lnk) => {
-        lnk.addEventListener("click", (evt) => {
-            evt.preventDefault();
-            inspectionTypeId = evt.target.parentElement.dataset.id;
+    const table = document.getElementById("tblInspectionTypes");
 
-            var modal = new ModalDialog({
+    table.DataTable({
+        processing: true,
+        getUrl: '@Url.Action("GetInspectionTypes", "Admin")',
+        columns:
+        [
+            { dataMember: 'id', isEditable: false },
+            { dataMember: 'name', isEditable: false },
+            { dataMember: 'dateCreated', isEditable: false },
+            { 
+                dataMember: 'withDetail',
+                isEditable: false,
+                displays:
+                [
+                    { value: 'True', icon: 'fa-solid fa-check text-green-500' },
+                    { value: 'False', icon: 'fa-solid fa-xmark text-red-500' }
+                ],
+                isCentered: true
+            },
+            {
+                dataMember: 'isActive',
+                isEditable: false,
+                displays:
+                [
+                    { value: 'True', icon: 'fa-solid fa-check text-green-500' },
+                    { value: 'False', icon: 'fa-solid fa-xmark text-red-500' }
+                ],
+                isCentered: true
+            }
+        ],
+        buttons:
+        [
+            { className: 'fa-solid fa-pencil', isEditButton: false, clickCallback: (data) => editInspectionType(data) },
+            { className: 'fa-solid fa-trash', isSaveButton: true, clickCallback: (data) => deactivateInspectionType(data) }
+        ]
+    });
+
+    function editInspectionType(data){
+        window.location.href = '@Url.Action("AddEditInspectionType", "Admin")' + '?inspectionTypeId=' + data.id;
+    }
+
+    function deactivateInspectionType(data){
+        var modal = new ModalDialog({
                 type: 'deactivate',
                 title: 'Deactivate Type',
                 content: 'Are you sure you want to deactivate inspection type? All of inspection type data will be permanently removed. This action cannot be undone.',
                 submitCallback: () => {
-                    window.location.href = '@Url.Action("DeactivateInspectionType", "Admin")' + "?inspectionTypeId=" + inspectionTypeId + "&currentUserId=" + "@Model.CurrentUser.Id";
+                    window.location.href = '@Url.Action("DeactivateInspectionType", "Admin")' + "?inspectionTypeId=" + data.id;
                 }
             });
 
             modal.show();
+    }
 
-            // showModalDialog({
-            //     type: 'deactivate',
-            //     submitUrl: '@Url.Action("DeactivateInspectionType", "Admin")' + "?inspectionTypeId=" + inspectionTypeId + "&currentUserId=" + "@Model.CurrentUser.Id",
-            //     title: 'Deactivate Type',
-            //     content: 'Are you sure you want to deactivate inspection type? All of inspection type data will be permanently removed. This action cannot be undone.'
-            // });
-        });
-    });
+    // [...deactivateLinks].forEach((lnk) => {
+    //     lnk.addEventListener("click", (evt) => {
+    //         evt.preventDefault();
+    //         //inspectionTypeId = evt.target.parentElement.dataset.id;
+
+    //         // var modal = new ModalDialog({
+    //         //     type: 'deactivate',
+    //         //     title: 'Deactivate Type',
+    //         //     content: 'Are you sure you want to deactivate inspection type? All of inspection type data will be permanently removed. This action cannot be undone.',
+    //         //     submitCallback: () => {
+    //         //         window.location.href = '@Url.Action("DeactivateInspectionType", "Admin")' + "?inspectionTypeId=" + inspectionTypeId + "&currentUserId=" + "@Model.CurrentUser.Id";
+    //         //     }
+    //         // });
+
+    //         // modal.show();
+
+    //         // showModalDialog({
+    //         //     type: 'deactivate',
+    //         //     submitUrl: '@Url.Action("DeactivateInspectionType", "Admin")' + "?inspectionTypeId=" + inspectionTypeId + "&currentUserId=" + "@Model.CurrentUser.Id",
+    //         //     title: 'Deactivate Type',
+    //         //     content: 'Are you sure you want to deactivate inspection type? All of inspection type data will be permanently removed. This action cannot be undone.'
+    //         // });
+    //     });
+    // });
 
 </script>
