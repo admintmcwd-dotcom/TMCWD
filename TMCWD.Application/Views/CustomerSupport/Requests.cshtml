@@ -38,18 +38,19 @@
     <p class="text-gray-700">
         <!-- Requests Table -->
 
-        <table class="border-collapse border border-gray-full w-full ...">
+        <table id="tblRequests" class="w-full text-sm text-left rtl:text-right text-body border rounded-md">
             <thead>
-                <tr>
-                    <th class="border border-gray-300 text-center ...">Control #</th>
-                    <th class="border border-gray-300 text-center ...">Account #</th>
-                    <th class="border border-gray-300 text-center ...">Customer</th>
-                    <th class="border border-gray-300 text-center ...">Logged By</th>
-                    <th class="border border-gray-300 text-center ...">Status</th>
-                    <th class="border border-gray-300 text-center ..."></th>
+                <tr class="border-b">
+                    <th scope="col" class="px-6 py-3 font-medium">Control #</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Account #</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Customer</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Logged By</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Logged Date</th>
+                    <th scope="col" class="px-6 py-3 font-medium">Status</th>
+                    <th scope="col" class="px-6 py-3 font-medium"></th>
                 </tr>
             </thead>
-            <tbody>
+            @* <tbody>
                 @if(Model.Requests == null || Model.Requests.Count <= 0)
                 {
                     <tr>
@@ -89,7 +90,7 @@
                         </tr>
                     }
                 }
-            </tbody>
+            </tbody> *@
         </table>
 
         <!-- End Requests Table -->
@@ -99,7 +100,49 @@
 <script type="text/javascript">
 
     document.addEventListener("DOMContentLoaded", function(event) {
-
+        const table = document.getElementById("tblRequests");
+        table.DataTable({
+            processing: true,
+            stockCheck: { srcDataMember: 'quantity', compareToDataMember: 'requiredQuantity' },
+            getUrl: '@Url.Action("GetRequests", "Request")',
+            rowClassNames: 'border-b hover:bg-gray-100',
+            columns: [
+                {dataMember: 'controlNumber', isEditable: false },
+                {dataMember: 'accountNumber', isEditable: false },
+                {dataMember: 'customerName', isEditable: false },
+                {dataMember: 'loggedBy', isEditable: false },
+                {dataMember: 'loggedDate', isEditable: false },
+                {
+                    dataMember: 'status', 
+                    isEditable: false, 
+                    classNames: 'text-center',
+                    displays: 
+                    [
+                        {
+                            value: 1,
+                            icon: 'fa-brands fa-firstdraft text-gray-500'
+                        },
+                        {
+                            value: 2,
+                            icon: 'fa-solid fa-clock text-yellow-500'
+                        },
+                        {
+                            value: 3,
+                            icon: 'fa-solid fa-check text-green-500'
+                        },
+                        {
+                            value: 4,
+                            icon: 'fa-solid fa-xmark text-red-500'
+                        }
+                    ]
+                }
+            ],
+            buttonColumnClassNames: 'w-18',
+            buttons:[
+                { className: 'fa-solid fa-eye', isEditButton: false, clickCallback: (data) => { window.location.href = '@Url.Action("AddEditRequest", "CustomerSupport")' + '&requestId=' + data.id; } },
+                { className: 'fas fa-trash', clickCallback: (data) => deleteData(data) }
+            ]
+        });
     });
 
 </script>

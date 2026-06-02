@@ -73,9 +73,9 @@
         stockCheck: { srcDataMember: 'quantity', compareToDataMember: 'requiredQuantity' },
         getUrl: '@Url.Action("GetOtherFeeTypes", "Admin")',
         columns: [
-            {dataMember: 'id', isEditable: false, classNames: '' },
-            {dataMember: 'name', isEditable: true, classNames: '' },
-            {dataMember: 'defaultValue', isEditable: true, classNames: '' },
+            {dataMember: 'id', isEditable: false },
+            {dataMember: 'name', isEditable: true },
+            {dataMember: 'defaultValue', isEditable: true },
         ],
         buttons:[
             { className: 'fa-solid fa-pencil', toggleIcons: ['fa-pencil', 'fa-xmark'], isEditButton: true },
@@ -85,8 +85,6 @@
     });
     
     async function saveData(data){
-        console.log('Save Data:', data);
-
         var saveUrl = '@Url.Action("SaveOtherFeeType", "Admin")'
         var client = new WebClient(saveUrl, data);
         var response = await client.postAsync();

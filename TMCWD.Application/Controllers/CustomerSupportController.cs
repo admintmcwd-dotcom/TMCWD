@@ -228,7 +228,7 @@ namespace TMCWD.Application.Controllers
             RequestViewModel model = new();
             model.CurrentUser = currentUser;
             ViewBag.Role = currentUser.Role;
-            model.Requests = await _requestTransaction.GetRequests();
+            //model.Requests = await _requestTransaction.GetRequests();
             return View(model);
         }
 

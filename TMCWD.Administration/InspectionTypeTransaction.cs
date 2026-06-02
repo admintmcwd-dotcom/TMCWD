@@ -71,6 +71,14 @@ namespace TMCWD.Administration
             return this.ConvertJsonToInspectionType(data);
         }
 
+        public async Task<InspectionType> GetNewRequestType()
+        {
+            var response = await _client.GetAsync($"api/InspectionType/GetNewRequestType");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return this.ConvertJsonToInspectionType(data);
+        }
+
         #endregion
 
     }

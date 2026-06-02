@@ -36,8 +36,8 @@
     <h5 class="mb-2 text-2xl font-bold text-gray-900">Customers</h5>
     <p class="text-gray-700">
         <!-- Customer Table -->
-        <table id="tblCustomers" class="w-full text-sm text-left rtl:text-right text-body">
-            <thead class="text-sm text-body bg-neutral-secondary-soft border-b rounded-lg border-default">
+        <table id="tblCustomers" class="w-full text-sm text-left rtl:text-right text-body border rounded-md">
+            <thead class="border-b">
                 <tr>
                     <th scope="col" class="px-6 py-3 font-medium">Id #</th>
                     <th scope="col" class="px-6 py-3 font-medium">Name</th>
@@ -64,6 +64,7 @@
     table.DataTable({
         processing: true,
         getUrl: '@Url.Action("GetCustomers", "CustomerSupport")',
+        rowClassNames: 'border-b hover:bg-gray-100',
         columns:
         [
             { dataMember: 'id', isEditable: false },
@@ -77,10 +78,10 @@
                 [
                     { value: 'True', icon: 'fa-solid fa-check text-green-500' },
                     { value: 'False', icon: 'fa-solid fa-xmark text-red-500' }
-                ],
-                isCentered: true
+                ]
             }
         ],
+        buttonColumnClassNames: 'text-center',
         buttons:
         [
             { className: 'fa-solid fa-pencil', isEditButton: false, clickCallback: (data) => editInspectionType(data) },

@@ -49,12 +49,18 @@ namespace TMCWD.CustomerSupport
             StringBuilder sb = new();
 
             if (account == null) throw new Exception("Required account fields are not supplied");
-            if (String.IsNullOrEmpty(account.AccountNumber.Trim())) sb.AppendLine("Äccount number is required");
-            if (String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required");
+            if (account.Id > 0 && String.IsNullOrEmpty(account.AccountNumber.Trim())) sb.AppendLine("Äccount number is required");
+            if (account.Id > 0 && String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required");
             if (account.CustomerId <= 0) sb.AppendLine("No customer has been selected for this account");
             if (String.IsNullOrEmpty(account.HouseNumber.Trim())) sb.AppendLine("Account house number is required for account creation");
 
-            if (String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
+            if (!String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
+
+            if(account.Id <= 0)
+            {
+                string shortGuid = Guid.NewGuid().ToString("N").Substring(0, 5);
+                account.AccountNumber = $"ACCT{DateTime.Now.ToString("yyyy")}-{DateTime.Now.ToString("MM")}-{shortGuid}";
+            }
 
             var content = JsonContent.Create(account);
 

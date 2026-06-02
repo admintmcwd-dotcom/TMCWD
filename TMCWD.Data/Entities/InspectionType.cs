@@ -30,6 +30,9 @@ namespace TMCWD.Data.Entities
         [Column("IsActive")]
         public bool IsActive { get; set; }
 
+        [Column("IsNew")]
+        public bool IsNew { get; set; }
+
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
 

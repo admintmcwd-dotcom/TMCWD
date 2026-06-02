@@ -97,7 +97,7 @@ HTMLElement.prototype.DataTable = async function(options){
     tdNoRecord.scope = "col";
     tdNoRecord.colSpan = columnCount;
     tdNoRecord.classList.add('px-6', 'py-3', 'text-center');
-    tdNoRecord.textContent = "No record(s) found . . .";
+    tdNoRecord.textContent = options.noRecordText || "No record(s) found . . .";
 
     const trDefault = document.createElement("tr");
 
@@ -134,9 +134,10 @@ HTMLElement.prototype.DataTable = async function(options){
         trDefault.appendChild(tdNoRecord);
         tbody.appendChild(trDefault);
     }
-
+    
     var client = new WebClient(options.getUrl, null);
     var response = await client.getAsync();
+    console.log('Requests:', response);
 
     if (response == null || response.length == 0) {
         trDefault.replaceChildren();
@@ -148,7 +149,7 @@ HTMLElement.prototype.DataTable = async function(options){
 
     response.forEach((item) => {
         const tr = document.createElement("tr");
-
+        tr.className = options.rowClassNames ? options.rowClassNames : "bg-white border-b hover:bg-gray-50";
         if (options.stockCheck) {
             if (options.stockCheck.srcDataMember.trim() != '' && options.stockCheck.compareToDataMember.trim() != '') {
                 var srcValue = item[options.stockCheck.srcDataMember.trim()];
@@ -168,7 +169,6 @@ HTMLElement.prototype.DataTable = async function(options){
             const itemValue = item[column.dataMember];
             const td = document.createElement("td");
             td.classList.add('px-6', 'py-3');
-            console.log('Is Centered:', column.isCentered);
             if (column.isCentered) td.classList.add('text-center');
             if (column.isEditable) {
                 td.innerHTML = `<p class='editable-content-text w-full'>${itemValue}</p>
@@ -199,7 +199,7 @@ HTMLElement.prototype.DataTable = async function(options){
 
         if (options.buttons != null && options.buttons.length > 0) {
             const buttonTd = document.createElement("td");
-            buttonTd.classList.add("w-64");
+            buttonTd.className = options.buttonColumnClassNames ? options.buttonColumnClassNames : "w-64";
             options.buttons.forEach((button) => {
                 const elButton = document.createElement("button");
                 //elButton.onclick = button.location == null || button.location == '' ? '' : 'window.location.href="' + button.location + '"';
@@ -296,9 +296,8 @@ HTMLElement.prototype.Collapsible = function () {
     const div = this;
     if (div.tagName !== "DIV") return;
     if (div.dataset.accordion == null || div.dataset.accordion.toLowerCase() != 'collapse') return;
-
     //write code here
-    const buttons = div.getElementsByClassName('accordion-button');
+    const buttons = div.getElementsByClassName('collapsible-button');
     if (buttons == null || buttons.length <= 0) return;
 
     [...buttons].forEach((button) => {
@@ -307,7 +306,7 @@ HTMLElement.prototype.Collapsible = function () {
             evt.stopPropagation();
             const h2 = evt.target.closest('h2');
             if (h2 == null) return;
-            const bodyDiv = h2.nextSibling();
+            const bodyDiv = h2.nextElementSibling;
             if (bodyDiv == null) return;
             const icon = evt.target.querySelector('svg');
             if (icon == null) return;
@@ -499,9 +498,9 @@ class ModalDialog {
                 break;
         }
 
-        if (elTitle) elTitle[0].innertText = this.title;
-        if (elContent) elContent[0].innertText = this.content;
-        if (elTextTitle) elTextTitle[0].innerText = this.textTitle;
+        if (elTitle) elTitle[0].textContent = this.title;
+        if (elContent) elContent[0].textContent = this.content;
+        if (elTextTitle) elTextTitle[0].textContent = this.textTitle;
     }
 
     #setButton(type) {
@@ -660,8 +659,28 @@ class CustomerSelect {
 
     #seach = async () => {
         if (this.txtSearch) {
+            //show progress indicator
+            this.tbodyList.replaceChildren();
+            const tempTr = document.createElement("tr");
+            tempTr.innerHTML =
+                `<td colspan="5" class="w-full h-32 text-center align-middle">
+                    <div class="place-items-center">
+                       <svg class="w-12 h-12 text-gray-300 animate-spin" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                          <path
+                            d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+                            stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+                          <path
+                            d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+                            stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-900">
+                          </path>
+                       </svg>
+                    </div>
+                </td>`;
+            this.tbodyList.appendChild(tempTr);
+            
             var searchString = encodeURIComponent(this.txtSearch.value);
             var searchUrl = this.getCustomerUrl + '?searchString=' + searchString;
+
             var client = new WebClient(searchUrl, null);
             var result = await client.getAsync();
             if (result) {
@@ -673,7 +692,7 @@ class CustomerSelect {
                         tr.classList.add("bg-white", "border-b", "hover:bg-gray-50");
                         tr.innerHTML = `
                         <td class="px-6 py-4 text-center">
-                            <input data-email="${customer.email}" data-phone="${customer.phoneNumber}" data-customerid="${customer.id}" data-lastname="${customer.lastname}" data-firstname="${customer.firstname}" data-middlename="${customer.middlename}" type="radio" name="customerSelect" value="${customer.id}">
+                            <input type="radio" name="customerSelect" value="${customer.id}">
                         </td>
                         <td class="px-6 py-4">${customer.firstname} ${customer.lastname}</td>
                         <td class="px-6 py-4">${customer.email}</td>
@@ -686,52 +705,17 @@ class CustomerSelect {
                         var selectInput = tr.querySelector('input');
                         if (selectInput) {
                             selectInput.addEventListener('click', (evt) => {
-                                //evt.preventDefault();
                                 evt.stopPropagation();
                                 this.currentData = customer;
-                                //console.log('Customer Data:', customer);
                             });
                         }
                     });
-
-                    // for (var ctr = 0; ctr < result.length; ctr++) {
-                    //     var customer = result[ctr];
-                    //     var tr = document.createElement("tr");
-                    //     tr.classList.add("bg-white", "border-b", "hover:bg-gray-50");
-                    //     tr.innerHTML = `
-                    //     <td class="px-6 py-4 text-center">
-                    //         <input data-email="${customer.email}" data-phone="${customer.phoneNumber}" data-customerid="${customer.id}" data-lastname="${customer.lastname}" data-firstname="${customer.firstname}" data-middlename="${customer.middlename}" type="radio" name="customerSelect" value="${customer.id}">
-                    //     </td>
-                    //     <td class="px-6 py-4">${customer.firstname} ${customer.lastname}</td>
-                    //     <td class="px-6 py-4">${customer.email}</td>
-                    //     <td class="px-6 py-4">${customer.phoneNumber}</td>
-                    //     <td class="px-6 py-4 text-center">
-                    //         ${customer.isActive ? '<i class="fa-solid fa-check text-green-500"></i>' : '<i class="fa-solid fa-xmark text-red-500"></i>'}
-                    //     </td>
-                    //     `;
-                    //     this.tbodyList.appendChild(tr);
-                    //     var selectInput = tr.querySelector('input');
-                    //     if (selectInput) {
-                    //         selectInput.addEventListener('click', (evt) => {
-                    //             //evt.preventDefault();
-                    //             evt.stopPropagation();
-                    //             console.log('Customer Data:', customer);
-                    //         });
-                    //     }
-                    // }
                 }
             }
         }
     }
 
     #select() {
-        var selectedRadio = this.dialog.querySelectorAll('input[type="radio"]:checked');
-        var customerId = selectedRadio[0].dataset.customerid;
-        var phone = encodeURIComponent(selectedRadio[0].dataset.phone);
-        var email = encodeURIComponent(selectedRadio[0].dataset.email);
-        var firstname = encodeURIComponent(selectedRadio[0].dataset.firstname);
-        var lastname = encodeURIComponent(selectedRadio[0].dataset.lastname);
-        var middlename = encodeURIComponent(selectedRadio[0].dataset.middlename);
         this.fnCallback(this.currentData);
     }
 };
@@ -793,7 +777,6 @@ class AccountSelect{
                 var addClient = new WebClient(this.addUrl, { customerId: this.customerId, accountAddress: accountAddress });
                 var account = await addClient.postAsync();
                 if (account) {
-                    console.log('Saved Account:', account);
                     this.#refreshTable(account);
                 }
                 else {

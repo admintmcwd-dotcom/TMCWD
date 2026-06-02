@@ -66,6 +66,8 @@ namespace TMCWD.CustomerSupport
 
             if(!String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
 
+            if (request.Id <= 0) request.ControlNumber = "TKT";
+
             var content = JsonContent.Create(request);
             var response = await _client.PostAsync($"api/Request/SaveUpdate/{userId}", content);
 

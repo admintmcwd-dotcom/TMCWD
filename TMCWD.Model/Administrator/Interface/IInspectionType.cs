@@ -9,7 +9,7 @@ namespace TMCWD.Model.Administrator.Interface
 
         #region properties
 
-        public decimal Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public bool WithDetail { get; set; }
         public bool IsRequiredAccount { get; set; }

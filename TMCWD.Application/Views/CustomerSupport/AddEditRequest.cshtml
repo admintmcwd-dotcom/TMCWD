@@ -14,6 +14,7 @@
 </style>
 
 <div id="accordion-collapse-request" data-accordion="collapse" class="rounded-lg border border-default overflow-hidden shadow-xs">
+    <!-- Request Details -->
     <h2 id="accordion-collapse-heading-1" class="bg-gray-300">
         <button id="accordion-button-item-1" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Request Details</span>
@@ -103,7 +104,8 @@
                             {
                                 @Model.CurrentCustomer.Email
                             }
-                            else{
+                            else
+                            {
                                 @("No selected customer . . .")
                             }
                         </p>
@@ -181,6 +183,7 @@
     </div>
     @if (Model.AddEditRequest.Id > 0)
     {
+        <!-- Recommendations -->
         <h2 id="accordion-collapse-heading-2" class="bg-gray-300">
             <button id="accordion-button-item-2" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
                 <span>Recommendations</span>
@@ -229,6 +232,7 @@
             </div>
         </div>
 
+        <!-- Materials -->
         <h2 id="accordion-collapse-heading-3" class="bg-gray-300">
             <button id="accordion-button-item-3" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
                 <span>Materials</span>
@@ -392,39 +396,13 @@
 
         var alert = new Alert();
 
-        document.getElementById("cmbInventory").setDropdown(null);
+        const cmbInventory = document.getElementById("cmbInventory");
+        if(cmbInventory) cmbInventory.setDropdown(null);
 
         const accordion = document.getElementById('accordion-collapse-request');
-        @* accordion.Collapsible(); *@
+        accordion.Collapsible();
 
-        const btnDetails = document.getElementById("accordion-button-item-1");
-        btnDetails.addEventListener("click", (evt) => {
-            evt.preventDefault();
-            const accordionItem = document.getElementById("accordion-collapse-body-1");
-            const icon = document.getElementById("accordion-icon-item-1");
-            accordionItem.classList.toggle("hidden");
-            icon.classList.toggle("rotate-180");
-        });
-
-        const btnRecommendation = document.getElementById("accordion-button-item-2");
-        btnRecommendation.addEventListener("click", (evt) => {
-            evt.preventDefault();
-            const accordionItem = document.getElementById("accordion-collapse-body-2");
-            const icon = document.getElementById("accordion-icon-item-2");
-            accordionItem.classList.toggle("hidden");
-            icon.classList.toggle("rotate-180");
-        });
-
-        const btnMaterial = document.getElementById("accordion-button-item-3");
-        btnMaterial.addEventListener("click", (evt) => {
-            evt.preventDefault();
-            const accordionItem = document.getElementById("accordion-collapse-body-3");
-            const icon = document.getElementById("accordion-icon-item-3");
-            accordionItem.classList.toggle("hidden");
-            icon.classList.toggle("rotate-180");
-        });
-        
-        var checkBoxes = document.querySelectorAll('input[type="checkbox"]');
+        const checkBoxes = document.querySelectorAll('input[type="checkbox"]');
 
         [...checkBoxes].forEach((checkbox) => {
             checkbox.addEventListener("change", (evt) => {
@@ -512,7 +490,6 @@
 
             const saveRequestClient = new WebClient(saveRequestUrl, data);
             var resultRequestId = + await saveRequestClient.postAsync();
-            console.log('Request ID:', resultRequestId);
             const saveDetailUrl = '@Url.Action("SaveRequestDetails", "CustomerSupport")' + "?requestId=" + resultRequestId;
             if(resultRequestId > 0){
                 const saveRequestDetailClient = new WebClient(saveDetailUrl, requestDetails);
@@ -524,7 +501,8 @@
 
         //customerSelectionDialog
         const lnkAccountName = document.getElementById("lnkAccountName");
-        lnkAccountName.addEventListener("click", (evt) => {
+        if(lnkAccountName){
+            lnkAccountName.addEventListener("click", (evt) => {
             evt.preventDefault();
             
             var customerSelectionDialog = new CustomerSelect({
@@ -544,10 +522,12 @@
             customerSelectionDialog.show();
 
         });
+        }
 
         //account selection dialog
         const lnkAccountNo = document.getElementById("lnkAccountNo");
-        lnkAccountNo.addEventListener("click", (evt) => {
+        if(lnkAccountNo){
+            lnkAccountNo.addEventListener("click", (evt) => {
             evt.preventDefault();
             const customerId = + document.getElementById("hdAddEditCustomerId").value;
             const accountId = + document.getElementById("hdAccountId").value;
@@ -564,7 +544,6 @@
                     customerid: document.getElementById("hdAddEditCustomerId").value,
                     addAccountUrl: '@Url.Action("AddAccount", "Account")',
                     submitCallback: (accountId, accountNumber, accountAddress) => {
-                        console.log('Address:', accountAddress);
                         document.getElementById("hdAccountId").value = + accountId;
                         document.getElementById("pAccountNo").innerText = decodeURIComponent(accountNumber);
                         document.getElementById("pAddress").innerText = decodeURIComponent(accountAddress);
@@ -574,9 +553,11 @@
                 accountSelect.show();
             }
         });
+        }
 
         const btnAddRecommendation = document.getElementById("btnAddRecommendation");
-        btnAddRecommendation.addEventListener("click", async (evt) => {
+        if(btnAddRecommendation){
+            btnAddRecommendation.addEventListener("click", async (evt) => {
             evt.preventDefault();
             const txtRecommendation = document.getElementById("txtRecommendation");
             var saveRecommendationUrl = '@Url.Action("SaveRecommendation", "CustomerSupport")';
@@ -642,11 +623,13 @@
 
             txtRecommendation.value = '';
         });
+        }
 
         const tblMaterials = document.getElementById("tblMaterialList");
 
         const btnAddMaterial = document.getElementById("btnAddMaterial");
-        btnAddMaterial.addEventListener("click", async (evt) => {
+        if(btnAddMaterial){
+            btnAddMaterial.addEventListener("click", async (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
 
@@ -675,7 +658,6 @@
                     var tbody = tblMaterials.querySelector('tbody');
                     var isNegativeStock = response.material.requestedQuantity > response.inventory.quantity ? "True" : "False";
                     var noContent = tbody.getElementsByClassName('material-no-item');
-                    console.log('No Content:', noContent);
                     if(noContent.length > 0) tbody.replaceChildren();
 
                     var tr = document.createElement('tr');
@@ -767,17 +749,18 @@
                 }
             }
         });
+        
+            const lnkEditMaterials = tblMaterials.getElementsByClassName("material-edit");
+            const lnkSaveMaterials = tblMaterials.getElementsByClassName("material-save");
 
-        const lnkEditMaterials = tblMaterials.getElementsByClassName("material-edit");
-        const lnkSaveMaterials = tblMaterials.getElementsByClassName("material-save");
+            [...lnkEditMaterials].forEach((lnkEdit) => {
+                setMaterialEditListener(lnkEdit, tblMaterials);
+            });
 
-        [...lnkEditMaterials].forEach((lnkEdit) => {
-            setMaterialEditListener(lnkEdit, tblMaterials);
-        });
-
-        [...lnkSaveMaterials].forEach((lnkSave) => {
-            setMaterialSaveListener(lnkSave, tblMaterials);
-        });
+            [...lnkSaveMaterials].forEach((lnkSave) => {
+                setMaterialSaveListener(lnkSave, tblMaterials);
+            });
+        }
     });
 
     const setMaterialEditListener = function(link, elTable){
@@ -867,10 +850,7 @@
                     content: 'Successfully updated material',
                     autoHide: true
                 });
-                console.log('Material:', response.material);
-                console.log('Inventory:', response.inventory);
                 var isNegativeStock = response.material.requestedQuantity > response.inventory.quantity ? "True" : "False";
-                console.log('Is Negative Stock:', isNegativeStock);
                 const parentTr = lnk.closest('tr');
                 parentTr.dataset.negativestock = isNegativeStock;
             }

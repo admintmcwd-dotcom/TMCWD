@@ -22,7 +22,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetTypes")]
-        public async Task<ActionResult<IEnumerable<InspectionType>>> GetTypes()
+        public async Task<ActionResult> GetTypes()
         {
             var inspectionTypes = await _inspectionTypeService.GetTypes();
 
@@ -32,7 +32,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<InspectionType>> Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
             var inspectionType = await _inspectionTypeService.Get(id);
 
@@ -42,7 +42,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPost("SaveUpdate/{userId}")]
-        public async Task<ActionResult<InspectionType>> SaveUpdate(int userId, [FromBody] InspectionType type)
+        public async Task<ActionResult> SaveUpdate(int userId, [FromBody] InspectionType type)
         {
             StringBuilder sb = new();
 
@@ -54,6 +54,15 @@ namespace TMCWD.Data.Controllers
 
             return Ok(updatedType);
         }
+
+        [HttpGet("GetNewRequestType")]
+        public async Task<ActionResult> GetNewRequestType()
+        {
+            var inspectionType = await _inspectionTypeService.GetNewRequestType();
+            if(inspectionType == null) return NotFound("Inspection type for new request is not found");
+
+            return Ok(inspectionType);
+        } 
 
     }
 }

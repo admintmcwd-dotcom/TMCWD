@@ -8,6 +8,7 @@ namespace TMCWD.Data.Services
         Task<IEnumerable<InspectionType>?> GetTypes();
         Task<InspectionType?> Get(int id);
         Task<InspectionType> SaveUpdate(int userId, InspectionType type);
+        Task<InspectionType> GetNewRequestType();
 
     }
 }

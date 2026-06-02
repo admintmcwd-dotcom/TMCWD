@@ -110,6 +110,14 @@ namespace TMCWD.Application.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SaveUpdateAccount([FromBody] Account account)
+        {
+            var updatedAccount = await _accountTransaction.SaveUpdate(_authenticatedUserService.User.Id, account);
+            if (updatedAccount == null) return BadRequest();
+            return Ok(updatedAccount);
+        }
+
     }
 
 }
