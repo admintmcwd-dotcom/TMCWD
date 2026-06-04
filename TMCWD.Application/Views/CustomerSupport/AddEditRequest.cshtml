@@ -14,6 +14,7 @@
 </style>
 
 <div id="accordion-collapse-request" data-accordion="collapse" class="rounded-lg border border-default overflow-hidden shadow-xs">
+    <!-- Request Details -->
     <h2 id="accordion-collapse-heading-1" class="bg-gray-300">
         <button id="accordion-button-item-1" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Request Details</span>
@@ -103,7 +104,8 @@
                             {
                                 @Model.CurrentCustomer.Email
                             }
-                            else{
+                            else
+                            {
                                 @("No selected customer . . .")
                             }
                         </p>
@@ -146,7 +148,7 @@
                     </div>
                     <div class="grid col-span-2 gap-6">
                         <div id="service-details" data-services="details" class="grid gap-4 mb-6 md:grid-cols-4">
-                            @foreach (var inspectionType in Model.InspectionTypes)
+                            @* @foreach (var inspectionType in Model.InspectionTypes)
                             {
                                 <div class="group flex items-center ps-4 pr-4 bg-neutral-primary-soft border border-default rounded-lg shadow-xs hover:bg-blue-900 hover:text-white hover:cursor-pointer">
                                     <input id='@("border-checkbox-" + inspectionType.Type.Id)' data-id="@inspectionType.Type.Id" data-withdetail="@inspectionType.Type.WithDetail" data-requiredaccount="@inspectionType.Type.IsRequiredAccount" type="checkbox" value="" name="bordered-checkbox" checked="@inspectionType.IsChecked" class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft hover:cursor-pointer">
@@ -162,17 +164,23 @@
                                         <label for='@("border-checkbox-" + inspectionType.Type.Id)' class="select-none w-full py-4 ms-2 text-sm font-medium text-heading hover:cursor-pointer">@inspectionType.Type.Name</label>
                                     }
                                 </div>
-                            }
+                            } *@
                         </div>
                     </div>
                 </div>
-                <div>
-                    <button id="btnSubmit" type"button" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-150">
-                        Save
+                <div class="text-right">
+                    <button id="btnCancel" type="button" class="px-4 py-2 text-sm text-white bg-red-700 text-black font-semibold rounded-md hover:bg-red-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
+                        <i class="fa-solid fa-xmark mr-4"></i>Cancel
                     </button>
-                    <button type="button" class="px-4 py-2 bg-orange-600 text-black font-semibold rounded-md hover:bg-gray-700 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
-                        Cancel
-                    </button>
+                    @if (Model.JobOrders == null || !Model.JobOrders.Any())
+                    {
+                        <button id="btnSave" type"button" class="px-4 py-2 text-sm text-white bg-yellow-700 text-white font-semibold rounded-md hover:bg-yellow-500 hover:text-black transition duration-150">
+                            <i class="fa-solid fa-floppy-disk mr-4"></i>Save as Draft
+                        </button>
+                        <button id="btnSubmit" type"button" class="px-4 py-2 text-sm text-white bg-green-600 text-white font-semibold rounded-md hover:bg-green-500 hover:text-black transition duration-150">
+                            <i class="fa-solid fa-paper-plane mr-4"></i>Submit
+                        </button>
+                    }
                 </div>
             </p>
 
@@ -181,6 +189,7 @@
     </div>
     @if (Model.AddEditRequest.Id > 0)
     {
+        <!-- Recommendations -->
         <h2 id="accordion-collapse-heading-2" class="bg-gray-300">
             <button id="accordion-button-item-2" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
                 <span>Recommendations</span>
@@ -229,6 +238,7 @@
             </div>
         </div>
 
+        <!-- Materials -->
         <h2 id="accordion-collapse-heading-3" class="bg-gray-300">
             <button id="accordion-button-item-3" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
                 <span>Materials</span>
@@ -236,7 +246,7 @@
             </button>
         </h2>
         <div id="accordion-collapse-body-3" class="collapsible-body hidden min-h-64 bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-3">
-            <div class="w-full grid grid-cols-[50%_30%_20%] gap-4">
+            <div class="w-full grid grid-cols-[30%_10%_60%] gap-4">
                 <div>
                     <!-- autocomplete -->
 
@@ -325,13 +335,13 @@
                                             <input type="number" id="material-text-quantity-item-@material.Material.Id" class="w-full border rounded-md p-2" value="@material.Material.RequestedQuantity" />
                                         </p>
                                     </td>
-                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.Material.UnitCost</td>
+                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.Material.UnitSellingPrice</td>
                                     <td scope="col" class="px-6 py-3 font-base text-sm">
                                         <p id="material-item-unitcost-@material.Material.Id" class="w-full">
-                                            @material.Material.NewUnitCost
+                                            @material.Material.UnitSellingPrice
                                         </p>
                                         <p id="material-unitcost-input-@material.Material.Id" class="w-full hidden">
-                                            <input type="number" id="material-text-unitcost-item-@material.Material.Id" class="w-full border rounded-md p-2" value="@material.Material.NewUnitCost" />
+                                            <input type="number" id="material-text-unitcost-item-@material.Material.Id" class="w-full border rounded-md p-2" value="@material.Material.UnitSellingPrice" />
                                         </p>
                                     </td>
                                     <td scope="col" class="px-6 py-3 font-base text-sm">@material.Material.Amount</td>
@@ -341,7 +351,7 @@
                                                 <a id="material-edit-@material.Material.Id" 
                                                    data-id="@material.Material.Id"
                                                    data-quantity="@material.Material.RequestedQuantity"
-                                                   data-unitcost="@material.Material.NewUnitCost"
+                                                   data-unitcost="@material.Material.UnitSellingPrice"
                                                    data-isset="false"
                                                    href="#"
                                                    class="material-edit">
@@ -392,39 +402,30 @@
 
         var alert = new Alert();
 
-        document.getElementById("cmbInventory").setDropdown(null);
+        const cmbInventory = document.getElementById("cmbInventory");
+        if(cmbInventory) cmbInventory.setDropdown(null);
 
         const accordion = document.getElementById('accordion-collapse-request');
-        @* accordion.Collapsible(); *@
+        accordion.Collapsible();
 
-        const btnDetails = document.getElementById("accordion-button-item-1");
-        btnDetails.addEventListener("click", (evt) => {
-            evt.preventDefault();
-            const accordionItem = document.getElementById("accordion-collapse-body-1");
-            const icon = document.getElementById("accordion-icon-item-1");
-            accordionItem.classList.toggle("hidden");
-            icon.classList.toggle("rotate-180");
+        var requestId = 0;
+        var customerId = 0;
+
+        const hdRequestId = document.getElementById("hdRequestId");
+        const hdCustomerId = document.getElementById("hdAddEditCustomerId");
+
+        if(hdRequestId) requestId = + hdRequestId.value;
+        if(hdCustomerId) customerId = + hdCustomerId.value;
+
+        const services = document.getElementById("service-details");
+        if(services) services.SetServices({ 
+            getServicesUrl: '@Url.Action("GetInspectionType", "Request")' + '?requestId=' + requestId,
+            selectChange: (ids) => {
+                console.log('IDS:', ids);
+            }
         });
 
-        const btnRecommendation = document.getElementById("accordion-button-item-2");
-        btnRecommendation.addEventListener("click", (evt) => {
-            evt.preventDefault();
-            const accordionItem = document.getElementById("accordion-collapse-body-2");
-            const icon = document.getElementById("accordion-icon-item-2");
-            accordionItem.classList.toggle("hidden");
-            icon.classList.toggle("rotate-180");
-        });
-
-        const btnMaterial = document.getElementById("accordion-button-item-3");
-        btnMaterial.addEventListener("click", (evt) => {
-            evt.preventDefault();
-            const accordionItem = document.getElementById("accordion-collapse-body-3");
-            const icon = document.getElementById("accordion-icon-item-3");
-            accordionItem.classList.toggle("hidden");
-            icon.classList.toggle("rotate-180");
-        });
-        
-        var checkBoxes = document.querySelectorAll('input[type="checkbox"]');
+        const checkBoxes = document.querySelectorAll('input[type="checkbox"]');
 
         [...checkBoxes].forEach((checkbox) => {
             checkbox.addEventListener("change", (evt) => {
@@ -448,6 +449,20 @@
                 }
             });
         });
+
+        const btnSave = document.getElementById("btnSave");
+        if(btnSave){
+            btnSave.addEventListener("click", async (evt) =>{
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                //let requestId = + document.getElementById("hdRequestId").value;
+                //let customerId = + document.getElementById("hdAddEditCustomerId").value;
+
+                
+
+            });
+        }
 
         const saveRequestUrl = '@Url.Action("SaveRequest", "CustomerSupport")';
 
@@ -512,7 +527,6 @@
 
             const saveRequestClient = new WebClient(saveRequestUrl, data);
             var resultRequestId = + await saveRequestClient.postAsync();
-            console.log('Request ID:', resultRequestId);
             const saveDetailUrl = '@Url.Action("SaveRequestDetails", "CustomerSupport")' + "?requestId=" + resultRequestId;
             if(resultRequestId > 0){
                 const saveRequestDetailClient = new WebClient(saveDetailUrl, requestDetails);
@@ -524,7 +538,8 @@
 
         //customerSelectionDialog
         const lnkAccountName = document.getElementById("lnkAccountName");
-        lnkAccountName.addEventListener("click", (evt) => {
+        if(lnkAccountName){
+            lnkAccountName.addEventListener("click", (evt) => {
             evt.preventDefault();
             
             var customerSelectionDialog = new CustomerSelect({
@@ -544,10 +559,12 @@
             customerSelectionDialog.show();
 
         });
+        }
 
         //account selection dialog
         const lnkAccountNo = document.getElementById("lnkAccountNo");
-        lnkAccountNo.addEventListener("click", (evt) => {
+        if(lnkAccountNo){
+            lnkAccountNo.addEventListener("click", (evt) => {
             evt.preventDefault();
             const customerId = + document.getElementById("hdAddEditCustomerId").value;
             const accountId = + document.getElementById("hdAccountId").value;
@@ -564,7 +581,6 @@
                     customerid: document.getElementById("hdAddEditCustomerId").value,
                     addAccountUrl: '@Url.Action("AddAccount", "Account")',
                     submitCallback: (accountId, accountNumber, accountAddress) => {
-                        console.log('Address:', accountAddress);
                         document.getElementById("hdAccountId").value = + accountId;
                         document.getElementById("pAccountNo").innerText = decodeURIComponent(accountNumber);
                         document.getElementById("pAddress").innerText = decodeURIComponent(accountAddress);
@@ -574,9 +590,11 @@
                 accountSelect.show();
             }
         });
+        }
 
         const btnAddRecommendation = document.getElementById("btnAddRecommendation");
-        btnAddRecommendation.addEventListener("click", async (evt) => {
+        if(btnAddRecommendation){
+            btnAddRecommendation.addEventListener("click", async (evt) => {
             evt.preventDefault();
             const txtRecommendation = document.getElementById("txtRecommendation");
             var saveRecommendationUrl = '@Url.Action("SaveRecommendation", "CustomerSupport")';
@@ -642,11 +660,13 @@
 
             txtRecommendation.value = '';
         });
+        }
 
         const tblMaterials = document.getElementById("tblMaterialList");
 
         const btnAddMaterial = document.getElementById("btnAddMaterial");
-        btnAddMaterial.addEventListener("click", async (evt) => {
+        if(btnAddMaterial){
+            btnAddMaterial.addEventListener("click", async (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
 
@@ -675,7 +695,6 @@
                     var tbody = tblMaterials.querySelector('tbody');
                     var isNegativeStock = response.material.requestedQuantity > response.inventory.quantity ? "True" : "False";
                     var noContent = tbody.getElementsByClassName('material-no-item');
-                    console.log('No Content:', noContent);
                     if(noContent.length > 0) tbody.replaceChildren();
 
                     var tr = document.createElement('tr');
@@ -767,17 +786,18 @@
                 }
             }
         });
+        
+            const lnkEditMaterials = tblMaterials.getElementsByClassName("material-edit");
+            const lnkSaveMaterials = tblMaterials.getElementsByClassName("material-save");
 
-        const lnkEditMaterials = tblMaterials.getElementsByClassName("material-edit");
-        const lnkSaveMaterials = tblMaterials.getElementsByClassName("material-save");
+            [...lnkEditMaterials].forEach((lnkEdit) => {
+                setMaterialEditListener(lnkEdit, tblMaterials);
+            });
 
-        [...lnkEditMaterials].forEach((lnkEdit) => {
-            setMaterialEditListener(lnkEdit, tblMaterials);
-        });
-
-        [...lnkSaveMaterials].forEach((lnkSave) => {
-            setMaterialSaveListener(lnkSave, tblMaterials);
-        });
+            [...lnkSaveMaterials].forEach((lnkSave) => {
+                setMaterialSaveListener(lnkSave, tblMaterials);
+            });
+        }
     });
 
     const setMaterialEditListener = function(link, elTable){
@@ -867,10 +887,7 @@
                     content: 'Successfully updated material',
                     autoHide: true
                 });
-                console.log('Material:', response.material);
-                console.log('Inventory:', response.inventory);
                 var isNegativeStock = response.material.requestedQuantity > response.inventory.quantity ? "True" : "False";
-                console.log('Is Negative Stock:', isNegativeStock);
                 const parentTr = lnk.closest('tr');
                 parentTr.dataset.negativestock = isNegativeStock;
             }

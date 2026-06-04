@@ -25,6 +25,7 @@ builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<IOtherFeeTypeService, OtherFeeTypeService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IFindingService, FindingService>();
+builder.Services.AddScoped<IJobOrderService, JobOrderService>();
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 

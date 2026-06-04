@@ -6,14 +6,11 @@ namespace TMCWD.Application.ViewComponents
     public class UserNameViewComponent : ViewComponent
     {
 
-        private readonly HttpClient _client;
         private readonly UserTransaction _userTransaction;
 
-        public UserNameViewComponent(IHttpClientFactory factory, UserTransaction userTransaction)
+        public UserNameViewComponent(UserTransaction userTransaction)
         {
-            _client = factory.CreateClient("TmcWdApi");
             _userTransaction = userTransaction;
-            _userTransaction.SetClient(_client);
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int userId)

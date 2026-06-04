@@ -29,11 +29,8 @@ namespace TMCWD.Data.Entities
         [Required, Column("RequestedQuantity")]
         public System.Int64 RequestedQuantity { get; set; } = 0;
 
-        [Required, Column("UnitCost")]
-        public float UnitCost { get; set; }
-
-        [Column("NewUnitCost")]
-        public float NewUnitCost { get; set; }
+        [Required, Column("UnitSellingPrice")]
+        public decimal UnitSellingPrice { get; set; }
 
         [Required, Column("CreatedBy")]
         public System.Int64 CreatedBy { get; set; }

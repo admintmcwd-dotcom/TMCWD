@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using TMCWD.Model.CustomerSupport;
 using TMCWD.Model.Interfaces;
+using TMCWD.Services;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.CustomerSupport
@@ -15,22 +16,17 @@ namespace TMCWD.CustomerSupport
 
         #region fields
 
-        private HttpClient _client = new();
+        private readonly WebService _webService;
 
         #endregion
 
         #region constructors
 
-        public AccountTransaction() { }
+        public AccountTransaction(WebService webService) { _webService = webService; }
 
         #endregion
 
         #region public methods
-
-        public void SetClient(HttpClient client)
-        {
-            _client = client;
-        }
 
         public Account ConvertJsonToAccount(string json)
         {
@@ -49,16 +45,22 @@ namespace TMCWD.CustomerSupport
             StringBuilder sb = new();
 
             if (account == null) throw new Exception("Required account fields are not supplied");
-            if (String.IsNullOrEmpty(account.AccountNumber.Trim())) sb.AppendLine("Äccount number is required");
-            if (String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required");
+            if (account.Id > 0 && String.IsNullOrEmpty(account.AccountNumber.Trim())) sb.AppendLine("Äccount number is required");
+            if (account.Id > 0 && String.IsNullOrEmpty(account.MeterNumber.Trim())) sb.AppendLine("Meter number is required");
             if (account.CustomerId <= 0) sb.AppendLine("No customer has been selected for this account");
             if (String.IsNullOrEmpty(account.HouseNumber.Trim())) sb.AppendLine("Account house number is required for account creation");
 
-            if (String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
+            if (!String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
+
+            if(account.Id <= 0)
+            {
+                string shortGuid = Guid.NewGuid().ToString("N").Substring(0, 5);
+                account.AccountNumber = $"ACCT{DateTime.Now.ToString("yyyy")}-{DateTime.Now.ToString("MM")}-{shortGuid}";
+            }
 
             var content = JsonContent.Create(account);
 
-            var response = await _client.PostAsync($"api/Account/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/Account/SaveUpdate/{userId}", content);
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -72,7 +74,7 @@ namespace TMCWD.CustomerSupport
 
             if (id <= 0) throw new Exception("Account id is not specified");
 
-            var response = await _client.GetAsync($"api/Account/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/Account/Get/{id}");
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -86,7 +88,7 @@ namespace TMCWD.CustomerSupport
 
             if (String.IsNullOrEmpty(accountNumber.Trim())) throw new Exception("Account number is required to get account");
 
-            var response = await _client.GetAsync($"api/Account/GetByAccountNumber/{accountNumber}");
+            var response = await _webService.Client.GetAsync($"api/Account/GetByAccountNumber/{accountNumber}");
             var data = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode) return null;
@@ -98,7 +100,7 @@ namespace TMCWD.CustomerSupport
         {
             if (id <= 0) throw new Exception("Customer id is required to get accounts bound to customer");
 
-            var response = await _client.GetAsync($"api/Account/GetByCustomerId/{id}");
+            var response = await _webService.Client.GetAsync($"api/Account/GetByCustomerId/{id}");
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -110,7 +112,7 @@ namespace TMCWD.CustomerSupport
         public async Task<Account> GetByMeterNumber(string meterNumber)
         {
 
-            var response = await _client.GetAsync($"api/Account/GetByMeterNumber/{meterNumber}");
+            var response = await _webService.Client.GetAsync($"api/Account/GetByMeterNumber/{meterNumber}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToAccount(data);

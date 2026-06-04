@@ -7,14 +7,11 @@ namespace TMCWD.Application.ViewComponents
 {
     public class CustomerNameViewComponent : ViewComponent
     {
-        private readonly HttpClient _client;
         private readonly CustomerTransaction _customerTransaction;
 
-        public CustomerNameViewComponent(IHttpClientFactory factory, CustomerTransaction customerTransaction)
+        public CustomerNameViewComponent(CustomerTransaction customerTransaction)
         {
-            _client = factory.CreateClient("TmcWdApi");
             _customerTransaction = customerTransaction;
-            _customerTransaction.SetClient(_client);
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int customerId, string pId = "", string pClass = "")

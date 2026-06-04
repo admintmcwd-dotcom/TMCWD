@@ -25,6 +25,18 @@ namespace TMCWD.Data.Services
             return await jobOrders.ToListAsync();
         }
 
+        public async Task<JobOrder> GetByRequestDetailId(int requestDetailId)
+        {
+            var jobOrder = await _context.JobOrders.Where(x => x.RequestDetailId == requestDetailId).FirstOrDefaultAsync();
+            return jobOrder;
+        }
+
+        public async Task<List<JobOrder>> GetByRequestId(int requestId)
+        {
+            var jobOrders = _context.JobOrders.Where(x => x.RequestId == requestId);
+            return await jobOrders.ToListAsync();
+        }
+
         public async Task<JobOrder> SaveUpdate(int userId, JobOrder jobOrder)
         {
             jobOrder.DateUpdated = DateTime.Now;
@@ -35,12 +47,16 @@ namespace TMCWD.Data.Services
             }
             else
             {
+                string shortGuid = Guid.NewGuid().ToString("N").Substring(0, 5);
+                jobOrder.JobOrderNumber = $"JO{DateTime.Now.ToString("yyyy")}-{DateTime.Now.ToString("dd")}-{shortGuid}";
                 jobOrder.CreatedBy = userId;
                 jobOrder.DateCreated = DateTime.Now;
+                _context.JobOrders.Add(jobOrder);
             }
 
             await _context.SaveChangesAsync();
             return jobOrder;
         }
+
     }
 }

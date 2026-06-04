@@ -45,5 +45,12 @@ namespace TMCWD.Data.Services
 
             return type;
         }
+
+        public async Task<InspectionType> GetNewRequestType()
+        {
+            var inspectionType = await _dbContext.InspectionTypes.Where(x => x.IsNew == true).FirstOrDefaultAsync();
+            return inspectionType;
+        }
+
     }
 }

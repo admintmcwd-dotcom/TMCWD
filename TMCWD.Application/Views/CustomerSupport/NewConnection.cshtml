@@ -64,13 +64,13 @@
     </p>
     <hr class="h-px my-8 bg-neutral-quaternary">
     <div class="w-full text-right">
-        <button type="button" class="border p-3 rounded-md bg-red-400 mr-4 hover:border-black text-white">
+        <button id="btnCancel" type="button" class="border p-3 text-sm rounded-md bg-red-700 mr-4 hover:bg-red-500 text-white">
             <i class="fa-solid fa-xmark mr-2"></i>Cancel
         </button>
-        <button type="button" class="border p-3 rounded-md bg-yellow-400 mr-4 hover:border-black">
+        <button id="btnSaveDraft" type="button" class="border p-3 text-sm text-white rounded-md bg-yellow-700 mr-4 hover:bg-yellow-500 hover:text-black">
             <i class="fa-solid fa-floppy-disk mr-2"></i>Save as Draft
         </button>
-        <button type="button" class="border p-3 rounded-md bg-green-400 mr-4 hover:border-black">
+        <button id="btnSubmit" type="button" class="border p-3 text-sm rounded-md text-white bg-green-700 mr-4 hover:bg-green-500 hover:text-black">
             <i class="fa-solid fa-paper-plane mr-2"></i>Submit
         </button>
     </div>
@@ -80,6 +80,9 @@
 
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function(){
+
+        const alert = new Alert();
+
         var btnSearchCustomer = document.getElementById("btnSearchCustomer");
 
         var customerSelect = new CustomerSelect({
@@ -107,5 +110,114 @@
             customerSelect.show();
 
         });
+
+        const btnCancel = document.getElementById("btnCancel");
+        if(btnCancel){
+
+            btnCancel.addEventListener("click", (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                window.location.href = '@Url.Action("Index", "CustomerSupport")';
+
+            });
+        }
+
+        const btnSaveDraft = document.getElementById("btnSaveDraft");
+        if(btnSaveDraft){
+            btnSaveDraft.addEventListener("click", async (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                let hdCustomerId = document.getElementById("hdCustomerId");
+                if(hdCustomerId){
+                    let customerId = parseInt(hdCustomerId.value);
+                    createRequest(customerId == NaN ? 0 : customerId, true);
+                }
+            });
+        }
+
+        const btnSubmit = document.getElementById("btnSubmit");
+        if(btnSubmit){
+            btnSubmit.addEventListener("click", async (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                let hdCustomerId = document.getElementById("hdCustomerId");
+                if(hdCustomerId){
+                    let customerId = parseInt(hdCustomerId.value);
+                    createRequest(customerId == NaN ? 0 : customerId, false);
+                }
+            });
+        }
+
+        async function createRequest(custId, isDraft){
+        var customerId = 0;
+
+        if(custId == 0){
+
+            const lastname = document.getElementById("txtLastname").value;
+            const firstname = document.getElementById("txtFirstname").value;
+            const middlename = document.getElementById("txtMiddlename").value;
+            const phone = document.getElementById("txtPhone").value;
+            const email = document.getElementById("txtEmail").value;
+
+            const customer = {
+                lastname: lastname,
+                firstname: firstname,
+                middlename: middlename,
+                phoneNumber: phone,
+                email: email
+            };
+
+            const customerClient = new WebClient('@Url.Action("SaveUpdateCustomer", "Customer")', customer);
+            const customerResponse = await customerClient.postAsync();
+            if(customerResponse) customerId = + customerResponse.id;
+        }
+        else customerId = custId;
+
+        const unitNo = document.getElementById("txtUnitNo").value;
+        const building = document.getElementById("txtBuilding").value;
+        const houseNo = document.getElementById("txtHouseNo").value;
+        const street = document.getElementById("txtStreet").value;
+        const barangay = document.getElementById("txtBarangay").value;
+
+        const account = {
+            customerId: customerId,
+            unitNumber: unitNo,
+            building: building,
+            houseNumber: houseNo,
+            street: street,
+            barangay: barangay
+        };
+
+        const accountClient = new WebClient('@Url.Action("SaveUpdateAccount", "Account")', account);
+        const accountResponse = await accountClient.postAsync();
+
+        console.log('Account Response:', accountResponse);
+
+        if(accountResponse) {
+            //'@Url.Action("CreateRequest", "Request")' + '?customerId=' + customerId + "&accountId=" + accountResponse.id + "&isDraft=" + (isDraft ? "1" : "0")
+            var params = {
+                customerId: customerId,
+                accountId: accountResponse.id,
+                isDraft: isDraft
+            };
+            var requestUrl = '@Url.Action("CreateRequest", "Request")' + '?customerId=' + customerId + "&accountId=" + accountResponse.id + "&isDraft=" + isDraft;
+            //var requestUrl = '@Url.Action("CreateRequest", "Request")';
+            //var requestUrl = `${@Url.Action("CreateRequest", "Request")}?customerId=${customerId}&accountId=${accountResponse.id}&isDraft=${isDraft}`;
+            console.log('Request URL:', requestUrl);
+            console.log('Details:', params);
+            var requestClient = new WebClient(requestUrl, params);
+            var requestResponse = await requestClient.postAsync();
+            if(requestResponse) {
+                window.location.href = '@Url.Action("Index", "CustomerSupport")';
+            }
+            else{
+                alert.show( { type: 'error', content: 'Failed to save request information.' } );
+            }
+        }
+        else alert.show({ type: 'error', content: 'Failed to save account information' });
+    }
+
+
     });
+
 </script>

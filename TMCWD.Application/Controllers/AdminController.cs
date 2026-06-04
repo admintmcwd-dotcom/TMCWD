@@ -13,26 +13,20 @@ namespace TMCWD.Application.Controllers
     public class AdminController : Controller
     {
 
-        private readonly HttpClient _client;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly UserTransaction _userTransaction;
         private readonly InspectionTypeTransaction _inspectionTypeTransaction;
         private readonly OtherFeeTypeTransaction _otherFeeTypeTransaction;
         
-        public AdminController(IHttpClientFactory factory, 
-            AuthenticatedUserService authenticatedUserService, 
+        public AdminController(AuthenticatedUserService authenticatedUserService, 
             UserTransaction userTransaction, 
             InspectionTypeTransaction inspectionTypeTransaction,
             OtherFeeTypeTransaction otherFeeTypeTransaction) 
         {
-            _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
             _userTransaction = userTransaction;
-            _userTransaction.SetClient(_client);
             _inspectionTypeTransaction = inspectionTypeTransaction;
-            _inspectionTypeTransaction.SetClient(_client);
             _otherFeeTypeTransaction = otherFeeTypeTransaction;
-            _otherFeeTypeTransaction.SetClient(_client);
         }
 
         public async Task<IActionResult> Index(string searchString = "")
@@ -44,7 +38,6 @@ namespace TMCWD.Application.Controllers
 
             AdminViewModel model = new()
             {
-                CurrentUser = currentUser,
                 PagedUserList = new List<User>(),
                 SearchString = searchString
             };
@@ -79,7 +72,6 @@ namespace TMCWD.Application.Controllers
 
             AdminViewModel model = new()
             {
-                CurrentUser = currentUser,
                 AddEditUser = editUser,
                 ConfirmPassword = editUser?.Id > 0 ? editUser.Password : string.Empty,
                 Password = editUser?.Id > 0 ? editUser.Password : string.Empty
@@ -94,10 +86,6 @@ namespace TMCWD.Application.Controllers
         [HttpPost()]
         public async Task<IActionResult> SaveUser(AdminViewModel model)
         {
-            if(model.CurrentUser == null || model.CurrentUser.Id <= 0)
-            {
-                model.CurrentUser = _authenticatedUserService.User;
-            }
 
             if (model.AddEditUser == null)
                 return View("AddEditUser", model);
@@ -106,7 +94,7 @@ namespace TMCWD.Application.Controllers
             if (model.AddEditUser.Id <= 0)    model.AddEditUser.Password = StringEncyption.Encrypt(model.Password);
 
 
-            await _userTransaction.SaveUpdate(model.CurrentUser.Id, model.AddEditUser);
+            await _userTransaction.SaveUpdate(_authenticatedUserService.User.Id, model.AddEditUser);
             return RedirectToAction("Index", "Admin");
         }
 
@@ -115,7 +103,7 @@ namespace TMCWD.Application.Controllers
             User currentUser = _authenticatedUserService.User;
 
             var user = await _userTransaction.Get(userId);
-            user?.IsActive = false;
+            user.IsActive = false;
             await _userTransaction.SaveUpdate(currentUser.Id, user);
             return RedirectToAction("Index", "Admin");
         }

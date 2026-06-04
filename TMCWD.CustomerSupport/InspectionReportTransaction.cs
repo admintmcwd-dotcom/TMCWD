@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using TMCWD.Model.CustomerSupport;
 using TMCWD.Model.Interfaces;
+using TMCWD.Services;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.CustomerSupport
@@ -14,16 +15,11 @@ namespace TMCWD.CustomerSupport
     {
 
         #region fields
-        //private const string _serviceRouteUrl = "api/InspectionReport/";
-        //private const string _saveUpdateUrl = $"{_serviceRouteUrl}SaveUpdate";
-        //private const string _getByIdUrl = $"{_serviceRouteUrl}GetById";
-        //private const string _getByRequestIdUrl = $"{_serviceRouteUrl}GetByRequestId";
-
-        private readonly HttpClient _client;
+        private readonly WebService _webService;
         #endregion
 
         #region constructors
-        public InspectionReportTransaction(HttpClient client) { _client = client; }
+        public InspectionReportTransaction(WebService webService) { _webService = webService; }
         #endregion
 
         #region public methods
@@ -51,7 +47,7 @@ namespace TMCWD.CustomerSupport
 
             var content = JsonContent.Create(report);
 
-            var response = await _client.PostAsync($"api/InspectionReport/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/InspectionReport/SaveUpdate/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if(!response.IsSuccessStatusCode) throw new Exception(data);
 
@@ -63,7 +59,7 @@ namespace TMCWD.CustomerSupport
 
             if (id <= 0) throw new Exception("Inspection report id is required to get details.");
 
-            var response = await _client.GetAsync($"api/InspectionReport/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/InspectionReport/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if(!response.IsSuccessStatusCode) throw new Exception(data);
             
@@ -74,90 +70,12 @@ namespace TMCWD.CustomerSupport
         {
             if (requestId <= 0) throw new Exception("Request id is required to get inspection report");
             
-            var response = await _client.GetAsync($"api/InspectionReport/GetByRequestId/{requestId}");
+            var response = await _webService.Client.GetAsync($"api/InspectionReport/GetByRequestId/{requestId}");
             var data = await response.Content.ReadAsStringAsync();
             if(!response.IsSuccessStatusCode) throw new Exception(data);
 
             return ConvertJsonToInspectionReports(data);
         }
-
-        #endregion
-
-        #region private method
-
-        //private async Task<bool> SaveUpdateTask(InspectionReport report)
-        //{
-        //    try
-        //    {
-        //        using (HttpClient client = new HttpClient())
-        //        {
-        //            client.BaseAddress = new Uri(this.BaseUrl);
-        //            HttpContent content = JsonContent.Create(report);
-        //            using(var response = await client.PostAsync(_saveUpdateUrl, content))
-        //            {
-        //                var data = await response.Content.ReadAsStringAsync();
-        //                if (!response.IsSuccessStatusCode) throw new Exception(data);
-        //                return data.ToLower().Trim() == "true";
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-        //    }
-        //    return false;
-        //}
-
-        //private async Task<InspectionReport> GetByIdTask(int id)
-        //{
-        //    try
-        //    {
-        //        using (HttpClient client = new HttpClient())
-        //        {
-        //            client.BaseAddress = new Uri(this.BaseUrl);
-        //            string url = QueryHelpers.AddQueryString(_getByIdUrl, "id", id.ToString());
-        //            using(var response = await client.GetAsync(url))
-        //            {
-        //                var data = await response.Content.ReadAsStringAsync();
-        //                if (!response.IsSuccessStatusCode) throw new Exception(data);
-        //                var serialized = JsonSerializer.Deserialize<InspectionReport>(data);
-        //                if (serialized != null) return serialized;
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-        //    }
-
-        //    return new InspectionReport();
-        //}
-
-        //private async Task<List<InspectionReport>> GetByRequestIdTask(int requestId)
-        //{
-
-        //    try
-        //    {
-        //        using (HttpClient client = new HttpClient())
-        //        {
-        //            client.BaseAddress = new Uri(this.BaseUrl);
-        //            string url = QueryHelpers.AddQueryString(_getByRequestIdUrl, "requestId", requestId.ToString());
-        //            using(var response = await client.GetAsync(url))
-        //            {
-        //                var data = await response.Content.ReadAsStringAsync();
-        //                if (!response.IsSuccessStatusCode) throw new Exception(data);
-        //                var serialized = JsonSerializer.Deserialize<List<InspectionReport>>(data);
-        //                if (serialized != null) return serialized;
-        //            }
-        //        }
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        Logger.Log(ErrorModule.CustomerSupport, ErrorType.Error, ex.Message);
-        //    }
-
-        //    return new List<InspectionReport>();
-        //}
 
         #endregion
 

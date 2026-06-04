@@ -10,7 +10,7 @@ namespace TMCWD.Model.Administrator
     {
 
         [DisplayName("Id")]
-        public decimal Id { get; set; }
+        public int Id { get; set; }
         [DisplayName("Name")]
         public string Name { get; set; } = string.Empty;
         [DisplayName("With Detail")]

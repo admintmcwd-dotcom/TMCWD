@@ -8,33 +8,17 @@ namespace TMCWD.Application.Models
     public class AccountViewModel
     {
 
-        private readonly int _customerId;
+        public AccountViewModel() { }
 
-        public AccountViewModel()
-        {
-            this._customerId = 0;
-        }
+        public User CurrentUser { get; set; } = new();
 
-        public AccountViewModel(int customerId)
-        {
-            _customerId = customerId;
-        }
+        public Customer Customer { get; set; } = new();
 
-        public User? CurrentUser { get; set; }
+        public int CustomerId { get; set; }
 
-        public Customer Customer { get; set; }
+        public Account AddEditAccount { get; set; } = new();
 
-        public int CustomerId
-        {
-            get
-            {
-                return _customerId;
-            }
-        }
-
-        public Account AddEditAccount { get; set; } = new Account();
-
-        public List<Account> PagedAccountList { get; set; }
+        public List<Account> PagedAccountList { get; set; } = new();
 
         public List<SelectListItem> AccountStatuses { get; set; } = new List<SelectListItem>() 
         { 
@@ -43,5 +27,6 @@ namespace TMCWD.Application.Models
             new SelectListItem { Text = AccountStatus.Suspended.ToString(), Value = $"{(int)AccountStatus.Suspended}" },
             new SelectListItem { Text = AccountStatus.Closed.ToString(), Value = $"{(int)AccountStatus.Closed}" }
         };
+
     }
 }

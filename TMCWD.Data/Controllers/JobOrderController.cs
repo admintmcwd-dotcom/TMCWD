@@ -32,10 +32,25 @@ namespace TMCWD.Data.Controllers
             return Ok(jobOrders);
         }
 
+        [HttpGet("GetByRequestId")]
+        public async Task<IActionResult> GetByRequestId(int requestId)
+        {
+            var jobOrders = await _service.GetByRequestId(requestId);
+            if(jobOrders == null || !jobOrders.Any()) return NotFound();
+            return Ok(jobOrders);
+        }
+
+        [HttpGet("GetByRequestDetailId/{requestDetailId}")]
+        public async Task<IActionResult> GetByRequestDetailId(int requestDetailId)
+        {
+            var jobOrders = await _service.GetByRequestDetailId(requestDetailId);
+            if (jobOrders == null) return NotFound();
+            return Ok(jobOrders);
+        }
+
         [HttpPost("SaveUpdate/{userId}")]
         public async Task<IActionResult> SaveUpdate(int userId, [FromBody] JobOrder jobOrder)
-        {
-            var updatedJobOrder = await _service.SaveUpdate(userId, jobOrder);
+        {var updatedJobOrder = await _service.SaveUpdate(userId, jobOrder);
             if (updatedJobOrder == null) return NoContent();
             return Ok(updatedJobOrder);
         }

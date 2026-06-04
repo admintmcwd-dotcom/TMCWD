@@ -19,10 +19,13 @@ namespace TMCWD.Data.Entities
         public string UOM { get; set; } = string.Empty;
 
         [Required, Column("Quantity")]
-        public System.Int32 Quantity { get; set; }
+        public decimal Quantity { get; set; }
 
         [Required, Column("UnitCost")]
-        public float UnitCost { get; set; }
+        public decimal UnitCost { get; set; }
+
+        [Required, Column("UnitSellingPrice")]
+        public decimal UnitSellingPricer { get; set; }
 
         [Column("IsActive")]
         public bool IsActive { get; set; }

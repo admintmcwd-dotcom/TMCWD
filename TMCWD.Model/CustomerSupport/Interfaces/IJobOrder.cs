@@ -8,8 +8,9 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
     {
         public int Id { get; set; }
         public int RequestId { get; set; }
+        public int RequestDetailId { get; set; }
         public string JobOrderNumber { get; set; }
-        public int Status { get; set; }
+        public JobOrderStatus Status { get; set; }
         public int CreatedBy { get; set; }
         public DateTime DateCreated { get; set; }
         public int UpdatedBy { get; set; }

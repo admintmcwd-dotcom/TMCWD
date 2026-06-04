@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<AuthenticatedUserService>();
+builder.Services.AddSingleton<WebService>();
 builder.Services.AddTransient<UserTransaction>();
 builder.Services.AddTransient<InspectionTypeTransaction>();
 builder.Services.AddTransient<AccountTransaction>();
@@ -17,6 +18,8 @@ builder.Services.AddTransient<RecommendationTransaction>();
 builder.Services.AddTransient<MaterialTransaction>();
 builder.Services.AddTransient<OtherFeeTypeTransaction>();
 builder.Services.AddTransient<FindingTransaction>();
+builder.Services.AddTransient<ApplicationLoginTransaction>();
+builder.Services.AddTransient<JobOrderTransaction>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 

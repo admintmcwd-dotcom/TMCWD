@@ -8,7 +8,7 @@ namespace TMCWD.Application.ViewComponents
 
         public InventoryDropdownViewComponent() { }
 
-        public async Task<IViewComponentResult> InvokeAsync(string selectId, List<Inventory> inventoryItems = null)
+        public async Task<IViewComponentResult> InvokeAsync(string selectId, List<Inventory> inventoryItems)
         {
             return View("Default", new { Id = selectId, Items = inventoryItems });
         }
