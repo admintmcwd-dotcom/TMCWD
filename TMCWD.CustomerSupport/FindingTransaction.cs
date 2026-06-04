@@ -4,20 +4,16 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using TMCWD.Model.CustomerSupport;
+using TMCWD.Services;
 
 namespace TMCWD.CustomerSupport
 {
     public class FindingTransaction
     {
 
-        private HttpClient _client = new();
+        private readonly WebService _webService;
 
-        public FindingTransaction() { }
-
-        public void SetClient(HttpClient client)
-        {
-            _client = client;
-        }
+        public FindingTransaction(WebService webService) { _webService = webService; }
 
         public Finding ConvertJsonToFinding(string json)
         {
@@ -37,7 +33,7 @@ namespace TMCWD.CustomerSupport
 
             if (requestId == 0) sb.AppendLine("Request id is required to get finding");
             if (id == 0) sb.AppendLine("Id is required to get finding");
-            var response = await _client.GetAsync($"api/{requestId}/Finding/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/{requestId}/Finding/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToFinding(data);
@@ -47,7 +43,7 @@ namespace TMCWD.CustomerSupport
         {
 
             if (requestId == 0) throw new Exception("Request id is required to get all findings");
-            var response = await _client.GetAsync($"api/{requestId}/Finding/GetAll");
+            var response = await _webService.Client.GetAsync($"api/{requestId}/Finding/GetAll");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToFindings(data);
@@ -66,7 +62,7 @@ namespace TMCWD.CustomerSupport
             if (sb.ToString().Trim() != String.Empty) throw new Exception(sb.ToString());
 
             var content = JsonContent.Create(finding);
-            var response = await _client.PostAsync($"api/{requestId}/Finding/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/{requestId}/Finding/SaveUpdate/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToFinding(data);

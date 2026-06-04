@@ -18,7 +18,6 @@ namespace TMCWD.Application.Controllers
 
         #region fields
 
-        private readonly HttpClient _client;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly AccountTransaction _accountTransaction;
         private readonly CustomerTransaction _customerTransaction;
@@ -34,8 +33,7 @@ namespace TMCWD.Application.Controllers
 
         #region constructors
 
-        public CustomerSupportController(IHttpClientFactory factory, 
-            AuthenticatedUserService authenticatedUserService, 
+        public CustomerSupportController(AuthenticatedUserService authenticatedUserService, 
             AccountTransaction accountTransaction, 
             CustomerTransaction customerTransaction,
             RequestTransaction requestTransaction,
@@ -46,35 +44,25 @@ namespace TMCWD.Application.Controllers
             MaterialTransaction materialTransaction,
             FindingTransaction findingTransaction)
         {
-            _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
 
             _accountTransaction = accountTransaction;
-            _accountTransaction.SetClient(_client);
 
             _customerTransaction = customerTransaction;
-            _customerTransaction.SetClient(_client);
 
             _requestTransaction = requestTransaction;
-            _requestTransaction.SetClient(_client);
 
             _inspectionTypeTransaction = inspectionTypeTransaction;
-            _inspectionTypeTransaction.SetClient(_client);
 
             _userTransaction = userTransaction;
-            _userTransaction.SetClient(_client);
 
             _recommendationTransaction = recommendationTrasaction;
-            _recommendationTransaction.SetClient(_client);
 
             _inventoryTransaction = inventoryTransaction;
-            _inventoryTransaction.SetClient(_client);
 
             _materialTransaction = materialTransaction;
-            _materialTransaction.SetClient(_client);
 
             _findingTransaction = findingTransaction;
-            _findingTransaction.SetClient(_client);
         }
 
         #endregion
@@ -83,8 +71,6 @@ namespace TMCWD.Application.Controllers
         public async Task<IActionResult> Index()
         {
             CustomerViewModel model = new();
-            User currentUser = _authenticatedUserService.User;
-            model.CurrentUser = currentUser ?? new User();
             //model.PagedCustomerList = await _customerTransaction.GetCustomers();
 
             return View(model);
@@ -103,7 +89,6 @@ namespace TMCWD.Application.Controllers
 
             CustomerViewModel model = new()
             {
-                CurrentUser = currentUser,
                 AddEditCustomer = await _customerTransaction.Get(editCustomerId) ?? new Customer(),
                 CustomerAccounts = editCustomerId > 0 ? await _accountTransaction.GetByCustomerId(editCustomerId) : new List<Account>()
             };
@@ -179,17 +164,16 @@ namespace TMCWD.Application.Controllers
 
         public async Task<IActionResult> DeactivateAccount(int accountId)
         {
-            AccountTransaction acctTrans = new();
             Account acct = new();
             acct = await _accountTransaction.Get(accountId);
 
             if (acct != null)
             {
                 acct.Status = AccountStatus.Closed;
-                await acctTrans.SaveUpdate(_authenticatedUserService.User.Id, acct);
+                await _accountTransaction.SaveUpdate(_authenticatedUserService.User.Id, acct);
             }
 
-            return RedirectToAction("AddEditCustomer", "CustomerSupport", new { editCustomerId = acct.CustomerId });
+            return RedirectToAction("AddEditCustomer", "CustomerSupport", new { editCustomerId = acct?.CustomerId ?? 0 });
         }
 
         public IActionResult RefreshAccountSelectComponent(int customerId)
@@ -272,7 +256,7 @@ namespace TMCWD.Application.Controllers
                 }
             }
 
-            model.InspectionTypes = ConvertToInspectionTypeToViewModel(types, requestDetails);
+            //model.InspectionTypes = ConvertToInspectionTypeToViewModel(types, requestDetails);
 
             return View(model);
         }
@@ -303,18 +287,19 @@ namespace TMCWD.Application.Controllers
         public async Task<IActionResult> SaveRequestDetails(int requestId, [FromBody] object data)
         {
             User currentUser = _authenticatedUserService.User;
-            string stringRequest = data.ToString();
+            if (data == null) return BadRequest();
+            string stringRequest = data.ToString() ?? string.Empty; 
 
             List<int> detailIds = new List<int>();
-
+             
             if (data == null) return BadRequest("No selected service(s)");
 
-            string listIds = data.ToString();
+            string listIds = data.ToString() ?? string.Empty;
 
             if (String.IsNullOrEmpty(listIds.Trim())) return BadRequest("No selected service(s)");
 
             var serializeOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-            List<RequestDetail> requestDetails = JsonSerializer.Deserialize<List<RequestDetail>>(listIds);
+            List<RequestDetail> requestDetails = JsonSerializer.Deserialize<List<RequestDetail>>(listIds) ?? new();
 
             if (requestDetails == null || !requestDetails.Any()) return BadRequest("One of the services id is not in the correct format");
 
@@ -366,7 +351,7 @@ namespace TMCWD.Application.Controllers
             Inventory inventoryItem = getInventoryItemTask.Result;
             List<Material> requestMaterials = getRequestMaterialsTask.Result;
 
-            if (requestMaterials != null || requestMaterials.Any())
+            if (requestMaterials != null && requestMaterials.Any())
             {
                 var existingMaterial = requestMaterials.Where(x => x.InventoryId == invId).FirstOrDefault();
                 if (existingMaterial != null) return NoContent();
@@ -375,7 +360,7 @@ namespace TMCWD.Application.Controllers
             Material material = new()
             {
                 InventoryId = invId,
-                UnitCost = inventoryItem.UnitCost,
+                UnitSellingPrice = inventoryItem.UnitSellingPrice,
                 RequestedQuantity = quant,
             };
 
@@ -453,7 +438,7 @@ namespace TMCWD.Application.Controllers
 
             if (requestIdAttr.ValueKind == JsonValueKind.Null || detailsAttr.ValueKind == JsonValueKind.Null) return NoContent();
             int.TryParse(requestIdAttr.GetString(), out int requestId);
-            string details = detailsAttr.GetString();
+            string details = detailsAttr.GetString() ?? string.Empty;
 
             Recommendation recommendation = new()
             {
@@ -485,27 +470,27 @@ namespace TMCWD.Application.Controllers
 
         #region private methods
 
-        private List<RequestInspectionTypeViewModel> ConvertToInspectionTypeToViewModel(List<InspectionType> inspTypes, List<RequestDetail> details = null)
-        {
+        //private List<RequestInspectionTypeViewModel> ConvertToInspectionTypeToViewModel(List<InspectionType> inspTypes, List<RequestDetail>? details)
+        //{
 
-            List<RequestInspectionTypeViewModel> types = new();
+        //    List<RequestInspectionTypeViewModel> types = new();
 
-            if (inspTypes == null || inspTypes.Count <= 0) return new List<RequestInspectionTypeViewModel>();
+        //    if (inspTypes == null || inspTypes.Count <= 0) return new List<RequestInspectionTypeViewModel>();
 
-            foreach(var inspType in inspTypes)
-            {
-                RequestInspectionTypeViewModel model = new RequestInspectionTypeViewModel
-                {
-                    Type = inspType,
-                    IsChecked = details.Where(x => x.RequestTypeId == inspType.Id).Any()
+        //    foreach(var inspType in inspTypes)
+        //    {
+        //        RequestInspectionTypeViewModel model = new RequestInspectionTypeViewModel
+        //        {
+        //            Type = inspType,
+        //            IsChecked = details.Where(x => x.RequestTypeId == inspType.Id).Any()
 
-                };
+        //        };
 
-                types.Add(model);
-            }
+        //        types.Add(model);
+        //    }
 
-            return types;
-        }
+        //    return types;
+        //}
 
         private List<MaterialDetailViewModel> GetMaterialDetails(List<Material> materials, List<Inventory> inventory)
         {

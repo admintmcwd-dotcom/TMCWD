@@ -11,16 +11,13 @@ namespace TMCWD.Application.Controllers
     public class EngineeringController : Controller
     {
 
-        private readonly HttpClient _client;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly InventoryTransaction _inventoryTransaction;
 
-        public EngineeringController(IHttpClientFactory factory, AuthenticatedUserService authenticatedUserService, InventoryTransaction inventoryTransaction)
+        public EngineeringController(AuthenticatedUserService authenticatedUserService, InventoryTransaction inventoryTransaction)
         {
-            _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
             _inventoryTransaction = inventoryTransaction;
-            _inventoryTransaction.SetClient(_client);
         }
 
         public IActionResult Index()

@@ -139,10 +139,9 @@
             ],
             buttonColumnClassNames: 'w-18',
             buttons:[
-                { className: 'fa-solid fa-eye', isEditButton: false, clickCallback: (data) => { window.location.href = '@Url.Action("AddEditRequest", "CustomerSupport")' + '&requestId=' + data.id; } },
+                { className: 'fa-solid fa-eye', isEditButton: false, clickCallback: (data) => { window.location.href = '@Url.Action("AddEditRequest", "CustomerSupport")' + '?requestId=' + data.id; } },
                 { className: 'fas fa-trash', clickCallback: (data) => deleteData(data) }
             ]
         });
     });
-
 </script>

@@ -4,17 +4,19 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using TMCWD.Model.Administrator;
+using TMCWD.Services;
 
 namespace TMCWD.Administration
 {
     public class OtherFeeTypeTransaction
     {
 
-        private HttpClient _client = new HttpClient();
+        private readonly WebService _webService;
 
-        public OtherFeeTypeTransaction() { }
-
-        public void SetClient(HttpClient client) { _client = client; }
+        public OtherFeeTypeTransaction(WebService webService)
+        { 
+            _webService = webService;
+        }
 
         public OtherFeeType ConvertJsonToOtherFeeType(string json)
         {
@@ -30,7 +32,7 @@ namespace TMCWD.Administration
 
         public async Task<OtherFeeType> Get(int id)
         {
-            var response = await _client.GetAsync($"api/OtherFeeType/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/OtherFeeType/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToOtherFeeType(data);
@@ -38,7 +40,7 @@ namespace TMCWD.Administration
 
         public async Task<List<OtherFeeType>> GetAll()
         {
-            var response = await _client.GetAsync("api/OtherFeeType/GetAll");
+            var response = await _webService.Client.GetAsync("api/OtherFeeType/GetAll");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToOtherFeeTypes(data);
@@ -48,7 +50,7 @@ namespace TMCWD.Administration
         {
 
             if (String.IsNullOrEmpty(name.Trim())) throw new Exception("Name is required to get other fee type by name");
-            var response = await _client.GetAsync($"api/OtherFeeType/GetByName/{name}");
+            var response = await _webService.Client.GetAsync($"api/OtherFeeType/GetByName/{name}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToOtherFeeTypes(data);
@@ -58,7 +60,7 @@ namespace TMCWD.Administration
         {
             if (String.IsNullOrEmpty(otherFeeType.Name.Trim())) throw new Exception("Name is required to save other fee type");
             var content = JsonContent.Create(otherFeeType);
-            var response = await _client.PostAsync($"api/OtherFeeType/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/OtherFeeType/SaveUpdate/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToOtherFeeType(data);
@@ -67,7 +69,7 @@ namespace TMCWD.Administration
         public async Task<bool> Delete(int id)
         {
             if (id <= 0) throw new Exception("Other fee type id is required to delete.");
-            var response = await _client.DeleteAsync($"api/OtherFeeType/Delete/{id}");
+            var response = await _webService.Client.DeleteAsync($"api/OtherFeeType/Delete/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if(!response.IsSuccessStatusCode) return false;
             bool.TryParse(data, out bool isSuccess);

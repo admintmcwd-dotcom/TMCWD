@@ -8,6 +8,8 @@ using TMCWD.Utility.Generic;
 using TMCWD.Utility.Encryption;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
+using System.Net.WebSockets;
+using TMCWD.Services;
 
 namespace TMCWD.Administration
 {
@@ -16,22 +18,17 @@ namespace TMCWD.Administration
 
         #region fields
 
-        private HttpClient _client = new();
+        WebService _webService;
 
         #endregion
 
         #region constructors
 
-        public UserTransaction() { }
+        public UserTransaction(WebService webService) { _webService = webService; }
 
         #endregion
 
         #region public methods
-
-        public void SetClient(HttpClient client)
-        {
-            _client = client;
-        }
 
         public User ConvertJsonStringToUser(string jsonString)
         {
@@ -48,7 +45,7 @@ namespace TMCWD.Administration
         public async Task<User?> SaveUpdate(int userId, User user)
         {
             var content = JsonContent.Create(user);
-            var response = await _client.PostAsync($"api/Users/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/Users/SaveUpdate/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return this.ConvertJsonStringToUser(data);
@@ -56,7 +53,7 @@ namespace TMCWD.Administration
 
         public async Task<User> Get(int id)
         {
-            var response = await _client.GetAsync($"api/Users/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/Users/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if(!response.IsSuccessStatusCode) return null;
             return this.ConvertJsonStringToUser(data);
@@ -64,7 +61,7 @@ namespace TMCWD.Administration
 
         public async Task<User> GetByName(string name)
         {
-            var response = await _client.GetAsync($"api/Users/GetByName/{name}");
+            var response = await _webService.Client.GetAsync($"api/Users/GetByName/{name}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonStringToUser(data);
@@ -72,7 +69,7 @@ namespace TMCWD.Administration
 
         public async Task<User> GetUserByEmail(string email)
         {
-            var response = await _client.GetAsync($"api/Users/GetByEmail/{email}");
+            var response = await _webService.Client.GetAsync($"api/Users/GetByEmail/{email}");
             var data = await response.Content.ReadAsStringAsync();
             if(!response.IsSuccessStatusCode) return null;
             return ConvertJsonStringToUser(data);
@@ -81,7 +78,7 @@ namespace TMCWD.Administration
         public async Task<List<User>> GetUsers()
         {
 
-            var response = await _client.GetAsync("api/Users/GetUsers");
+            var response = await _webService.Client.GetAsync("api/Users/GetUsers");
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -128,7 +125,7 @@ namespace TMCWD.Administration
         public async Task<List<User>> SearchUser(string searchString)
         {
 
-            var response = await _client.GetAsync($"api/Users/SearchUser/{searchString}");
+            var response = await _webService.Client.GetAsync($"api/Users/SearchUser/{searchString}");
 
             var data = await response.Content.ReadAsStringAsync();
 

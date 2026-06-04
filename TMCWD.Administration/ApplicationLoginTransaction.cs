@@ -4,7 +4,9 @@ using TMCWD.Utility.Generic;
 using TMCWD.Utility.Encryption;
 using TMCWD.Model.Administrator;
 using TMCWD.Model.Interfaces;
+using TMCWD.Services;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Text.Json;
 
 
 namespace TMCWD.Administration
@@ -12,88 +14,61 @@ namespace TMCWD.Administration
     public class ApplicationLoginTransaction : TransactionBase
     {
 
+        #region fields
+
+        private readonly WebService _webService;
+
+        #endregion
+
+
         #region constructors
 
         /// <summary>
         /// Initializes a new instance of the ApplicationLogin class.`
         /// </summary>
-        public ApplicationLoginTransaction() 
+        public ApplicationLoginTransaction(WebService webService) 
         {
-            Email = string.Empty;
-            Password = string.Empty;
-        }
-
-        public ApplicationLoginTransaction(string email, string password)
-        {
-            Email = email;
-            Password = password;
+            _webService = webService;
         }
 
         #endregion
 
         #region properties
 
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
 
         #endregion
 
         #region methods
 
-        public User? Login()
+        public async Task<User> Login()
         {
-            User currentUser = new();
+            if (String.IsNullOrEmpty(this.Email.Trim()) || String.IsNullOrEmpty(this.Password.Trim()))
+                return new User();
 
-            if(String.IsNullOrEmpty(this.Email.Trim()) || String.IsNullOrEmpty(this.Password.Trim()))
-                return null;
+            var response = await _webService.Client.GetAsync($"api/Users/GetByEmail/{this.Email.Trim()}");
 
-            var user = Task.Run(() => LoginTask()).GetAwaiter().GetResult();
+            var data = await response.Content.ReadAsStringAsync();
 
-            if (user.Password.Equals(StringEncyption.Encrypt(this.Password))) currentUser = user;
+            var currentUser = ConvertJsonToUser(data);
+            if (currentUser.Id == 0) throw new Exception("User not found");
 
-            return currentUser;
+            if (currentUser.Password == StringEncyption.Encrypt(this.Password)) return currentUser;
+
+            return new();
         }
 
-        #endregion
-
-        #region private methods
-        private async Task<User> LoginTask()
+        public User ConvertJsonToUser(string json)
         {
+            var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<User>(json, serializerOptions) ?? new();
+        }
 
-            try
-            {
-                if (String.IsNullOrEmpty(this.Email.Trim()) || String.IsNullOrEmpty(this.Password.Trim()))
-                {
-                    throw new ArgumentException("Email and Password cannot be empty.");
-                }
-
-                using (HttpClient client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(this.BaseUrl);
-
-                    string requestUrl = QueryHelpers.AddQueryString("api/Users/GetByEmail", "email", this.Email.Trim());
-                    using (var response = await client.GetAsync(requestUrl))
-                    {
-                        if (!response.IsSuccessStatusCode)
-                            throw new ArgumentException("Login failed. Please check your credentials and try again.");
-
-                        var userData = await response.Content.ReadFromJsonAsync<User>();
-                        if (userData == null)
-                        {
-                            throw new ArgumentException("Login failed. User not found. Please check your credentials and try again.");
-                        }
-
-                        return userData;
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ErrorModule.Application, ErrorType.Error, ex.Message);
-            }
-
-            return new User();
+        public List<User> ConvertJsonToUsers(string json)
+        {
+            var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<List<User>>(json, serializerOptions) ?? new();
         }
 
         #endregion

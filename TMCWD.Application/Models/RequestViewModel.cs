@@ -32,5 +32,7 @@ namespace TMCWD.Application.Models
 
         public List<MaterialDetailViewModel> Materials { get; set; } = new List<MaterialDetailViewModel>();
 
+        public List<JobOrder> JobOrders { get; set; } = new List<JobOrder>();
+
     }
 }

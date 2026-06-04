@@ -10,7 +10,6 @@ namespace TMCWD.Application.Controllers
 {
     public class RequestController : Controller
     {
-        private readonly HttpClient _client;
         private readonly RequestTransaction _requestTransaction;
         private readonly InspectionTypeTransaction _inspectionTypeTransaction;
         private readonly AuthenticatedUserService _authenticatedUserService;
@@ -18,26 +17,19 @@ namespace TMCWD.Application.Controllers
         private readonly AccountTransaction _accountTransaction;
         private readonly UserTransaction _userTransaction;
 
-        public RequestController(IHttpClientFactory client, 
-            RequestTransaction requestTransaction, 
+        public RequestController(RequestTransaction requestTransaction, 
             AuthenticatedUserService authenticatedUserService, 
             InspectionTypeTransaction inspectionTypeTransaction,
             CustomerTransaction customerTransaction,
             AccountTransaction accountTransaction,
             UserTransaction userTransaction)
         {
-            _client = client.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
             _requestTransaction = requestTransaction;
-            _requestTransaction.SetClient(_client);
             _inspectionTypeTransaction = inspectionTypeTransaction;
-            _inspectionTypeTransaction.SetClient(_client);
             _customerTransaction = customerTransaction;
-            _customerTransaction.SetClient(_client);
             _accountTransaction = accountTransaction;
-            _accountTransaction.SetClient(_client);
             _userTransaction = userTransaction;
-            _userTransaction.SetClient(_client);
         }
 
         [HttpPost]
@@ -135,6 +127,59 @@ namespace TMCWD.Application.Controllers
             }
 
             return Ok(requestInfos.ToList());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInspectionType(int requestId = 0)
+        {
+            //var inspectionTypes = await _inspectionTypeTransaction.GetTypes();
+            var getInspectionTypes = _inspectionTypeTransaction.GetTypes();
+            var getRequestDetails = _requestTransaction.GetRequestDetailByRequestId(requestId);
+            List<dynamic> data = new();
+
+            if(requestId == 0)
+            {
+                await Task.WhenAll(getInspectionTypes);
+                var types = getInspectionTypes.Result;
+                foreach(var type in types)
+                {
+                    var inspectionType = new
+                    {
+                        Id = type.Id,
+                        Name = type.Name,
+                        IsRequiredAccount = type.IsRequiredAccount,
+                        WithDetail = type.WithDetail,
+                        IsActive = type.IsActive,
+                        IsSelected = false
+                    };
+                    data.Add(inspectionType);
+                }
+            }
+            else
+            {
+                await Task.WhenAll(getInspectionTypes, getRequestDetails);
+                var types = getInspectionTypes.Result;
+                var details = getRequestDetails.Result;
+
+                foreach(var type in types)
+                {
+                    bool isSelected = details.Where(x => x.RequestTypeId == type.Id).Any();
+                    var inspectionType = new
+                    {
+                        Id = type.Id,
+                        Name = type.Name,
+                        IsRequiredAccount = type.IsRequiredAccount,
+                        WithDetail = type.WithDetail,
+                        IsActive = type.IsActive,
+                        IsSelected = isSelected
+                    };
+                    data.Add(inspectionType);
+                }
+            }
+
+            if (data == null || !data.Any()) return NotFound();
+
+            return Ok(data);
         }
 
     }

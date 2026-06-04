@@ -4,6 +4,7 @@ using System.Text.Json;
 using TMCWD.Model.Administrator;
 using TMCWD.Utility.Generic;
 using TMCWD.Model.Interfaces;
+using TMCWD.Services;
 
 namespace TMCWD.Administration
 {
@@ -12,21 +13,20 @@ namespace TMCWD.Administration
 
         #region fields
 
-        private HttpClient _client = new();
+        private readonly WebService _webService;
 
         #endregion
 
         #region constructors
 
-        public InspectionTypeTransaction() { }
+        public InspectionTypeTransaction(WebService webService) 
+        {
+            _webService = webService;
+        }
 
         #endregion
 
         #region public methods
-        public void SetClient(HttpClient client)
-        {
-            _client = client;
-        }
 
         public InspectionType ConvertJsonToInspectionType(string json)
         {
@@ -42,7 +42,7 @@ namespace TMCWD.Administration
 
         public async Task<List<InspectionType>> GetTypes()
         {
-            var response = await _client.GetAsync("api/InspectionType/GetTypes");
+            var response = await _webService.Client.GetAsync("api/InspectionType/GetTypes");
             var data = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode) return null;
@@ -54,7 +54,7 @@ namespace TMCWD.Administration
         {
 
             var content = JsonContent.Create(type);
-            var response = await _client.PostAsync($"api/InspectionType/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/InspectionType/SaveUpdate/{userId}", content);
 
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
@@ -64,7 +64,7 @@ namespace TMCWD.Administration
 
         public async Task<InspectionType> Get(int id)
         {
-            var response = await _client.GetAsync($"api/InspectionType/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/InspectionType/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if(!response.IsSuccessStatusCode) return null;
 
@@ -73,7 +73,7 @@ namespace TMCWD.Administration
 
         public async Task<InspectionType> GetNewRequestType()
         {
-            var response = await _client.GetAsync($"api/InspectionType/GetNewRequestType");
+            var response = await _webService.Client.GetAsync($"api/InspectionType/GetNewRequestType");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return this.ConvertJsonToInspectionType(data);

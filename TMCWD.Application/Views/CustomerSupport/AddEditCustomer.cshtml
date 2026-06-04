@@ -11,7 +11,6 @@
     <p class="text-gray-700">
         @using(Html.BeginForm("SaveCustomer", "CustomerSupport"))
         {
-            @Html.HiddenFor(x => x.CurrentUser.Id)
             @Html.HiddenFor(x => x.AddEditCustomer.Id)
             @Html.HiddenFor(x => x.AddEditCustomer.DateCreated)
             @Html.HiddenFor(x => x.AddEditCustomer.CreatedBy)

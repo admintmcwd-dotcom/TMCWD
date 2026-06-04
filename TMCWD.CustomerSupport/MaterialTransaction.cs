@@ -5,16 +5,15 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using TMCWD.Model.CustomerSupport;
+using TMCWD.Services;
 
 namespace TMCWD.CustomerSupport
 {
     public class MaterialTransaction
     {
-        private HttpClient _client = new HttpClient();
+        private readonly WebService _webService;
 
-        public MaterialTransaction() { }
-
-        public void SetClient(HttpClient client) { _client = client; }
+        public MaterialTransaction(WebService webService) { _webService = webService; }
 
         public Material ConvertJsonToMaterial(string json)
         {
@@ -30,7 +29,7 @@ namespace TMCWD.CustomerSupport
 
         public async Task<Material> Get(int requestId, int id)
         {
-            var response = await _client.GetAsync($"api/{requestId}/Material/{id}");
+            var response = await _webService.Client.GetAsync($"api/{requestId}/Material/{id}");
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -41,7 +40,7 @@ namespace TMCWD.CustomerSupport
 
         public async Task<List<Material>> GetAll() 
         {
-            var response = await _client.GetAsync("api/0/Material/GetAll");
+            var response = await _webService.Client.GetAsync("api/0/Material/GetAll");
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -52,7 +51,7 @@ namespace TMCWD.CustomerSupport
 
         public async Task<List<Material>> GetByRequestId(int requestId)
         {
-            var response = await _client.GetAsync($"api/{requestId}/Material/GetByRequestId");
+            var response = await _webService.Client.GetAsync($"api/{requestId}/Material/GetByRequestId");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToMaterials(data);
@@ -62,7 +61,7 @@ namespace TMCWD.CustomerSupport
         {
             var content = JsonContent.Create(material);
 
-            var response = await _client.PostAsync($"api/{requestId}/Material/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/{requestId}/Material/SaveUpdate/{userId}", content);
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -76,13 +75,13 @@ namespace TMCWD.CustomerSupport
             Material material = new()
             {
                 Id = id,
-                RequestedQuantity = quantity,
-                NewUnitCost = unitCost
+                RequestedQuantity = quantity
+                //NewUnitCost = unitCost
             };
 
             var content = JsonContent.Create(material);
 
-            var response = await _client.PutAsync($"api/{requestId}/Material/UpdateQuantityOrNewUnitCost/{userId}", content);
+            var response = await _webService.Client.PutAsync($"api/{requestId}/Material/UpdateQuantityOrNewUnitCost/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToMaterial(data);

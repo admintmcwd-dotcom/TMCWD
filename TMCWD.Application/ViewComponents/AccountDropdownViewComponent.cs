@@ -6,14 +6,11 @@ namespace TMCWD.Application.ViewComponents
     public class AccountDropdownViewComponent : ViewComponent
     {
 
-        private readonly HttpClient _client;
         private readonly AccountTransaction _accountTransaction;
 
-        public AccountDropdownViewComponent(IHttpClientFactory factory, AccountTransaction accountTransaction)
+        public AccountDropdownViewComponent(AccountTransaction accountTransaction)
         {
-            _client = factory.CreateClient("TmcWdApi");
             _accountTransaction = accountTransaction;
-            _accountTransaction.SetClient(_client);
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int customerId)

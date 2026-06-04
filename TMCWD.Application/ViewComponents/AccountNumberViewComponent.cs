@@ -7,14 +7,11 @@ namespace TMCWD.Application.ViewComponents
     public class AccountNumberViewComponent : ViewComponent
     {
 
-        private readonly HttpClient _client;
         private readonly AccountTransaction _accountTransaction;
 
-        public AccountNumberViewComponent(IHttpClientFactory factory, AccountTransaction accountTransaction)
+        public AccountNumberViewComponent(AccountTransaction accountTransaction)
         {
-            _client = factory.CreateClient("TmcWdApi");
             _accountTransaction = accountTransaction;
-            _accountTransaction.SetClient(_client);
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int accountId)

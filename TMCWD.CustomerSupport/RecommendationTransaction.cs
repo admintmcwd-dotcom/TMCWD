@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 using TMCWD.Model.CustomerSupport;
 using TMCWD.Model.CustomerSupport.Interfaces;
 using TMCWD.Model.Interfaces;
+using TMCWD.Services;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.CustomerSupport
@@ -18,22 +19,17 @@ namespace TMCWD.CustomerSupport
 
         #region fields
 
-        private HttpClient _client = new();
+        private readonly WebService _webService;
 
         #endregion
 
         #region constructors
 
-        public RecommendationTransaction() { }
+        public RecommendationTransaction(WebService webService) { _webService = webService; }
 
         #endregion
 
         #region public methods
-
-        public void SetClient(HttpClient client) 
-        {
-            this._client = client;
-        }
 
         public Recommendation ConvertJsonToRecommendation(string json)
         {
@@ -59,7 +55,7 @@ namespace TMCWD.CustomerSupport
 
             var content = JsonContent.Create(recommendation);
 
-            var response = await _client.PostAsync($"api/{requestId}/Recommendation/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/{requestId}/Recommendation/SaveUpdate/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) throw new Exception(data);
 
@@ -71,7 +67,7 @@ namespace TMCWD.CustomerSupport
 
             if (id <= 0) throw new Exception("Recommendation id is required");
 
-            var response = await _client.GetAsync($"api/{requestId}/Recommendation/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/{requestId}/Recommendation/Get/{id}");
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -85,7 +81,7 @@ namespace TMCWD.CustomerSupport
         {
             if (requestId <= 0) throw new Exception("Request id is required to get recommendations");
 
-            var response = await _client.GetAsync($"api/{requestId}/Recommendation/GetByRequestId");
+            var response = await _webService.Client.GetAsync($"api/{requestId}/Recommendation/GetByRequestId");
 
             var data = await response.Content.ReadAsStringAsync();
 

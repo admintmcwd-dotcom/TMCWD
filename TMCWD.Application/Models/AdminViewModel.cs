@@ -7,11 +7,9 @@ namespace TMCWD.Application.Models
     {
         public AdminViewModel() { }
 
-        public User? CurrentUser { get; set; }
-
         public List<User> PagedUserList { get; set; } = new List<User>();
 
-        public User? AddEditUser { get; set; } = new User();
+        public User AddEditUser { get; set; } = new User();
 
         public string Password { get; set; } = string.Empty;
 

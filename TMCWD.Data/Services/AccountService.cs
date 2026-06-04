@@ -59,7 +59,7 @@ namespace TMCWD.Data.Services
             return account;
         }
 
-        public async Task<IEnumerable<Account>?> GetAccounts()
+        public async Task<IEnumerable<Account>> GetAccounts()
         {
             var accounts = _dbContext.Accounts;
             return await accounts.ToListAsync();

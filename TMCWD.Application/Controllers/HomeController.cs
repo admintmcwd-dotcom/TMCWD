@@ -13,13 +13,21 @@ namespace TMCWD.Application.Controllers
         private readonly HttpClient _client;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly UserTransaction _userTransaction;
+        private readonly WebService _webService;
+        private readonly ApplicationLoginTransaction _applicationLoginTransaction;
 
-        public HomeController(IHttpClientFactory factory, AuthenticatedUserService authenticatedUserService, UserTransaction userTransaction)
+        public HomeController(IHttpClientFactory factory, 
+            WebService webService, 
+            AuthenticatedUserService authenticatedUserService, 
+            UserTransaction userTransaction,
+            ApplicationLoginTransaction applicationLoginTransaction)
         {
             _client = factory.CreateClient("TmcWdApi");
+            _webService = webService;
+            _webService.SetClient(_client);
             _authenticatedUserService = authenticatedUserService;
             _userTransaction = userTransaction;
-            _userTransaction.SetClient(_client);
+            _applicationLoginTransaction = applicationLoginTransaction;
         }
 
         public IActionResult Index()
@@ -30,16 +38,11 @@ namespace TMCWD.Application.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-
-            var response = await _client.GetAsync($"api/users/GetByEmail/{email}");
-
-            var data = await response.Content.ReadAsStringAsync();
-
-            if(!response.IsSuccessStatusCode) return View();
-
-            User currentUser = _userTransaction.ConvertJsonStringToUser(data);
+            _applicationLoginTransaction.Email = email;
+            _applicationLoginTransaction.Password = password;
+            User currentUser = await _applicationLoginTransaction.Login();
             
-            if(currentUser != null)
+            if(currentUser.Id > 0)
             {
                 _authenticatedUserService.SetUser(currentUser);
                 switch (currentUser.Role)

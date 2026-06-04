@@ -60,7 +60,7 @@ namespace TMCWD.Data.Controllers
             if (forUpdate == null) return NoContent();
 
             if(forUpdate.RequestedQuantity != updateMaterial.RequestedQuantity) forUpdate.RequestedQuantity = updateMaterial.RequestedQuantity;
-            if(forUpdate.NewUnitCost != updateMaterial.NewUnitCost) forUpdate.NewUnitCost = updateMaterial.NewUnitCost;
+            if(forUpdate.UnitSellingPrice != updateMaterial.UnitSellingPrice) forUpdate.UnitSellingPrice = updateMaterial.UnitSellingPrice;
 
             var material = await _service.UpdateQuantityOrNewUnitCost(userId, requestId, forUpdate);
             if(material == null) return NotFound();

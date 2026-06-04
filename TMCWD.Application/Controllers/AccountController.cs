@@ -12,19 +12,15 @@ namespace TMCWD.Application.Controllers
     public class AccountController : Controller
     {
 
-        private readonly HttpClient _client;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly CustomerTransaction _customerTransaction;
         private readonly AccountTransaction _accountTransaction;
 
-        public AccountController(IHttpClientFactory factory, AuthenticatedUserService authenticatedUserService, CustomerTransaction customerTransaction, AccountTransaction accountTransaction)
+        public AccountController(AuthenticatedUserService authenticatedUserService, CustomerTransaction customerTransaction, AccountTransaction accountTransaction)
         {
-            _client = factory.CreateClient("TmcWdApi");
             _authenticatedUserService = authenticatedUserService;
             _customerTransaction = customerTransaction;
-            _customerTransaction.SetClient(_client);
             _accountTransaction = accountTransaction;
-            _accountTransaction.SetClient(_client);
         }
 
         public async Task<IActionResult> Index(int customerId, int accountId = 0)
@@ -32,7 +28,7 @@ namespace TMCWD.Application.Controllers
 
             User currentUser = _authenticatedUserService.User;
 
-            AccountViewModel model = new(customerId);
+            AccountViewModel model = new();
             model.Customer = await _customerTransaction.Get(customerId);
             model.PagedAccountList = await _accountTransaction.GetByCustomerId(customerId);
             model.CurrentUser = currentUser;

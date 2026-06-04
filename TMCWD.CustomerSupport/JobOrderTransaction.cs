@@ -4,15 +4,14 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using TMCWD.Model.CustomerSupport;
+using TMCWD.Services;
 
 namespace TMCWD.CustomerSupport
 {
     public class JobOrderTransaction
     {
-        private HttpClient _client = new();
-        public JobOrderTransaction() { }
-
-        public void SetClient(HttpClient client) { _client = client; }
+        private readonly WebService _webService;
+        public JobOrderTransaction(WebService webService) { _webService = webService; }
 
         public JobOrder ConvertJsonToJobOrder(string json)
         {
@@ -28,7 +27,7 @@ namespace TMCWD.CustomerSupport
 
         public async Task<JobOrder> Get(int id, int requestId)
         {
-            var response = await _client.GetAsync($"api/{requestId}/JobOrder/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/{requestId}/JobOrder/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToJobOrder(data);
@@ -36,7 +35,7 @@ namespace TMCWD.CustomerSupport
 
         public async Task<List<JobOrder>> GetAll(int requestId)
         {
-            var response = await _client.GetAsync($"api/{requestId}/JobOrder/GetAll");
+            var response = await _webService.Client.GetAsync($"api/{requestId}/JobOrder/GetAll");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToJobOrders(data);
@@ -45,7 +44,7 @@ namespace TMCWD.CustomerSupport
         public async Task<JobOrder> SaveUpdate(int userId, int requestId, JobOrder jobOrder)
         {
             var content = JsonContent.Create(jobOrder);
-            var response = await _client.PostAsync($"api/{requestId}/JobOrder/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/{requestId}/JobOrder/SaveUpdate/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToJobOrder(data);

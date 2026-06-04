@@ -137,7 +137,6 @@ HTMLElement.prototype.DataTable = async function(options){
     
     var client = new WebClient(options.getUrl, null);
     var response = await client.getAsync();
-    console.log('Requests:', response);
 
     if (response == null || response.length == 0) {
         trDefault.replaceChildren();
@@ -316,40 +315,97 @@ HTMLElement.prototype.Collapsible = function () {
     });
 };
 
-// HTMLElement.prototype.SetServices = function () {
-//     const div = this;
-//     if (div.tagName !== "DIV") return;
-//     if (div.dataset.services == null || div.dataset.services != 'details') return;
+HTMLElement.prototype.SetServices = async function (options) {
+    const div = this;
+    if (div.tagName !== "DIV") return;
+    if (div.dataset.services == null || div.dataset.services != 'details') return;
 
-//     const checkboxes = div.querySelectorAll("input[type='checkbox']");
+    if (options.getServicesUrl == null || options.getServicesUrl.trim() == '') throw new Error('getServiceUrl option is not set');
 
-//     if (checkboxes == null || checkboxes.length <= 0) return;
+    var typeClient = new WebClient(options.getServicesUrl, null);
+    var types = await typeClient.getAsync();
 
-//     // [...checkBoxes].forEach((checkbox) => {
-//     //     checkbox.addEventListener("change", (evt) => {
-//     //         evt.preventDefault();
-//     //         var targetId = evt.target.id;
-//     //         var typeId = evt.target.dataset.id;
-//     //         var withDetail = evt.target.dataset.withdetail;
-//     //         var requiredAccount = evt.target.dataset.requiredaccount;
-//     //         if (requiredAccount == 'False') {
-//     //             [...checkBoxes].forEach((checkbox) => {
-//     //                 if (checkbox.id != targetId) {
-//     //                     checkbox.checked = false;
-//     //                 }
-//     //             });
-//     //         }
-//     //         else {
-//     //             var checkBoxesNoAccount = document.querySelectorAll('[data-requiredaccount="False"]');
-//     //             [...checkBoxesNoAccount].forEach((checkbox) => {
-//     //                 checkbox.checked = false;
-//     //             });
-//     //         }
-//     //     });
-//     // });
-//     +
+    types.forEach((type) => {
+        let serviceDiv = document.createElement("div");
+        serviceDiv.className = "group flex items-center ps-4 pr-4 bg-neutral-primary-soft border border-default rounded-lg shadow-xs hover:bg-blue-900 hover:text-white hover:cursor-pointer";
 
-// };
+        let checkbox = document.createElement("input");
+        checkbox.className = "w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft hover:cursor-pointer";
+        checkbox.id = "border-checkbox-" + type.id;
+        checkbox.dataset.id = type.id;
+        checkbox.dataset.withdetail = type.withDetail;
+        checkbox.dataset.requiredaccount = type.isRequiredAccount;
+        checkbox.value = '';
+        checkbox.type = "checkbox";
+        checkbox.checked = type.isSelected;
+
+        serviceDiv.appendChild(checkbox);
+
+        checkbox.addEventListener("change", (evt) => {
+            evt.stopPropagation();
+            let checkboxes = div.querySelectorAll('input[type="checkbox"]');
+            if (checkboxes) {
+                var checkedBoxes = [...checkboxes].filter((element, index, array) => {
+                    return element.checked;
+                });
+
+                var ids = [];
+                [...checkedBoxes].forEach((box) => {
+                    ids.push(box.dataset.id);
+                });
+
+                if (ids.length > 0) {
+                    if (options.selectChange == null) return;
+                    options.selectChange(ids);
+                }
+            }
+        });
+
+        let label = document.createElement("label");
+        label.for = "border-checkbox-" + type.id;
+        label.className = "select-none w-full py-4 ms-2 text-sm font-medium text-heading hover:cursor-pointer";
+        label.textContent = type.name;
+        serviceDiv.appendChild(label);
+
+        if (type.withDetail) {
+            let input = document.createElement("input");
+            input.id = "txtDetail-" + type.id;
+            input.type = "text";
+            input.setAttribute("placeholder", "Detail here...");
+            input.className = "bg-transparent border-none focus:ring-0 text-gray-700 w-full outline-none group-hover:text-white";
+            serviceDiv.appendChild(input);
+        }
+
+        div.appendChild(serviceDiv);
+    });
+
+    //const checkboxes = div.querySelectorAll("input[type='checkbox']");
+
+    //if (checkboxes == null || checkboxes.length <= 0) return;
+
+    // [...checkBoxes].forEach((checkbox) => {
+    //     checkbox.addEventListener("change", (evt) => {
+    //         evt.preventDefault();
+    //         var targetId = evt.target.id;
+    //         var typeId = evt.target.dataset.id;
+    //         var withDetail = evt.target.dataset.withdetail;
+    //         var requiredAccount = evt.target.dataset.requiredaccount;
+    //         if (requiredAccount == 'False') {
+    //             [...checkBoxes].forEach((checkbox) => {
+    //                 if (checkbox.id != targetId) {
+    //                     checkbox.checked = false;
+    //                 }
+    //             });
+    //         }
+    //         else {
+    //             var checkBoxesNoAccount = document.querySelectorAll('[data-requiredaccount="False"]');
+    //             [...checkBoxesNoAccount].forEach((checkbox) => {
+    //                 checkbox.checked = false;
+    //             });
+    //         }
+    //     });
+    // });
+};
 
 class WebClient {
 
@@ -689,7 +745,7 @@ class CustomerSelect {
 
                     result.forEach((customer) => {
                         var tr = document.createElement("tr");
-                        tr.classList.add("bg-white", "border-b", "hover:bg-gray-50");
+                        tr.classList.add("bg-white", "border-b", "hover:bg-gray-50", "cursor-pointer");
                         tr.innerHTML = `
                         <td class="px-6 py-4 text-center">
                             <input type="radio" name="customerSelect" value="${customer.id}">
@@ -702,11 +758,29 @@ class CustomerSelect {
                         </td>
                         `;
                         this.tbodyList.appendChild(tr);
+
+                        tr.addEventListener('click', (evt) => {
+                            evt.stopPropagation();
+                            let selectInput = tr.querySelector('input');
+                            if (selectInput) {
+                                selectInput.checked = true;
+
+                                selectInput.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+                        });
+
                         var selectInput = tr.querySelector('input');
                         if (selectInput) {
-                            selectInput.addEventListener('click', (evt) => {
-                                evt.stopPropagation();
-                                this.currentData = customer;
+                            selectInput.addEventListener('change', (evt) => {
+                                if (this.currentData == null) {
+                                    this.btnSubmit.toggleAttribute('disabled');
+                                    this.btnSubmit.classList.toggle('cursor-not-allowed');
+                                    this.btnSubmit.classList.toggle('bg-gray-700');
+                                    this.btnSubmit.classList.toggle('hover:bg-gray-500');
+                                    this.btnSubmit.classList.toggle('bg-green-700');
+                                    this.btnSubmit.classList.toggle('bg-green-500');
+                                }
+                                if (evt.target.checked) this.currentData = customer;
                             });
                         }
                     });

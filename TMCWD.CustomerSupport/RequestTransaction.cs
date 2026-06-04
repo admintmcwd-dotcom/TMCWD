@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using TMCWD.Model.CustomerSupport;
 using TMCWD.Model.Interfaces;
+using TMCWD.Services;
 using TMCWD.Utility.Generic;
 
 namespace TMCWD.CustomerSupport
@@ -16,22 +17,17 @@ namespace TMCWD.CustomerSupport
 
         #region fields
 
-        private HttpClient _client = new();
+        private readonly WebService _webService;
 
         #endregion
 
         #region constructors
 
-        public RequestTransaction() {  }
+        public RequestTransaction(WebService webService) { _webService = webService;  }
 
         #endregion
 
         #region public methods
-
-        public void SetClient(HttpClient client)
-        {
-            _client = client;
-        }
 
         public Request ConvertJsonToRequest(string json)
         {
@@ -69,7 +65,7 @@ namespace TMCWD.CustomerSupport
             if (request.Id <= 0) request.ControlNumber = "TKT";
 
             var content = JsonContent.Create(request);
-            var response = await _client.PostAsync($"api/Request/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/Request/SaveUpdate/{userId}", content);
 
             var data = await response.Content.ReadAsStringAsync();
             if(!response.IsSuccessStatusCode) throw new Exception(data);
@@ -82,7 +78,7 @@ namespace TMCWD.CustomerSupport
 
             if (id <= 0) throw new Exception("Getting request by id requires request id");
 
-            var response = await _client.GetAsync($"api/Request/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/Request/Get/{id}");
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -94,7 +90,7 @@ namespace TMCWD.CustomerSupport
         public async Task<List<Request>> GetRequests()
         {
 
-            var response = await _client.GetAsync($"api/Request/GetRequests");
+            var response = await _webService.Client.GetAsync($"api/Request/GetRequests");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToRequests(data);
@@ -104,7 +100,7 @@ namespace TMCWD.CustomerSupport
         {
             if (userId <= 0) throw new Exception("User id is required");
 
-            var response = await _client.GetAsync($"api/Request/GetByUserId/{userId}");
+            var response = await _webService.Client.GetAsync($"api/Request/GetByUserId/{userId}");
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -118,7 +114,7 @@ namespace TMCWD.CustomerSupport
 
             if (customerId <= 0) throw new Exception("Customer id is required");
 
-            var response = await _client.GetAsync($"api/Request/GetByCustomerId/{customerId}");
+            var response = await _webService.Client.GetAsync($"api/Request/GetByCustomerId/{customerId}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToRequests(data);
@@ -138,7 +134,7 @@ namespace TMCWD.CustomerSupport
             if(String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
 
             var content = JsonContent.Create(detail);
-            var response = await _client.PostAsync($"api/RequestDetail/{requestId}/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/RequestDetail/{requestId}/SaveUpdate/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) throw new Exception(data);
             
@@ -161,7 +157,7 @@ namespace TMCWD.CustomerSupport
             if(!String.IsNullOrEmpty(sb.ToString().Trim())) throw new Exception(sb.ToString());
 
             var content = JsonContent.Create(details);
-            var response = await _client.PostAsync($"api/{requestId}/RequestDetail/SaveMultiple/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/{requestId}/RequestDetail/SaveMultiple/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) throw new Exception(data);
             var returnedDetails = ConvertJsonToRequestDetails(data);
@@ -170,7 +166,7 @@ namespace TMCWD.CustomerSupport
 
         public async Task<RequestDetail> GetRequestDetail(int id)
         {
-            var response = await _client.GetAsync($"api/RequestDetail/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/RequestDetail/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return this.ConvertJsonToRequestDetail(data);
@@ -178,7 +174,7 @@ namespace TMCWD.CustomerSupport
 
         public async Task<List<RequestDetail>> GetRequestDetailByRequestId(int requestId)
         {
-            var response = await _client.GetAsync($"api/{requestId}/RequestDetail/GetByRequestId");
+            var response = await _webService.Client.GetAsync($"api/{requestId}/RequestDetail/GetByRequestId");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return this.ConvertJsonToRequestDetails(data);
@@ -189,7 +185,7 @@ namespace TMCWD.CustomerSupport
 
             if (id <= 0) throw new Exception("Request detail id is required to delete request detail item");
 
-            var response = await _client.DeleteAsync($"api/RequestDetail/Delete/{id}");
+            var response = await _webService.Client.DeleteAsync($"api/RequestDetail/Delete/{id}");
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -202,7 +198,7 @@ namespace TMCWD.CustomerSupport
         {
             if (requestId <= 0) throw new Exception("Request id is required to delete request details");
 
-            var response = await _client.DeleteAsync($"api/RequestDetail/DeleteDetails/{requestId}");
+            var response = await _webService.Client.DeleteAsync($"api/RequestDetail/DeleteDetails/{requestId}");
 
             var data = await response.Content.ReadAsStringAsync();
 

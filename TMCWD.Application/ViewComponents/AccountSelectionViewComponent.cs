@@ -7,14 +7,10 @@ namespace TMCWD.Application.ViewComponents
     public class AccountSelectionViewComponent : ViewComponent
     {
 
-        private readonly HttpClient _client;
         private readonly AccountTransaction _transaction;
-
-        public AccountSelectionViewComponent(IHttpClientFactory factory, AccountTransaction transaction)
+        public AccountSelectionViewComponent(AccountTransaction transaction)
         {
-            _client = factory.CreateClient("TmcWdApi");
             _transaction = transaction;
-            _transaction.SetClient(_client);
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int customerId)
