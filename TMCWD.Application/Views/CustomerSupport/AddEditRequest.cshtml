@@ -168,17 +168,17 @@
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="text-right">
                     <button id="btnCancel" type="button" class="px-4 py-2 text-sm text-white bg-red-700 text-black font-semibold rounded-md hover:bg-red-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
-                        <i class="fa-solid fa-xmark mr-2"></i>Cancel
+                        <i class="fa-solid fa-xmark mr-4"></i>Cancel
                     </button>
                     @if (Model.JobOrders == null || !Model.JobOrders.Any())
                     {
                         <button id="btnSave" type"button" class="px-4 py-2 text-sm text-white bg-yellow-700 text-white font-semibold rounded-md hover:bg-yellow-500 hover:text-black transition duration-150">
-                            <i class="fa-solid fa-floppy-disk mr-2"></i>Save as Draft
+                            <i class="fa-solid fa-floppy-disk mr-4"></i>Save as Draft
                         </button>
                         <button id="btnSubmit" type"button" class="px-4 py-2 text-sm text-white bg-green-600 text-white font-semibold rounded-md hover:bg-green-500 hover:text-black transition duration-150">
-                            <i class="fa-solid fa-paper-plane mr-2"></i>Submit
+                            <i class="fa-solid fa-paper-plane mr-4"></i>Submit
                         </button>
                     }
                 </div>

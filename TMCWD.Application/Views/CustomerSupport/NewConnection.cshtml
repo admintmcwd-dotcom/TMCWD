@@ -148,9 +148,7 @@
             });
         }
 
-    });
-
-    async function createRequest(custId, isDraft){
+        async function createRequest(custId, isDraft){
         var customerId = 0;
 
         if(custId == 0){
@@ -190,21 +188,36 @@
             barangay: barangay
         };
 
-        console.log('Account Data:', account);
-
         const accountClient = new WebClient('@Url.Action("SaveUpdateAccount", "Account")', account);
         const accountResponse = await accountClient.postAsync();
 
+        console.log('Account Response:', accountResponse);
+
         if(accountResponse) {
-            var requestClient = new WebClient('@Url.Action("CreateRequest", "Request")' + '?customerId=' + customerId + "&accountId=" + accountResponse.id + "&isDraft=true", null);
+            //'@Url.Action("CreateRequest", "Request")' + '?customerId=' + customerId + "&accountId=" + accountResponse.id + "&isDraft=" + (isDraft ? "1" : "0")
+            var params = {
+                customerId: customerId,
+                accountId: accountResponse.id,
+                isDraft: isDraft
+            };
+            var requestUrl = '@Url.Action("CreateRequest", "Request")' + '?customerId=' + customerId + "&accountId=" + accountResponse.id + "&isDraft=" + isDraft;
+            //var requestUrl = '@Url.Action("CreateRequest", "Request")';
+            //var requestUrl = `${@Url.Action("CreateRequest", "Request")}?customerId=${customerId}&accountId=${accountResponse.id}&isDraft=${isDraft}`;
+            console.log('Request URL:', requestUrl);
+            console.log('Details:', params);
+            var requestClient = new WebClient(requestUrl, params);
             var requestResponse = await requestClient.postAsync();
-            if(requestResponse){
+            if(requestResponse) {
                 window.location.href = '@Url.Action("Index", "CustomerSupport")';
             }
             else{
-                alert.show( { type: 'error', content: 'Failed to save account information.' } );
+                alert.show( { type: 'error', content: 'Failed to save request information.' } );
             }
         }
+        else alert.show({ type: 'error', content: 'Failed to save account information' });
     }
+
+
+    });
 
 </script>

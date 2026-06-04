@@ -16,13 +16,15 @@ namespace TMCWD.Application.Controllers
         private readonly CustomerTransaction _customerTransaction;
         private readonly AccountTransaction _accountTransaction;
         private readonly UserTransaction _userTransaction;
+        private readonly JobOrderTransaction _jobOrderTransaction;
 
         public RequestController(RequestTransaction requestTransaction, 
             AuthenticatedUserService authenticatedUserService, 
             InspectionTypeTransaction inspectionTypeTransaction,
             CustomerTransaction customerTransaction,
             AccountTransaction accountTransaction,
-            UserTransaction userTransaction)
+            UserTransaction userTransaction,
+            JobOrderTransaction jobOrderTransaction)
         {
             _authenticatedUserService = authenticatedUserService;
             _requestTransaction = requestTransaction;
@@ -30,17 +32,18 @@ namespace TMCWD.Application.Controllers
             _customerTransaction = customerTransaction;
             _accountTransaction = accountTransaction;
             _userTransaction = userTransaction;
+            _jobOrderTransaction = jobOrderTransaction;
         }
-
+        //, [FromBody] int[]? types = null
         [HttpPost]
-        public async Task<IActionResult> CreateRequest(int customerId, int accountId, bool isDraft, int[]? types = null)
+        public async Task<IActionResult> CreateRequest(int customerId, int accountId, bool isDraft, [FromBody] int[]? types)
         {
             bool isSuccess = false;
             Request request = new()
             {
                 AccountId = accountId,
                 Status = isDraft ? RequestStatus.Draft : RequestStatus.InProgress, 
-                CustomerId = customerId,
+                CustomerId = customerId
             };
 
             var createdRequest = await _requestTransaction.SaveUpdate(_authenticatedUserService.User.Id, request);
@@ -71,11 +74,50 @@ namespace TMCWD.Application.Controllers
                 }
 
                 var res = await _requestTransaction.SaveMulipleRequestDetail(_authenticatedUserService.User.Id, createdRequest.Id, requestDetails);
+                List<JobOrder> jobOrders = new();
+                if (res != null && res.Any() && !isDraft)
+                {
+                    foreach (var detail in res)
+                    {
+                        JobOrder jo = new()
+                        {
+                            RequestDetailId = detail.Id,
+                            RequestId = createdRequest.Id,
+                            Status = JobOrderStatus.Inspection
+                        };
 
-                isSuccess = res;
+                        var jobOrder = await _jobOrderTransaction.SaveUpdate(_authenticatedUserService.User.Id, createdRequest.Id, jo);
+                        if (jobOrder.Id > 0) jobOrders.Add(jo);
+                    }
+
+                    if (jobOrders.Count > 0) isSuccess = true;
+                }
+                else isSuccess = res != null && res.Any();
             }
 
             return Ok(isSuccess);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitRequest(int requestId, int[] types)
+        {
+            List<JobOrder> jobOrders = new();
+            foreach(int id in types)
+            {
+                JobOrder jo = new()
+                {
+                    RequestDetailId = id,
+                    RequestId = requestId,
+                    Status = JobOrderStatus.Inspection
+                };
+
+                var jobOrder = await _jobOrderTransaction.SaveUpdate(_authenticatedUserService.User.Id, requestId, jo);
+                jobOrders.Add(jo);
+            }
+
+            if (jobOrders.Count <= 0) return Ok(false);
+
+            return Ok(true);
         }
 
         [HttpGet]
@@ -132,7 +174,6 @@ namespace TMCWD.Application.Controllers
         [HttpGet]
         public async Task<IActionResult> GetInspectionType(int requestId = 0)
         {
-            //var inspectionTypes = await _inspectionTypeTransaction.GetTypes();
             var getInspectionTypes = _inspectionTypeTransaction.GetTypes();
             var getRequestDetails = _requestTransaction.GetRequestDetailByRequestId(requestId);
             List<dynamic> data = new();

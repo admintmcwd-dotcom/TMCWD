@@ -19,6 +19,7 @@ builder.Services.AddTransient<MaterialTransaction>();
 builder.Services.AddTransient<OtherFeeTypeTransaction>();
 builder.Services.AddTransient<FindingTransaction>();
 builder.Services.AddTransient<ApplicationLoginTransaction>();
+builder.Services.AddTransient<JobOrderTransaction>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 

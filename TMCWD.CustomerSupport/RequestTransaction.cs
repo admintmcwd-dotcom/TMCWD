@@ -141,7 +141,7 @@ namespace TMCWD.CustomerSupport
             return ConvertJsonToRequestDetail(data);
         }
 
-        public async Task<bool> SaveMulipleRequestDetail(int userId, int requestId, List<RequestDetail> details)
+        public async Task<IEnumerable<RequestDetail>> SaveMulipleRequestDetail(int userId, int requestId, List<RequestDetail> details)
         {
             StringBuilder sb = new();
             if (details == null || !details.Any()) throw new Exception("Request details is empty");
@@ -161,7 +161,7 @@ namespace TMCWD.CustomerSupport
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) throw new Exception(data);
             var returnedDetails = ConvertJsonToRequestDetails(data);
-            return returnedDetails?.Count() > 0;
+            return returnedDetails;
         }
 
         public async Task<RequestDetail> GetRequestDetail(int id)

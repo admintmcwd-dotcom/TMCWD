@@ -11,6 +11,8 @@ namespace TMCWD.Data.Entities
         public int Id { get; set; }
         [Required, Column("RequestId")]
         public int RequestId { get; set; }
+        [Required, Column("RequestDetailId")]
+        public int RequestDetailId { get; set; }
         [Required, MaxLength(20), Column("JobOrderNumber")]
         public string JobOrderNumber { get; set; } = string.Empty;
         [Column("HasCharges")]

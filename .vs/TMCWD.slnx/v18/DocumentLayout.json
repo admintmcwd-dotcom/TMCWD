@@ -3,108 +3,44 @@
   "WorkspaceRootPath": "C:\\Projects\\TMCWD\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\viewcomponents\\usernameviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\viewcomponents\\usernameviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\viewcomponents\\customernameviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\viewcomponents\\customernameviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\viewcomponents\\accountselectionviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\viewcomponents\\accountselectionviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\viewcomponents\\accountnumberviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\viewcomponents\\accountnumberviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\viewcomponents\\accountdropdownviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\viewcomponents\\accountdropdownviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\controllers\\requestcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\controllers\\requestcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\controllers\\engineeringcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\controllers\\engineeringcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\controllers\\customersupportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\controllers\\customersupportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\controllers\\customercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\controllers\\customercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1E81EA05-7BFA-4024-A35A-9925A9F2BE39}|TMCWD.Engineering\\TMCWD.Engineering.csproj|c:\\projects\\tmcwd\\tmcwd.engineering\\inventorytransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1E81EA05-7BFA-4024-A35A-9925A9F2BE39}|TMCWD.Engineering\\TMCWD.Engineering.csproj|solutionrelative:tmcwd.engineering\\inventorytransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7EEF6108-D2D4-47FD-BA05-4713E8676C92}|TMCWD.Data\\TMCWD.Data.csproj|c:\\projects\\tmcwd\\tmcwd.data\\controllers\\requestdetailcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7EEF6108-D2D4-47FD-BA05-4713E8676C92}|TMCWD.Data\\TMCWD.Data.csproj|solutionrelative:tmcwd.data\\controllers\\requestdetailcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|c:\\projects\\tmcwd\\tmcwd.customersupport\\requesttransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|solutionrelative:tmcwd.customersupport\\requesttransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|c:\\projects\\tmcwd\\tmcwd.customersupport\\recommendationtransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|solutionrelative:tmcwd.customersupport\\recommendationtransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|c:\\projects\\tmcwd\\tmcwd.customersupport\\materialtransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|solutionrelative:tmcwd.customersupport\\materialtransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|c:\\projects\\tmcwd\\tmcwd.customersupport\\inspectiontypedetailtransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|solutionrelative:tmcwd.customersupport\\inspectiontypedetailtransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7EEF6108-D2D4-47FD-BA05-4713E8676C92}|TMCWD.Data\\TMCWD.Data.csproj|c:\\projects\\tmcwd\\tmcwd.data\\services\\requestdetailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7EEF6108-D2D4-47FD-BA05-4713E8676C92}|TMCWD.Data\\TMCWD.Data.csproj|solutionrelative:tmcwd.data\\services\\requestdetailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|c:\\projects\\tmcwd\\tmcwd.customersupport\\jobordertransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|solutionrelative:tmcwd.customersupport\\jobordertransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|c:\\projects\\tmcwd\\tmcwd.customersupport\\inspectionreporttransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|solutionrelative:tmcwd.customersupport\\inspectionreporttransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7EEF6108-D2D4-47FD-BA05-4713E8676C92}|TMCWD.Data\\TMCWD.Data.csproj|c:\\projects\\tmcwd\\tmcwd.data\\entities\\joborder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7EEF6108-D2D4-47FD-BA05-4713E8676C92}|TMCWD.Data\\TMCWD.Data.csproj|solutionrelative:tmcwd.data\\entities\\joborder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|c:\\projects\\tmcwd\\tmcwd.customersupport\\findingtransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|solutionrelative:tmcwd.customersupport\\findingtransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7EEF6108-D2D4-47FD-BA05-4713E8676C92}|TMCWD.Data\\TMCWD.Data.csproj|c:\\projects\\tmcwd\\tmcwd.data\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7EEF6108-D2D4-47FD-BA05-4713E8676C92}|TMCWD.Data\\TMCWD.Data.csproj|solutionrelative:tmcwd.data\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|c:\\projects\\tmcwd\\tmcwd.customersupport\\customertransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|solutionrelative:tmcwd.customersupport\\customertransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|c:\\projects\\tmcwd\\tmcwd.customersupport\\accounttransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6C72248-5CA5-4257-ABD8-F137190D5951}|TMCWD.CustomerSupport\\TMCWD.CustomerSupport.csproj|solutionrelative:tmcwd.customersupport\\accounttransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4E6CC8B8-7588-436B-8457-750E2263DAE8}|TMCWD.Administration\\TMCWD.Administration.csproj|c:\\projects\\tmcwd\\tmcwd.administration\\workflowtransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E6CC8B8-7588-436B-8457-750E2263DAE8}|TMCWD.Administration\\TMCWD.Administration.csproj|solutionrelative:tmcwd.administration\\workflowtransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E6CC8B8-7588-436B-8457-750E2263DAE8}|TMCWD.Administration\\TMCWD.Administration.csproj|c:\\projects\\tmcwd\\tmcwd.administration\\usertransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E6CC8B8-7588-436B-8457-750E2263DAE8}|TMCWD.Administration\\TMCWD.Administration.csproj|solutionrelative:tmcwd.administration\\usertransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E6CC8B8-7588-436B-8457-750E2263DAE8}|TMCWD.Administration\\TMCWD.Administration.csproj|c:\\projects\\tmcwd\\tmcwd.administration\\otherfeetypetransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E6CC8B8-7588-436B-8457-750E2263DAE8}|TMCWD.Administration\\TMCWD.Administration.csproj|solutionrelative:tmcwd.administration\\otherfeetypetransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E6CC8B8-7588-436B-8457-750E2263DAE8}|TMCWD.Administration\\TMCWD.Administration.csproj|c:\\projects\\tmcwd\\tmcwd.administration\\inspectiontypetransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E6CC8B8-7588-436B-8457-750E2263DAE8}|TMCWD.Administration\\TMCWD.Administration.csproj|solutionrelative:tmcwd.administration\\inspectiontypetransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|c:\\projects\\tmcwd\\tmcwd.application\\views\\customersupport\\newconnection.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\views\\customersupport\\newconnection.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -114,8 +50,34 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 9,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RequestDetailController.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Data\\Controllers\\RequestDetailController.cs",
+              "RelativeDocumentMoniker": "TMCWD.Data\\Controllers\\RequestDetailController.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Data\\Controllers\\RequestDetailController.cs",
+              "RelativeToolTip": "TMCWD.Data\\Controllers\\RequestDetailController.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAB0AAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T08:20:07.03Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RequestTransaction.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\RequestTransaction.cs",
+              "RelativeDocumentMoniker": "TMCWD.CustomerSupport\\RequestTransaction.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\RequestTransaction.cs",
+              "RelativeToolTip": "TMCWD.CustomerSupport\\RequestTransaction.cs",
+              "ViewState": "AgIAAIsAAAAAAAAAAAAcwKIAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T08:04:25.518Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
@@ -126,340 +88,106 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UserNameViewComponent.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\UserNameViewComponent.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\ViewComponents\\UserNameViewComponent.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\UserNameViewComponent.cs",
-              "RelativeToolTip": "TMCWD.Application\\ViewComponents\\UserNameViewComponent.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAiwAgAAAA6AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T02:10:01.781Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CustomerNameViewComponent.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\CustomerNameViewComponent.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\ViewComponents\\CustomerNameViewComponent.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\CustomerNameViewComponent.cs",
-              "RelativeToolTip": "TMCWD.Application\\ViewComponents\\CustomerNameViewComponent.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAiwA4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T02:09:48.995Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AccountSelectionViewComponent.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\AccountSelectionViewComponent.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\ViewComponents\\AccountSelectionViewComponent.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\AccountSelectionViewComponent.cs",
-              "RelativeToolTip": "TMCWD.Application\\ViewComponents\\AccountSelectionViewComponent.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAcwAsAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T02:08:47.053Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "AccountNumberViewComponent.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\AccountNumberViewComponent.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\ViewComponents\\AccountNumberViewComponent.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\AccountNumberViewComponent.cs",
-              "RelativeToolTip": "TMCWD.Application\\ViewComponents\\AccountNumberViewComponent.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAkAAABAAAAAAAAAAA==",
+              "Title": "RequestDetailService.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Data\\Services\\RequestDetailService.cs",
+              "RelativeDocumentMoniker": "TMCWD.Data\\Services\\RequestDetailService.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Data\\Services\\RequestDetailService.cs",
+              "RelativeToolTip": "TMCWD.Data\\Services\\RequestDetailService.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAowB4AAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T02:08:06.537Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AccountDropdownViewComponent.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\AccountDropdownViewComponent.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\ViewComponents\\AccountDropdownViewComponent.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\AccountDropdownViewComponent.cs",
-              "RelativeToolTip": "TMCWD.Application\\ViewComponents\\AccountDropdownViewComponent.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T02:07:26.04Z",
+              "WhenOpened": "2026-06-04T08:16:39.468Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "RequestController.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\RequestController.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\Controllers\\RequestController.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\RequestController.cs",
-              "RelativeToolTip": "TMCWD.Application\\Controllers\\RequestController.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAuwBsAAAAuAAAAAAAAAA==",
+              "Title": "JobOrder.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Data\\Entities\\JobOrder.cs",
+              "RelativeDocumentMoniker": "TMCWD.Data\\Entities\\JobOrder.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Data\\Entities\\JobOrder.cs",
+              "RelativeToolTip": "TMCWD.Data\\Entities\\JobOrder.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAQwBkAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:09:19.482Z",
+              "WhenOpened": "2026-06-04T07:59:06.087Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "TMCWD.Application\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAuwBgAAAA3AAAAAAAAAA==",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Data\\Program.cs",
+              "RelativeDocumentMoniker": "TMCWD.Data\\Program.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Data\\Program.cs",
+              "RelativeToolTip": "TMCWD.Data\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T02:01:00.886Z",
+              "WhenOpened": "2026-06-04T07:53:12.177Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "EngineeringController.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\EngineeringController.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\Controllers\\EngineeringController.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\EngineeringController.cs",
-              "RelativeToolTip": "TMCWD.Application\\Controllers\\EngineeringController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAuwBQAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T02:00:46.666Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "CustomerSupportController.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\CustomerSupportController.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\Controllers\\CustomerSupportController.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\CustomerSupportController.cs",
-              "RelativeToolTip": "TMCWD.Application\\Controllers\\CustomerSupportController.cs",
-              "ViewState": "AgIAAJoAAAAAAAAAAAAAAEEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T02:00:04.391Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "CustomerController.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\CustomerController.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\Controllers\\CustomerController.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\CustomerController.cs",
-              "RelativeToolTip": "TMCWD.Application\\Controllers\\CustomerController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:59:47.808Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\Controllers\\AccountController.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "TMCWD.Application\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABUAAAA3AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:58:44.545Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "InventoryTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Engineering\\InventoryTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.Engineering\\InventoryTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Engineering\\InventoryTransaction.cs",
-              "RelativeToolTip": "TMCWD.Engineering\\InventoryTransaction.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA4AAAA3AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:55:22.546Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "RequestTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\RequestTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.CustomerSupport\\RequestTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\RequestTransaction.cs",
-              "RelativeToolTip": "TMCWD.CustomerSupport\\RequestTransaction.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAQwMgAAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:52:36.809Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "RecommendationTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\RecommendationTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.CustomerSupport\\RecommendationTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\RecommendationTransaction.cs",
-              "RelativeToolTip": "TMCWD.CustomerSupport\\RecommendationTransaction.cs",
-              "ViewState": "AgIAADsAAAAAAAAAAAAIwFMAAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:51:23.926Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "MaterialTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\MaterialTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.CustomerSupport\\MaterialTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\MaterialTransaction.cs",
-              "RelativeToolTip": "TMCWD.CustomerSupport\\MaterialTransaction.cs",
-              "ViewState": "AgIAAEQAAAAAAAAAAAAuwE0AAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:41:23.596Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 4,
               "Title": "JobOrderTransaction.cs",
               "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\JobOrderTransaction.cs",
               "RelativeDocumentMoniker": "TMCWD.CustomerSupport\\JobOrderTransaction.cs",
               "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\JobOrderTransaction.cs",
               "RelativeToolTip": "TMCWD.CustomerSupport\\JobOrderTransaction.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAAwwC4AAAAzAAAAAAAAAA==",
+              "ViewState": "AgIAADQAAAAAAAAAAAAjwEQAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:39:58.828Z",
+              "WhenOpened": "2026-06-04T07:10:13.171Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "InspectionTypeDetailTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\InspectionTypeDetailTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.CustomerSupport\\InspectionTypeDetailTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\InspectionTypeDetailTransaction.cs",
-              "RelativeToolTip": "TMCWD.CustomerSupport\\InspectionTypeDetailTransaction.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAD4v4QAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 7,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Program.cs",
+              "RelativeDocumentMoniker": "TMCWD.Application\\Program.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Program.cs",
+              "RelativeToolTip": "TMCWD.Application\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:39:21.844Z",
+              "WhenOpened": "2026-06-04T07:12:28.982Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "InspectionReportTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\InspectionReportTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.CustomerSupport\\InspectionReportTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\InspectionReportTransaction.cs",
-              "RelativeToolTip": "TMCWD.CustomerSupport\\InspectionReportTransaction.cs",
-              "ViewState": "AgIAACwAAAAAAAAAAAAIwEMAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "RequestController.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\RequestController.cs",
+              "RelativeDocumentMoniker": "TMCWD.Application\\Controllers\\RequestController.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\RequestController.cs",
+              "RelativeToolTip": "TMCWD.Application\\Controllers\\RequestController.cs",
+              "ViewState": "AgIAAEAAAAAAAAAAAAAkwE0AAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:37:45.923Z",
+              "WhenOpened": "2026-06-04T05:34:41.854Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "FindingTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\FindingTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.CustomerSupport\\FindingTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\FindingTransaction.cs",
-              "RelativeToolTip": "TMCWD.CustomerSupport\\FindingTransaction.cs",
-              "ViewState": "AgIAADMAAAAAAAAAAAA4wEAAAAAzAAAAAAAAAA==",
+              "DocumentIndex": 8,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "TMCWD.Application\\Controllers\\AccountController.cs",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "TMCWD.Application\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAowC0AAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:36:50.895Z",
+              "WhenOpened": "2026-06-04T05:34:34.594Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "CustomerTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\CustomerTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.CustomerSupport\\CustomerTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\CustomerTransaction.cs",
-              "RelativeToolTip": "TMCWD.CustomerSupport\\CustomerTransaction.cs",
-              "ViewState": "AgIAADwAAAAAAAAAAAAmwEsAAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:35:18.865Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "AccountTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\AccountTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.CustomerSupport\\AccountTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.CustomerSupport\\AccountTransaction.cs",
-              "RelativeToolTip": "TMCWD.CustomerSupport\\AccountTransaction.cs",
-              "ViewState": "AgIAAGEAAAAAAAAAAAAmwHUAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:33:38.47Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "WorkflowTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Administration\\WorkflowTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.Administration\\WorkflowTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Administration\\WorkflowTransaction.cs",
-              "RelativeToolTip": "TMCWD.Administration\\WorkflowTransaction.cs",
-              "ViewState": "AgIAACAAAAAAAAAAAAAIwDsAAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:32:25.24Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "UserTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Administration\\UserTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.Administration\\UserTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Administration\\UserTransaction.cs",
-              "RelativeToolTip": "TMCWD.Administration\\UserTransaction.cs",
-              "ViewState": "AgIAAHgAAAAAAAAAAAAkwH8AAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:30:44.232Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "OtherFeeTypeTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Administration\\OtherFeeTypeTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.Administration\\OtherFeeTypeTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Administration\\OtherFeeTypeTransaction.cs",
-              "RelativeToolTip": "TMCWD.Administration\\OtherFeeTypeTransaction.cs",
-              "ViewState": "AgIAADAAAAAAAAAAAAA4wEQAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:29:39.399Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "TMCWD.Application\\Controllers\\AdminController.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "TMCWD.Application\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAUwBMAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:14:03.946Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "InspectionTypeTransaction.cs",
-              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Administration\\InspectionTypeTransaction.cs",
-              "RelativeDocumentMoniker": "TMCWD.Administration\\InspectionTypeTransaction.cs",
-              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Administration\\InspectionTypeTransaction.cs",
-              "RelativeToolTip": "TMCWD.Administration\\InspectionTypeTransaction.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T01:11:26.809Z",
+              "DocumentIndex": 9,
+              "Title": "NewConnection.cshtml",
+              "DocumentMoniker": "C:\\Projects\\TMCWD\\TMCWD.Application\\Views\\CustomerSupport\\NewConnection.cshtml",
+              "RelativeDocumentMoniker": "TMCWD.Application\\Views\\CustomerSupport\\NewConnection.cshtml",
+              "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Views\\CustomerSupport\\NewConnection.cshtml",
+              "RelativeToolTip": "TMCWD.Application\\Views\\CustomerSupport\\NewConnection.cshtml",
+              "ViewState": "AgIAAH0AAAAAAAAAAAAUwNUAAABgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-04T05:24:17.919Z",
               "EditorCaption": ""
             }
           ]

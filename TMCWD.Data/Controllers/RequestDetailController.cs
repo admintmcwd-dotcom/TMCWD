@@ -20,7 +20,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<RequestDetail>> Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
             var requestDetail = await _requestDetailService.Get(id);
             if (requestDetail == null) return NotFound($"Request detail with id {id} was not found.");
@@ -28,7 +28,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPost("SaveUpdate/{userId}")]
-        public async Task<ActionResult<RequestDetail>> SaveUpdate(int userId, [FromRoute] int requestId, [FromBody] RequestDetail detail)
+        public async Task<ActionResult> SaveUpdate(int userId, [FromRoute] int requestId, [FromBody] RequestDetail detail)
         {
             var updateDetail = await _requestDetailService.SaveUpdate(userId, requestId, detail);
             if (updateDetail == null) return BadRequest("Problem(s) encountered while saving request detail");
@@ -36,7 +36,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPost("SaveMultiple/{userId}")]
-        public async Task<ActionResult<IEnumerable<RequestDetail>>> SaveMultiple(int userId, [FromRoute] int requestId, [FromBody] List<RequestDetail> details)
+        public async Task<ActionResult> SaveMultiple(int userId, [FromRoute] int requestId, [FromBody] List<RequestDetail> details)
         {
 
             if (details.Count <= 0) return BadRequest("No details to add to this request");
@@ -51,7 +51,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetByRequestId")]
-        public async Task<ActionResult<IEnumerable<RequestDetail>>> GetByRequestId([FromRoute] int requestId)
+        public async Task<ActionResult> GetByRequestId([FromRoute] int requestId)
         {
             var requestDetails = await _requestDetailService.GetByRequestId(requestId);
 
