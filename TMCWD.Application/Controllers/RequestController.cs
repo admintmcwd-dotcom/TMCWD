@@ -4,6 +4,7 @@ using TMCWD.Administration;
 using TMCWD.CustomerSupport;
 using TMCWD.Model.Administrator;
 using TMCWD.Model.CustomerSupport;
+using TMCWD.Model.Extensions;
 using TMCWD.Services;
 
 namespace TMCWD.Application.Controllers
@@ -17,6 +18,7 @@ namespace TMCWD.Application.Controllers
         private readonly AccountTransaction _accountTransaction;
         private readonly UserTransaction _userTransaction;
         private readonly JobOrderTransaction _jobOrderTransaction;
+        private readonly ApprovalHistoryTransaction _approvalHistoryTransaction;
 
         public RequestController(RequestTransaction requestTransaction, 
             AuthenticatedUserService authenticatedUserService, 
@@ -24,7 +26,8 @@ namespace TMCWD.Application.Controllers
             CustomerTransaction customerTransaction,
             AccountTransaction accountTransaction,
             UserTransaction userTransaction,
-            JobOrderTransaction jobOrderTransaction)
+            JobOrderTransaction jobOrderTransaction,
+            ApprovalHistoryTransaction approvalHistoryTransaction)
         {
             _authenticatedUserService = authenticatedUserService;
             _requestTransaction = requestTransaction;
@@ -33,6 +36,7 @@ namespace TMCWD.Application.Controllers
             _accountTransaction = accountTransaction;
             _userTransaction = userTransaction;
             _jobOrderTransaction = jobOrderTransaction;
+            _approvalHistoryTransaction = approvalHistoryTransaction;
         }
         //, [FromBody] int[]? types = null
         [HttpPost]
@@ -87,7 +91,15 @@ namespace TMCWD.Application.Controllers
                         };
 
                         var jobOrder = await _jobOrderTransaction.SaveUpdate(_authenticatedUserService.User.Id, createdRequest.Id, jo);
-                        if (jobOrder.Id > 0) jobOrders.Add(jo);
+                        if (jobOrder.Id > 0)
+                        {
+                            ApprovalHistory history = new()
+                            {
+                                Details = jobOrder.Status.GetDescription()
+                            };
+                            await _approvalHistoryTransaction.Save(_authenticatedUserService.User.Id, jobOrder.Id, history);
+                            jobOrders.Add(jo);
+                        }
                     }
 
                     if (jobOrders.Count > 0) isSuccess = true;

@@ -164,9 +164,9 @@ namespace TMCWD.CustomerSupport
             return returnedDetails;
         }
 
-        public async Task<RequestDetail> GetRequestDetail(int id)
+        public async Task<RequestDetail> GetRequestDetail(int id, int requestId)
         {
-            var response = await _webService.Client.GetAsync($"api/RequestDetail/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/{requestId}/RequestDetail/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return this.ConvertJsonToRequestDetail(data);

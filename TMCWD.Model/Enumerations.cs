@@ -48,3 +48,9 @@ public enum JobOrderStatus
     Completed = 7,
     Rejected = 8
 }
+
+public enum FileType
+{
+    Finding = 1,
+    Verification = 2
+}

@@ -1,0 +1,75 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using TMCWD.Administration;
+using TMCWD.CustomerSupport;
+using TMCWD.Model.Administrator;
+using TMCWD.Model.CustomerSupport;
+using TMCWD.Model.Extensions;
+using TMCWD.Services;
+
+namespace TMCWD.Application.Controllers
+{
+    public class JobOrderController : Controller
+    {
+
+        private readonly AuthenticatedUserService _authService;
+        private readonly JobOrderTransaction _jobOrderTransaction;
+        private readonly RequestTransaction _requestTransaction;
+        private readonly InspectionTypeTransaction _inspectionTypeTransaction;
+
+        public JobOrderController(AuthenticatedUserService authService, 
+            JobOrderTransaction jobOrderTransaction, 
+            RequestTransaction requestTransaction,
+            InspectionTypeTransaction inspectionTypeTransaction)
+        {
+            _authService = authService;
+            _jobOrderTransaction = jobOrderTransaction;
+            _requestTransaction = requestTransaction;
+            _inspectionTypeTransaction = inspectionTypeTransaction;
+        }
+
+        public async Task<IActionResult> Index(int id)
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetJobOrders(int requestId)
+        {
+            Task<List<JobOrder>> getJobOrders = _jobOrderTransaction.GetAll(requestId);
+            Task<List<InspectionType>> getInspectionTypes = _inspectionTypeTransaction.GetTypes();
+
+            await Task.WhenAll(getJobOrders, getInspectionTypes);
+
+            var jobOrders = getJobOrders.Result;
+            List<InspectionType> inspectionTypes = getInspectionTypes.Result;
+
+            if (jobOrders == null || !jobOrders.Any()) return NoContent();
+
+            List<dynamic> jos = new();
+
+            foreach (var jobOrder in jobOrders)
+            {
+
+                var requestDetail = await _requestTransaction.GetRequestDetail(jobOrder.RequestDetailId, requestId);
+                var inspectionType = inspectionTypes.Where(x => x.Id == requestDetail.RequestTypeId).FirstOrDefault();
+
+                var jo = new
+                {
+                    Id = jobOrder.Id,
+                    RequestId = jobOrder.RequestId,
+                    RequestDetailId = jobOrder.RequestDetailId,
+                    Status = jobOrder.Status,
+                    StatusString = jobOrder.Status.GetStatusString(),
+                    DateCreated = jobOrder.DateCreated,
+                    Service = inspectionType?.Name ?? string.Empty,
+                    ServiceTypeId = requestDetail.RequestTypeId
+                };
+
+                jos.Add(jo);
+            }
+
+            return Ok(jos);
+        }
+
+    }
+}

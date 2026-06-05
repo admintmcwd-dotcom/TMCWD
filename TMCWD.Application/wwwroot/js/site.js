@@ -138,6 +138,8 @@ HTMLElement.prototype.DataTable = async function(options){
     var client = new WebClient(options.getUrl, null);
     var response = await client.getAsync();
 
+    if (options.loadedCallback) options.loadedCallback(response);
+
     if (response == null || response.length == 0) {
         trDefault.replaceChildren();
         trDefault.appendChild(tdNoRecord);
@@ -167,7 +169,8 @@ HTMLElement.prototype.DataTable = async function(options){
         options.columns.forEach((column) => {
             const itemValue = item[column.dataMember];
             const td = document.createElement("td");
-            td.classList.add('px-6', 'py-3');
+            //td.classList.add('px-6', 'py-3');
+            td.className = column.className ?? 'px-6 py-3';
             if (column.isCentered) td.classList.add('text-center');
             if (column.isEditable) {
                 td.innerHTML = `<p class='editable-content-text w-full'>${itemValue}</p>
@@ -338,6 +341,7 @@ HTMLElement.prototype.SetServices = async function (options) {
         checkbox.value = '';
         checkbox.type = "checkbox";
         checkbox.checked = type.isSelected;
+        checkbox.disabled = options.isDisabled;
 
         serviceDiv.appendChild(checkbox);
 

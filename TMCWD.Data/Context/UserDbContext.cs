@@ -39,6 +39,8 @@ namespace TMCWD.Data.Context
 
         public DbSet<Finding> Findings { get; set; }
 
+        public DbSet<ApprovalHistory> ApprovalHistories { get; set; }
+
         #endregion
 
         #region constructors

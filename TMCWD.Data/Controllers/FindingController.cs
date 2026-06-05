@@ -5,7 +5,7 @@ using TMCWD.Data.Services;
 namespace TMCWD.Data.Controllers
 {
     [ApiController]
-    [Route("api/{requestId}/[controller]")]
+    [Route("api/{jobOrderId}/[controller]")]
     public class FindingController : Controller
     {
 
@@ -27,10 +27,10 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll(int requestId)
+        public async Task<IActionResult> GetAll(int jobOrderId)
         {
 
-            var findings = await _service.GetAll(requestId);
+            var findings = await _service.GetAll(jobOrderId);
 
             if (findings == null) return NotFound();
 
@@ -38,9 +38,9 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPost("SaveUpdate/{userId}")]
-        public async Task<IActionResult> SaveUpdate(int userId, int requestId, Finding finding)
+        public async Task<IActionResult> SaveUpdate(int userId, int jobOrderId, Finding finding)
         {
-            var updatedFinding = await _service.SaveUpdate(userId, requestId, finding);
+            var updatedFinding = await _service.SaveUpdate(userId, jobOrderId, finding);
             if(updatedFinding == null) return NotFound();
             return Ok(updatedFinding);
         }

@@ -13,8 +13,8 @@ namespace TMCWD.Data.Entities
         [Key, Column("Id")]
         public System.Int64 Id { get; set; }
 
-        [Column("RequestId")]
-        public System.Int64 RequestId { get; set; }
+        [Column("JobOrderId")]
+        public System.Int64 JobOrderId { get; set; }
 
         [Required, MaxLength(255), Column("Detail")]
         public string Detail { get; set; } = string.Empty;
