@@ -16,9 +16,10 @@ namespace TMCWD.Model.CustomerSupport
         public string Details { get; set; } = string.Empty;
         [DisplayName("Remarks")]
         public string Remarks { get; set; } = string.Empty;
-        [DisplayName("User Id")]
-        public int UserId { get; set; }
+        [DisplayName("Created By")]
+        public int CreatedBy { get; set; }
         [DisplayName("Date Created")]
         public DateTime DateCreated { get; set; }
+
     }
 }

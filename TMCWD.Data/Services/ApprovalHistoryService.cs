@@ -4,7 +4,7 @@ using TMCWD.Data.Entities;
 
 namespace TMCWD.Data.Services
 {
-    public class ApprovalHistoryService : IApprovalHIstoryService
+    public class ApprovalHistoryService : IApprovalHistoryService
     {
 
         private readonly UserDbContext _context;

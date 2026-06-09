@@ -2,7 +2,7 @@
 
 namespace TMCWD.Data.Services
 {
-    public interface IApprovalHIstoryService
+    public interface IApprovalHistoryService
     {
         
         Task<ApprovalHistory> Save(int userId, int jobOrderId, ApprovalHistory history);

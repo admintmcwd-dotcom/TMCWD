@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TMCWD.Data.Entities
 {
-    [Table("approval_histories")]
+    [Table("approval_history")]
     public class ApprovalHistory
     {
         public ApprovalHistory() { }
@@ -18,7 +18,7 @@ namespace TMCWD.Data.Entities
         public string Details { get; set; } = string.Empty;
 
         [Required, MaxLength(255), Column("Remarks")]
-        public string Remarks { get; set; }
+        public string Remarks { get; set; } = string.Empty;
 
         [Required, Column("Status")]
         public System.Int64 Status { get; set; }

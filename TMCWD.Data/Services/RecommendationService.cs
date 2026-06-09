@@ -13,7 +13,7 @@ namespace TMCWD.Data.Services
             _dbContext = context;
         }
 
-        public async Task<Recommendation> Get(int id)
+        public async Task<Recommendation?> Get(int id)
         {
             var recommendation = await _dbContext.Recommendations.Where(x => x.Id == id).FirstOrDefaultAsync();
             return recommendation;

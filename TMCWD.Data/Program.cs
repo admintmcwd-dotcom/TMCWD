@@ -26,7 +26,7 @@ builder.Services.AddScoped<IOtherFeeTypeService, OtherFeeTypeService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IFindingService, FindingService>();
 builder.Services.AddScoped<IJobOrderService, JobOrderService>();
-builder.Services.AddScoped<IApprovalHIstoryService, ApprovalHistoryService>();
+builder.Services.AddScoped<IApprovalHistoryService, ApprovalHistoryService>();
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 

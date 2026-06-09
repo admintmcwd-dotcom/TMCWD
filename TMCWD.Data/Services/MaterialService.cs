@@ -15,7 +15,7 @@ namespace TMCWD.Data.Services
             _context = context;
         }
 
-        public async Task<Material> Get(int id)
+        public async Task<Material?> Get(int id)
         {
             var material = await _context.Materials.Where(x => x.Id == id).FirstOrDefaultAsync();
             return material;

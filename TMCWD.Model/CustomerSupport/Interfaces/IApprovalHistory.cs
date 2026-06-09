@@ -14,7 +14,7 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
 
         public string Remarks { get; set; }
 
-        public int UserId { get; set; }
+        public int CreatedBy { get; set; }
 
         public DateTime DateCreated { get; set; }
     }

@@ -9,9 +9,9 @@ namespace TMCWD.Data.Controllers
     [Route("api/{jobOrderId}/[controller]")]
     public class ApprovalHistoryController : Controller
     {
-        private readonly ApprovalHistoryService _service;
+        private readonly IApprovalHistoryService _service;
 
-        public ApprovalHistoryController(ApprovalHistoryService service)
+        public ApprovalHistoryController(IApprovalHistoryService service)
         {
             _service = service;
         }

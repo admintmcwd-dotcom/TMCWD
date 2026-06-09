@@ -411,6 +411,50 @@ HTMLElement.prototype.SetServices = async function (options) {
     // });
 };
 
+HTMLElement.prototype.Dropzone = function (options) {
+    const dropzone = this;
+    var filesForUpload = [];
+    console.log('Dropzone:', dropzone);
+    if (dropzone.tagName.toLowerCase() !== "div") return;
+
+    if (!dropzone.classList.contains('drop-zone')) return;
+
+    const fileUpload = dropzone.querySelector('input[type="file"]');
+    console.log('File Upload:', fileUpload);
+
+    const fileList = document.getElementById(options.fileListContainer);
+    console.log('File List:', fileList);
+
+    if (fileUpload) {
+        fileUpload.addEventListener("change", (evt) => {
+            evt.preventDefault();
+            [...evt.target.files].forEach((file) => {
+
+                let exist = filesForUpload.filter((item, index, array) => {
+                    return item.name === file.name && item.type === file.type;
+                });
+                if (exist.length <= 0) {
+                    filesForUpload.push(file);
+                    if (fileList) {
+                        const pFile = document.createElement('p');
+                        const spanFilename = document.createElement('span');
+                        const pngIcon = document.createElement('i'); //< i class="fa-solid fa-file-png" ></i >
+
+                        spanFilename.textContent = file.name;
+                        pngIcon.classList.add('fa-solid', 'fa-file-image', 'mr-1');
+                        pFile.classList.add('w-full', 'flex', 'items-center');
+                        pFile.appendChild(pngIcon);
+                        pFile.appendChild(spanFilename);
+                        //fpFile.textContent = file.name;
+                        fileList.appendChild(pFile);
+                    }
+                }
+            });
+            console.log('Files:', evt.target.files);
+        });
+    }
+};
+
 class WebClient {
 
     url = "";

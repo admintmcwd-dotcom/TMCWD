@@ -14,7 +14,7 @@ namespace TMCWD.Data.Services
             _context = context;
         }
 
-        public async Task<OtherFeeType> Get(int id)
+        public async Task<OtherFeeType?> Get(int id)
         {
             var otherFeeType = await _context.OtherFeeTypes.Where(x => x.Id == id).FirstOrDefaultAsync();
             return otherFeeType;

@@ -21,7 +21,7 @@ namespace TMCWD.Data.Services
             return res > 0;
         }
 
-        public async Task<Workflow> Get(int id)
+        public async Task<Workflow?> Get(int id)
         {
             var workflow = await _context.Workflows.Where(x => x.Id == id).FirstOrDefaultAsync();
             return workflow;

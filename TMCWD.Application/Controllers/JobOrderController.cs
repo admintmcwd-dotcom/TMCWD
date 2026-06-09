@@ -29,7 +29,7 @@ namespace TMCWD.Application.Controllers
 
         public async Task<IActionResult> Index(int id)
         {
-            return View();
+            return View(id);
         }
 
         [HttpGet]

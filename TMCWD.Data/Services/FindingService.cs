@@ -14,7 +14,7 @@ namespace TMCWD.Data.Services
             _context = context;
         }
 
-        public async Task<Finding> Get(int id)
+        public async Task<Finding?> Get(int id)
         {
             var finding = await _context.Findings.Where(x => x.Id == id).FirstOrDefaultAsync();
             return finding;
