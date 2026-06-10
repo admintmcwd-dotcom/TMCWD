@@ -49,8 +49,20 @@ public enum JobOrderStatus
     Rejected = 8
 }
 
-public enum FileType
+public enum RequestFileType
 {
     Finding = 1,
     Verification = 2
+}
+
+public enum FileType
+{
+    Png = 1,
+    Jpeg = 2,
+    Image = 3,
+    Tiff = 4,
+    Pdf = 5,
+    Word = 6,
+    Text = 7,
+    Other = 8,
 }

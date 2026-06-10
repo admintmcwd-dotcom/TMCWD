@@ -21,6 +21,7 @@ builder.Services.AddTransient<FindingTransaction>();
 builder.Services.AddTransient<ApplicationLoginTransaction>();
 builder.Services.AddTransient<JobOrderTransaction>();
 builder.Services.AddTransient<ApprovalHistoryTransaction>();
+builder.Services.AddTransient<RequestFileTransaction>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 

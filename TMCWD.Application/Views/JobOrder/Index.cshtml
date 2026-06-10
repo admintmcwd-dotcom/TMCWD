@@ -99,7 +99,8 @@
                             <div class="flex flex-col items-center justify-center w-full h-64 bg-neutral-secondary-medium border border-dashed border-default-strong rounded-md">
                                 <div class="flex flex-col items-center justify-center text-body pt-5 pb-6">
                                     <svg class="w-8 h-8 mb-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01" /></svg>
-                                    <p class="mb-2 text-sm">Click the button below to upload</p>
+                                    <p class="mb-2 text-sm">Click the button below or drag and drop file(s) to upload</p>
+                                    <p class="text-xs mb-4">Allowed Files: <span class="font-semibold">.png, .jgp, .img</span></p>
                                     <p class="text-xs mb-4">Max. File Size: <span class="font-semibold">30MB</span></p>
                                     <!-- Upload Button -->
                                     <button type="button" onclick="document.getElementById('findings-dropzone-file').click()" class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-500 box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-md text-sm px-3 py-2 focus:outline-none">
@@ -126,6 +127,11 @@
 
     document.addEventListener("DOMContentLoaded", function(event) {
 
+        const alert = new Alert();
+        var errorList = [];
+
+        var filesForUpload = [];
+
         const collapsePanel = document.getElementById("accordion-collapse-joborder");
         if(collapsePanel) collapsePanel.Collapsible();
 
@@ -146,12 +152,108 @@
         }
 
         const dropzone = document.getElementById('findings-dropzone');
-        console.log('Page Dropzone:', dropzone);
         if(dropzone){
             dropzone.Dropzone({
-                fileListContainer: 'fileListDiv'
+                fileListContainer: 'fileListDiv',
+                allowedTypes: [ 'image/png', 'image/jpg', 'image/img' ],
+                maxSizeInMB: 30,
+                onError: (error) => { handlerError(error); },
+                onChange: (files) => { console.log('Files:', files); filesForUpload = files; },
+                onRemove: (file) => { removeFile(file); },
             });
         }
+
+        const txtFinding = document.getElementById("txtFinding");
+        const btnSaveFindings = document.getElementById("btnSaveFindings");
+        if(btnSaveFindings){
+            btnSaveFindings.addEventListener("click", (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                
+                if(txtFinding){
+                    if(txtFinding.value == ''){
+                        alert.show({
+                            type: 'error',
+                            content: 'Need to provide findings',
+                            autoHide: true
+                        });
+                        return;
+                    }
+                }
+                else{
+                    alert.show({
+                        type: 'error',
+                        content: 'Need to provide findings',
+                        autoHide: true
+                    });
+                    return;
+                }
+
+                if(filesForUpload == null || filesForUpload.length <= 0){
+                    alert.show({
+                        type: 'error',
+                        content: 'No attached evidence',
+                        autoHide: true
+                    });
+                    return;
+                }
+
+                if(!checkFileSize()){
+                    alert.show({
+                        type: 'error',
+                        content: 'Evidence files size exceeds the maximum allowed',
+                        autoHide: true
+                    });
+                }
+
+                if(errorList != null && errorList.length > 0){
+                    showError();
+
+                    return;
+                }
+
+                //save code here
+
+            });
+        }
+
+        function showError(){
+            var innerHtml = `<ul>`;
+            if(errorList != null && errorList.length > 0){
+                [...errorList].forEach((error) => {
+                    innerHtml += `<li>${error}</li>`
+                });
+                innerHtml += `</ul>`;
+
+                alert.show({
+                    type: 'error',
+                    html: innerHtml,
+                    autoHide: true
+                });
+            }
+        }
+
+        function handlerError(error){
+            alert.show({
+                type: 'error',
+                content: error,
+                autoHide: true
+            });
+        };
+
+        function checkFileSize(){
+            var sum = 0;
+            [...filesForUpload].forEach((file) => { sum += convertBToMB(file.size); });
+            return sum.toFixed(2) <= 30; 
+        }
+
+        function removeFile(file){
+            const index = filesForUpload.indexOf(file);
+            if(index >= 0){
+                filesForUpload.splice(index, 1);
+            }
+        }
+
     });
 
 </script>
