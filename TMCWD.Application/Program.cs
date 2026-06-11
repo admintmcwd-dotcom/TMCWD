@@ -27,7 +27,7 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddHttpClient("TmcWdApi", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5178");
+    client.BaseAddress = new Uri(builder.Configuration["webServiceLocation"] ?? "");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 

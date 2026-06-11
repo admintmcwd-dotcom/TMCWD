@@ -54,5 +54,15 @@ namespace TMCWD.CustomerSupport
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToRequestFile(data);
         }
+
+        public async Task<List<RequestFile>> SaveRange(List<RequestFile> files)
+        {
+            var content = JsonContent.Create(files);
+            var response = await _service.Client.PostAsync("api/RequestFile/SaveRange", content);
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToRequestFiles(data);
+        }
+
     }
 }
