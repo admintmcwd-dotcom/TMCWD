@@ -235,5 +235,29 @@ namespace TMCWD.Application.Controllers
             return Ok(data);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetRequest(int id)
+        {
+            var request = await _requestTransaction.Get(id);
+            if(request == null) return NotFound();
+            return Ok(request);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInspectionTypeById(int id)
+        {
+            var inspectionType = await _inspectionTypeTransaction.Get(id);
+            if (inspectionType == null) return NotFound();
+            return Ok(inspectionType);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRequestDetailById(int id, int requestId)
+        {
+            var detail = await _requestTransaction.GetRequestDetail(id, requestId);
+            if (detail == null) return NotFound();
+            return Ok(detail);
+        }
+
     }
 }

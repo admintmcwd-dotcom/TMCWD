@@ -32,7 +32,7 @@ namespace TMCWD.CustomerSupport
             if (id <= 0) sb.AppendLine("Id is required to get Job Order");
             if (requestId <= 0) sb.AppendLine("Job Order requires request");
 
-            if (sb.ToString().Trim() == "") throw new Exception(sb.ToString());
+            if (sb.ToString().Trim() != "") throw new Exception(sb.ToString());
 
             var response = await _webService.Client.GetAsync($"api/{requestId}/JobOrder/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();

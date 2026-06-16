@@ -27,9 +27,9 @@ namespace TMCWD.Application.Controllers
             _inspectionTypeTransaction = inspectionTypeTransaction;
         }
 
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index(int id, int requestId)
         {
-            return View(id);
+            return View(new { JobOrderId = id, RequestId = requestId });
         }
 
         [HttpGet]
@@ -69,6 +69,19 @@ namespace TMCWD.Application.Controllers
             }
 
             return Ok(jos);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetJobOrder(int jobOrderId, int requestId)
+        {
+            var jobOrder = await _jobOrderTransaction.Get(jobOrderId, requestId);
+            if (jobOrder == null) return NotFound();
+
+            var request = await _requestTransaction.Get(requestId);
+            var requestDetail = await _requestTransaction.GetRequestDetail(jobOrder.RequestDetailId, requestId);
+            var inspectionType = await _inspectionTypeTransaction.Get(requestDetail.RequestTypeId);
+
+            return Ok(new { OrderNumber = jobOrder.JobOrderNumber, ServiceType = inspectionType.Name, DateLogged = request.DateCreated, Status = jobOrder.Status.GetStatusString() });
         }
 
     }

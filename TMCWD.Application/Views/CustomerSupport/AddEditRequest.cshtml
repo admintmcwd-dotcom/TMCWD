@@ -266,7 +266,7 @@
                 buttonColumnClassNames: 'w-16',
                 buttons:
                 [
-                    { className: 'fa-solid fa-eye', clickCallback: (data) => { window.location.href = '@Url.Action("Index", "JobOrder")' + '?id=' + data.id; } }
+                    { className: 'fa-solid fa-eye', clickCallback: (data) => { window.location.href = '@Url.Action("Index", "JobOrder")' + '?id=' + data.id + '&requestId=' + '@Model.AddEditRequest.Id'; } }
                 ]
             });
         }

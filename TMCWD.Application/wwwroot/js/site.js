@@ -458,7 +458,7 @@ HTMLElement.prototype.Dropzone = function (options) {
                 let isExists = checkFileExists(file);
                 let isAllowed = checkIsFileAllowed(file);
 
-                if (!isAllowed) throw new Error("The file type of " + file.name + " is not allowed.")
+                //if (!isAllowed) throw new Error("The file type of " + file.name + " is not allowed.")
 
                 if (!isExists && isAllowed) {
                     filesForUpload.push(file);
@@ -489,11 +489,14 @@ HTMLElement.prototype.Dropzone = function (options) {
                     });
 
                 }
+                else if (!isAllowed) {
+                    if (options.onError) options.onError('The file ' + file.name + ' is not allowed.');
+                }
             });
 
         }
         catch (ex) {
-            if (options.onError) options.onError(ex.message);
+            if (options.onError) options.onError(ex.message + ' - Exception');
             return false;
         }
 
@@ -556,6 +559,25 @@ class WebClient {
             returnResult = result;
         });
         
+        return returnResult;
+    }
+
+    async postDataAsync() {
+        var returnResult = null;
+        await fetch(this.url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            body: this.data
+        }).then(response => {
+            if (!response.ok || response.status == 204)
+                return null;
+            return response.json();
+        }).then(result => {
+            returnResult = result;
+        });
+
         return returnResult;
     }
 

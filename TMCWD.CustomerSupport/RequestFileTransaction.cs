@@ -32,7 +32,7 @@ namespace TMCWD.CustomerSupport
 
         public async Task<RequestFile> Get(int id)
         {
-            var response = await _service.Client.GetAsync($"api/RequestFile/Get{id}");
+            var response = await _service.Client.GetAsync($"api/RequestFile/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToRequestFile(data);

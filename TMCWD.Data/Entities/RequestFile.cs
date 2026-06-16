@@ -36,7 +36,7 @@ namespace TMCWD.Data.Entities
         [Column("CreatedBy")]
         public System.Int64 CreatedBy { get; set; }
 
-        [Column("CreatedBy")]
+        [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
 
         [Column("UpdatedBy")]
