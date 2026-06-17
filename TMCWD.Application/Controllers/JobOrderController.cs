@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TMCWD.Administration;
+using TMCWD.Application.Models;
 using TMCWD.CustomerSupport;
 using TMCWD.Model.Administrator;
 using TMCWD.Model.CustomerSupport;
@@ -29,7 +30,12 @@ namespace TMCWD.Application.Controllers
 
         public async Task<IActionResult> Index(int id, int requestId)
         {
-            return View(new { JobOrderId = id, RequestId = requestId });
+            FindingViewModel viewModel = new()
+            {
+                JobOrderId = id,
+                RequestId = requestId
+            };
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -82,6 +88,21 @@ namespace TMCWD.Application.Controllers
             var inspectionType = await _inspectionTypeTransaction.Get(requestDetail.RequestTypeId);
 
             return Ok(new { OrderNumber = jobOrder.JobOrderNumber, ServiceType = inspectionType.Name, DateLogged = request.DateCreated, Status = jobOrder.Status.GetStatusString() });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MoveToNextStatus(int jobOrderId, int requestId)
+        {
+            var jobOrder = await _jobOrderTransaction.Get(jobOrderId, requestId);
+            if(jobOrder == null) return NotFound();
+
+            jobOrder.Status = jobOrder.Status.GetNext();
+
+            var updatedJobOrder = await _jobOrderTransaction.SaveUpdate(_authService.User.Id, requestId, jobOrder);
+
+            if(updatedJobOrder == null) return NoContent();
+
+            return Ok(jobOrder);
         }
 
     }

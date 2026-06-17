@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using TMCWD.Application.Models;
 using TMCWD.CustomerSupport;
 using TMCWD.Model.CustomerSupport;
 using TMCWD.Services;
@@ -11,38 +12,62 @@ namespace TMCWD.Application.Controllers
 
         private readonly FindingTransaction _findingTransaction;
         private readonly AuthenticatedUserService _authenticatedUser;
+        private readonly RequestFileTransaction _requestFileTransaction;
 
-        public FindingController(FindingTransaction findingTransaction, AuthenticatedUserService authenticatedUser)
+        public FindingController(FindingTransaction findingTransaction, AuthenticatedUserService authenticatedUser, RequestFileTransaction requestFileTransaction)
         {
             _findingTransaction = findingTransaction;
             _authenticatedUser = authenticatedUser;
+            _requestFileTransaction = requestFileTransaction;
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveFinding(int jobOrderId, [FromBody] Finding finding)
+        {
+            if (finding == null || string.IsNullOrEmpty(finding.Detail.Trim())) return NoContent();
+
+            var savedFinding = await _findingTransaction.SaveUpdate(_authenticatedUser.User.Id, jobOrderId, finding);
+            if (savedFinding == null || savedFinding.Id <= 0) return NoContent();
+            return Ok(savedFinding);
         }
 
         [HttpPost]
-        //public async Task<IActionResult> SaveFinding(int jobOrderId, Finding finding, [FromBody] List<IFormFile>  inspectionFiles)
-        public async Task<IActionResult> SaveFinding(int jobOrderId, List<IFormFile> data)
+        public async Task<IActionResult> SaveFindingFile(int jobOrderId, List<IFormFile> files)
         {
-            if (data == null) return BadRequest();
+            if (files == null || !files.Any()) return Ok(false);
 
-            var content = JsonSerializer.Serialize(data);
+            var destinationPath = Path.GetFullPath($"../Files/{DateTime.Now.ToString("yyyyMMdd")}");
+            if (!Directory.Exists(destinationPath))
+            {
+                Directory.CreateDirectory(destinationPath);
+            }
 
-            using var doc = JsonDocument.Parse(content);
+            List<RequestFile> requestFiles = new();
 
-            var root = doc.RootElement;
+            foreach (var file in files)
+            {
+                RequestFile reqFile = new()
+                {
+                    JobOrderId = 0,
+                    OriginalFilename = file.FileName,
+                    PhysicalFilename = $"{Guid.NewGuid().ToString().Replace("-", "")}.{Path.GetExtension(file.FileName)}",
+                    RequestType = RequestFileType.Finding,
+                    Path = destinationPath,
+                    CreatedBy = _authenticatedUser.User.Id
+                };
 
-            var findingProp = root.GetProperty("finding");
-            var fileProp = root.GetProperty("inspectionFiles");
-            if(findingProp.ValueKind == JsonValueKind.Null || fileProp.ValueKind == JsonValueKind.Null) return BadRequest();
+                requestFiles.Add(reqFile);
 
-            var serializerOption = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                using (Stream stream = new FileStream(Path.Combine(destinationPath, reqFile.PhysicalFilename), FileMode.Create, FileAccess.Write))
+                {
+                    await file.CopyToAsync(stream);
+                }
 
-            var finding = findingProp.Deserialize<Finding>(serializerOption);
-            var files = fileProp.Deserialize<List<IFormFile>>(serializerOption);
+            }
+            List<RequestFile> savedFiles = await _requestFileTransaction.SaveRange(requestFiles);
 
-            if (finding == null || files == null) return BadRequest();
-
-            var updatedFinding = await _findingTransaction.SaveUpdate(_authenticatedUser.User.Id, jobOrderId, finding);
-            return View();
+            return Ok(savedFiles != null && !savedFiles.Any());
         }
 
     }

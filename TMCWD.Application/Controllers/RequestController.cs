@@ -38,7 +38,7 @@ namespace TMCWD.Application.Controllers
             _jobOrderTransaction = jobOrderTransaction;
             _approvalHistoryTransaction = approvalHistoryTransaction;
         }
-        //, [FromBody] int[]? types = null
+
         [HttpPost]
         public async Task<IActionResult> CreateRequest(int customerId, int accountId, bool isDraft, [FromBody] int[]? types)
         {

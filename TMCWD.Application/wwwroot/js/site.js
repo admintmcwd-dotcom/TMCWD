@@ -562,13 +562,10 @@ class WebClient {
         return returnResult;
     }
 
-    async postDataAsync() {
+    async postFileAsync() {
         var returnResult = null;
         await fetch(this.url, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
             body: this.data
         }).then(response => {
             if (!response.ok || response.status == 204)
