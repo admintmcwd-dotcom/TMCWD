@@ -10,7 +10,7 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
     {
         public int Id { get; set; }
 
-        public int RequestId { get; set; }
+        public int JobOrderId { get; set; }
 
         public string Detail { get; set; }
 
@@ -18,7 +18,7 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
 
         public DateTime DateCreated { get; set; }
 
-        public System.Int64 UpdatedBy { get; set; }
+        public int UpdatedBy { get; set; }
 
         public DateTime DateUpdated { get; set; }
     }

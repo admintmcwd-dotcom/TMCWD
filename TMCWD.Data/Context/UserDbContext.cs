@@ -39,6 +39,10 @@ namespace TMCWD.Data.Context
 
         public DbSet<Finding> Findings { get; set; }
 
+        public DbSet<ApprovalHistory> ApprovalHistories { get; set; }
+
+        public DbSet<RequestFile> Files { get; set; }
+
         #endregion
 
         #region constructors

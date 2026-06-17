@@ -148,246 +148,46 @@
                     </div>
                     <div class="grid col-span-2 gap-6">
                         <div id="service-details" data-services="details" class="grid gap-4 mb-6 md:grid-cols-4">
-                            @* @foreach (var inspectionType in Model.InspectionTypes)
-                            {
-                                <div class="group flex items-center ps-4 pr-4 bg-neutral-primary-soft border border-default rounded-lg shadow-xs hover:bg-blue-900 hover:text-white hover:cursor-pointer">
-                                    <input id='@("border-checkbox-" + inspectionType.Type.Id)' data-id="@inspectionType.Type.Id" data-withdetail="@inspectionType.Type.WithDetail" data-requiredaccount="@inspectionType.Type.IsRequiredAccount" type="checkbox" value="" name="bordered-checkbox" checked="@inspectionType.IsChecked" class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft hover:cursor-pointer">
-                                    @if (inspectionType.Type.WithDetail)
-                                    {
-                                        <label for='@("border-checkbox-" + inspectionType.Type.Id)' class="select-none w-1/2 py-4 ms-2 text-sm font-medium text-heading hover:cursor-pointer">@inspectionType.Type.Name</label>
-                                        <input id='@("txtDetail-" + inspectionType.Type.Id)' type="text"
-                                               placeholder="Detail here..."
-                                               class="bg-transparent border-none focus:ring-0 text-gray-700 w-full outline-none group-hover:text-white" />
-                                    }
-                                    else
-                                    {
-                                        <label for='@("border-checkbox-" + inspectionType.Type.Id)' class="select-none w-full py-4 ms-2 text-sm font-medium text-heading hover:cursor-pointer">@inspectionType.Type.Name</label>
-                                    }
-                                </div>
-                            } *@
                         </div>
                     </div>
                 </div>
-                <div class="text-right">
+                <div id="divButtons" class="text-right">
                     <button id="btnCancel" type="button" class="px-4 py-2 text-sm text-white bg-red-700 text-black font-semibold rounded-md hover:bg-red-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
                         <i class="fa-solid fa-xmark mr-4"></i>Cancel
                     </button>
-                    @if (Model.JobOrders == null || !Model.JobOrders.Any())
-                    {
-                        <button id="btnSave" type"button" class="px-4 py-2 text-sm text-white bg-yellow-700 text-white font-semibold rounded-md hover:bg-yellow-500 hover:text-black transition duration-150">
+                    @* <button id="btnSave" type"button" class="px-4 py-2 text-sm text-white bg-yellow-700 text-white font-semibold rounded-md hover:bg-yellow-500 hover:text-black transition duration-150">
                             <i class="fa-solid fa-floppy-disk mr-4"></i>Save as Draft
                         </button>
-                        <button id="btnSubmit" type"button" class="px-4 py-2 text-sm text-white bg-green-600 text-white font-semibold rounded-md hover:bg-green-500 hover:text-black transition duration-150">
+                    <button id="btnSubmit" type"button" class="px-4 py-2 text-sm text-white bg-green-600 text-white font-semibold rounded-md hover:bg-green-500 hover:text-black transition duration-150">
                             <i class="fa-solid fa-paper-plane mr-4"></i>Submit
-                        </button>
-                    }
+                        </button> *@
                 </div>
             </p>
 
             <!-- Request Details End -->
         </div>
     </div>
-    @if (Model.AddEditRequest.Id > 0)
-    {
-        <!-- Recommendations -->
+    @if (Model.AddEditRequest.Id > 0){
+        <!--Job Orders-->
         <h2 id="accordion-collapse-heading-2" class="bg-gray-300">
             <button id="accordion-button-item-2" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
-                <span>Recommendations</span>
+                <span>Job Orders</span>
                 <svg id="accordion-icon-item-2" data-accordion-icon class="w-5 h-5 shrink-0 rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
             </button>
         </h2>
         <div id="accordion-collapse-body-2" class="collapsible-body hidden bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-2">
-            <div class="w-full grid grid-cols-[90%_10%] gap-4">
-                <div>
-                    <textarea id="txtRecommendation" rows="2" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-3.5 shadow-xs placeholder:text-body" placeholder="Write recommendation here . . ."></textarea>
-                </div>
-                <div>
-                    <button id="btnAddRecommendation" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-            <hr class="h-px my-8 bg-neutral-quaternary">
-            <div id="divRecommendation" class="w-full">
-                @if(Model.Recommendations == null || !Model.Recommendations.Any())
-                {
-                    <div id="divRecommendationNoRecord" class="w-full h-32 pt-16 text-center align-middle">
-                        No record(s) found . . .
-                    </div>
-                }
-                else
-                {
-                    @foreach (var recommendation in Model.Recommendations)
-                    {
-                        <div class="grid grid-cols-[20%_80%] gap-4">
-                            <div class="border-r-2 text-center">
-                                <div class="w-full mb-2">
-                                    <i class="fa-solid fa-user"></i>
-                                </div>
-                                <div class="w-full">
-                                    <vc:user-name user-id="recommendation.CreatedBy"></vc:user-name>
-                                </div>
-                            </div>
-                            <div class="text-wrap">
-                                @recommendation.Details
-                            </div>
-                        </div>
-                        <hr class="h-px my-2 bg-neutral-quaternary">
-                    }
-                }
-            </div>
+            <table id="tblJobOrders" class="customer-select-list w-full text-sm text-left rtl:text-right text-body border">
+                <thead class=" text-sm text-body bg-neutral-secondary-soft border-b rounded-lg border-default">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 font-medium">Date</th>
+                        <th scope="col" class="px-6 py-3 font-medium">Service</th>
+                        <th scope="col" class="px-6 py-3 font-medium">Status</th>
+                        <th scope="col" class="px-6 py-3 font-medium w-16"></th>
+                    </tr>
+                </thead>
+            </table>
         </div>
-
-        <!-- Materials -->
-        <h2 id="accordion-collapse-heading-3" class="bg-gray-300">
-            <button id="accordion-button-item-3" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
-                <span>Materials</span>
-                <svg id="accordion-icon-item-3" data-accordion-icon class="w-5 h-5 shrink-0 rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
-            </button>
-        </h2>
-        <div id="accordion-collapse-body-3" class="collapsible-body hidden min-h-64 bg-white border border-s-0 border-e-0 border-t-0 border-b-default p-4" aria-labelledby="accordion-collapse-heading-3">
-            <div class="w-full grid grid-cols-[30%_10%_60%] gap-4">
-                <div>
-                    <!-- autocomplete -->
-
-                    <div for="cmbInventory" class="relative w-full">
-                        <select id="cmbInventory" class="w-full hidden"></select>
-                        <input type="hidden" class="selected-value" />
-                        <div class="w-full border rounded-md">
-                            <div class="grid grid-cols-[93%_7%] border-0 gap-1 p-2">
-                                <div>
-                                    <input type="text" class="dropdown-input w-full bg-white text-sm focus:outline-none" />
-                                </div>
-                                <div>
-                                    <button type="button" class="border-0 text-center w-full text-sm">
-                                        <i class="fa-solid fa-chevron-down"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="hidden dropdown-options max-h-32 overflow-y-scroll absolute w-full bg-white border rounded-md p-3 text-sm mt-1">
-                            @if (Model.InventoryItems == null || Model.InventoryItems.Count <= 0)
-                            {
-                                <span class="w-full text-center">No inventory found</span>
-                            }
-                            else
-                            {
-                                foreach (var item in Model.InventoryItems)
-                                {
-                                    <div id="item-@item.Id" class="w-full mb-1 hover:bg-blue-600 hover:text-white p-1">
-                                        <a data-itemid="@item.Id" data-itemname="@item.Name" href="#" class="w-full">
-                                            <p class="w-full">@item.Name</p>
-                                        </a>
-                                    </div>
-                                }
-                            }
-                        </div>
-                    </div>
-
-                    <!-- end autocomplete -->
-                </div>
-                <div>
-                    <input id="txtQuantity" type="number" class="w-1/2 border rounded-md py-2.5 text-center text-sm" />
-                </div>
-                <div>
-                    <button id="btnAddMaterial" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-            <hr class="h-px my-4 bg-neutral-quaternary">
-            <div id="divInventory" class="w-full text-center">
-                <table id="tblMaterialList" class="customer-select-list w-full text-sm text-left rtl:text-right text-body">
-                    <thead class=" text-sm text-body bg-neutral-secondary-soft border-b rounded-lg border-default">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">Item</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">UOM</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">On Hand</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">Quantity</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">Unit Cost</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">New Unit Cost</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm">Amount</th>
-                            <th scope="col" class="px-6 py-3 font-medium text-center text-sm"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.Materials == null || !Model.Materials.Any())
-                        {
-                            <tr>
-                                <td scope="col" class="material-no-item px-6 py-3 text-center" colspan="7">
-                                    No record(s) found...
-                                </td>
-                            </tr>
-                        }
-                        else
-                        {
-                            foreach (var material in Model.Materials)
-                            {
-                                <tr data-negativestock="@material.IsNegativeStock" class="negative-stock">
-                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.InventoryItem.Name</td>
-                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.InventoryItem.UOM</td>
-                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.InventoryItem.Quantity</td>
-                                    <td scope="col" class="px-6 py-3 font-base text-sm">
-                                        <p id="material-item-quantity-@material.Material.Id" class="w-full">
-                                            @material.Material.RequestedQuantity
-                                        </p>
-                                        <p id="material-quantity-input-@material.Material.Id" class="w-full hidden">
-                                            <input type="number" id="material-text-quantity-item-@material.Material.Id" class="w-full border rounded-md p-2" value="@material.Material.RequestedQuantity" />
-                                        </p>
-                                    </td>
-                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.Material.UnitSellingPrice</td>
-                                    <td scope="col" class="px-6 py-3 font-base text-sm">
-                                        <p id="material-item-unitcost-@material.Material.Id" class="w-full">
-                                            @material.Material.UnitSellingPrice
-                                        </p>
-                                        <p id="material-unitcost-input-@material.Material.Id" class="w-full hidden">
-                                            <input type="number" id="material-text-unitcost-item-@material.Material.Id" class="w-full border rounded-md p-2" value="@material.Material.UnitSellingPrice" />
-                                        </p>
-                                    </td>
-                                    <td scope="col" class="px-6 py-3 font-base text-sm">@material.Material.Amount</td>
-                                    <td scope="col" class="px-6 py-3 font-base text-sm">
-                                        <div class="w-full grid grid-cols-3 gap-2 text-center">
-                                            <div>
-                                                <a id="material-edit-@material.Material.Id" 
-                                                   data-id="@material.Material.Id"
-                                                   data-quantity="@material.Material.RequestedQuantity"
-                                                   data-unitcost="@material.Material.UnitSellingPrice"
-                                                   data-isset="false"
-                                                   href="#"
-                                                   class="material-edit">
-                                                    <p class="w-full">
-                                                        <i class="fa-solid fa-pencil"></i>
-                                                    </p>
-                                                </a>
-                                            </div>
-                                            <div>
-                                                <a id="material-save-@material.Material.Id" 
-                                                   data-id="@material.Material.Id"
-                                                   data-inventoryid="@material.InventoryItem.Id"
-                                                   data-requestid="@material.Material.RequestId"
-                                                   data-isset="false"
-                                                   href="#" class="material-save">
-                                                    <p class="w-full">
-                                                        <i class="fa-solid fa-save"></i>
-                                                    </p>
-                                                </a>
-                                            </div>
-                                            <div>
-                                                <a id="material-delete-@material.Material.Id" data-isset="false" href="#" class="material-delete">
-                                                    <p class="w-full">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </p>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <!--End Job Orders-->
     }
 </div>
 
@@ -402,28 +202,77 @@
 
         var alert = new Alert();
 
-        const cmbInventory = document.getElementById("cmbInventory");
-        if(cmbInventory) cmbInventory.setDropdown(null);
-
         const accordion = document.getElementById('accordion-collapse-request');
         accordion.Collapsible();
 
-        var requestId = 0;
-        var customerId = 0;
-
         const hdRequestId = document.getElementById("hdRequestId");
         const hdCustomerId = document.getElementById("hdAddEditCustomerId");
+
+        var requestId = 0;
+        var customerId = 0;
 
         if(hdRequestId) requestId = + hdRequestId.value;
         if(hdCustomerId) customerId = + hdCustomerId.value;
 
         const services = document.getElementById("service-details");
-        if(services) services.SetServices({ 
+        if(services) services.SetServices({
+            isDisabled: true,
             getServicesUrl: '@Url.Action("GetInspectionType", "Request")' + '?requestId=' + requestId,
             selectChange: (ids) => {
                 console.log('IDS:', ids);
             }
         });
+
+        @* const btnSubmit = document.getElementById("btnSubmit");
+        const btnSave = document.getElementById("btnSave"); *@
+
+        const btnSubmit = document.createElement('button');
+        btnSubmit.className = 'px-4 py-2 text-sm text-white bg-green-600 text-white font-semibold rounded-md hover:bg-green-500 hover:text-black transition duration-150"';
+        btnSubmit.innerHTML = `<i class="fa-solid fa-paper-plane mr-4"></i>Submit`;
+        btnSubmit.type = "button";
+
+        const btnSave = document.createElement('button');
+        btnSave.className = 'px-4 py-2 text-sm text-white bg-yellow-700 text-white font-semibold rounded-md hover:bg-yellow-500 hover:text-black transition duration-150';
+        btnSave.type = 'button';
+        btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk mr-4"></i>Save as Draft`;
+
+        const tblJobOrders = document.getElementById("tblJobOrders");
+        if(tblJobOrders){
+            tblJobOrders.DataTable({
+                processing: true,
+                getUrl: '@Url.Action("GetJobOrders", "JobOrder")' + '?requestId=' + requestId,
+                loadedCallback: (data) => {
+                    if(data == null || data.length == 0){
+                        
+                        let divButtons = document.getElementById('divButtons');
+                        if(divButtons){
+                            divButtons.appendChild(btnSave);
+                            divButtons.appendChild(btnSubmit);
+                        }
+
+                        var chkServices = services.querySelectorAll('input[type="checkbox"]');
+                        console.log('Services Checkboxes:', chkServices);
+                        [...chkServices].forEach((checkbox) => {
+                            checkbox.disabled = false;
+                        });
+                    }
+                },
+                columns:
+                [
+                    { dataMember: 'dateCreated' },
+                    { dataMember: 'service' },
+                    { dataMember: 'statusString' }
+                ],
+                buttonColumnClassNames: 'w-16',
+                buttons:
+                [
+                    { className: 'fa-solid fa-eye', clickCallback: (data) => { window.location.href = '@Url.Action("Index", "JobOrder")' + '?id=' + data.id + '&requestId=' + '@Model.AddEditRequest.Id'; } }
+                ]
+            });
+        }
+
+        @* const cmbInventory = document.getElementById("cmbInventory");
+        if(cmbInventory) cmbInventory.setDropdown(null); *@
 
         const checkBoxes = document.querySelectorAll('input[type="checkbox"]');
 
@@ -450,7 +299,6 @@
             });
         });
 
-        const btnSave = document.getElementById("btnSave");
         if(btnSave){
             btnSave.addEventListener("click", async (evt) =>{
                 evt.preventDefault();
@@ -466,75 +314,75 @@
 
         const saveRequestUrl = '@Url.Action("SaveRequest", "CustomerSupport")';
 
-        const btnSubmit = document.getElementById("btnSubmit");
-        btnSubmit.addEventListener("click", async (evt) => {
-            evt.preventDefault();
-            
-            
-            const requestId = + document.getElementById("hdRequestId").value;
-            const customerId = + document.getElementById("hdAddEditCustomerId").value;
-            const userId = + document.getElementById("hdCurrentUserId").value;
-            const dateCreated = document.getElementById("hdDateCreated").value;
-            const accountId = + document.getElementById("hdAccountId").value;
+        if(btnSubmit){
+            btnSubmit.addEventListener("click", async (evt) => {
+                evt.preventDefault();
 
-            if(accountId <= 0 || customerId <= 0){
-                alert.show({
-                    type: 'warning',
-                    content: 'Please select customer and account before saving the request',
-                    autoHide: true
-                });
-                return;
-            }
+                const requestId = + document.getElementById("hdRequestId").value;
+                const customerId = + document.getElementById("hdAddEditCustomerId").value;
+                const userId = + document.getElementById("hdCurrentUserId").value;
+                const dateCreated = document.getElementById("hdDateCreated").value;
+                const accountId = + document.getElementById("hdAccountId").value;
 
-            var requestDetails = [];
-
-            const serviceCheckBoxes = document.querySelectorAll('input[type="checkbox"]');
-
-            [...serviceCheckBoxes].forEach((checkbox) => {
-                if(checkbox.checked){
-                    var id = + checkbox.dataset.id;
-                    var typeDetailId = "txtDetail-" + id;
-                    var typeDetail = document.getElementById(typeDetailId)?.value ?? '';
-                    requestDetails.push({
-                        Id: 0,
-                        RequestId: 0,
-                        RequestTypeId: id,
-                        InspectionTypeDetail: typeDetail,
-                        DateCreated: new Date(),
-                        DateUpdated: new Date()
+                if(accountId <= 0 || customerId <= 0){
+                    alert.show({
+                        type: 'warning',
+                        content: 'Please select customer and account before saving the request',
+                        autoHide: true
                     });
+                    return;
                 }
-            });
 
-            if(requestDetails.length <= 0){
-                alert.show({
-                    type: 'warning',
-                    content: 'Please select at least one service.',
-                    autoHide: true,
-                    timeOut: 3000
+                var requestDetails = [];
+
+                const serviceCheckBoxes = document.querySelectorAll('input[type="checkbox"]');
+
+                [...serviceCheckBoxes].forEach((checkbox) => {
+                    if(checkbox.checked){
+                        var id = + checkbox.dataset.id;
+                        var typeDetailId = "txtDetail-" + id;
+                        var typeDetail = document.getElementById(typeDetailId)?.value ?? '';
+                        requestDetails.push({
+                            Id: 0,
+                            RequestId: 0,
+                            RequestTypeId: id,
+                            InspectionTypeDetail: typeDetail,
+                            DateCreated: new Date(),
+                            DateUpdated: new Date()
+                        });
+                    }
                 });
-                return;
-            }
 
-            var data = {
-                Id: + requestId,
-                CustomerId: + customerId,
-                AccountId: + accountId,
-                Status: 1,
-                CreatedBy: + userId,
-                DateCreated: new Date(dateCreated)
-            };
+                if(requestDetails.length <= 0){
+                    alert.show({
+                        type: 'warning',
+                        content: 'Please select at least one service.',
+                        autoHide: true,
+                        timeOut: 3000
+                    });
+                    return;
+                }
 
-            const saveRequestClient = new WebClient(saveRequestUrl, data);
-            var resultRequestId = + await saveRequestClient.postAsync();
-            const saveDetailUrl = '@Url.Action("SaveRequestDetails", "CustomerSupport")' + "?requestId=" + resultRequestId;
-            if(resultRequestId > 0){
-                const saveRequestDetailClient = new WebClient(saveDetailUrl, requestDetails);
-                var isSuccess = await saveRequestDetailClient.postAsync();
-                if(isSuccess) window.location.href = '@Url.Action("Requests", "CustomerSupport")'
-            }
+                var data = {
+                    Id: + requestId,
+                    CustomerId: + customerId,
+                    AccountId: + accountId,
+                    Status: 1,
+                    CreatedBy: + userId,
+                    DateCreated: new Date(dateCreated)
+                };
 
-        });
+                const saveRequestClient = new WebClient(saveRequestUrl, data);
+                var resultRequestId = + await saveRequestClient.postAsync();
+                const saveDetailUrl = '@Url.Action("SaveRequestDetails", "CustomerSupport")' + "?requestId=" + resultRequestId;
+                if(resultRequestId > 0){
+                    const saveRequestDetailClient = new WebClient(saveDetailUrl, requestDetails);
+                    var isSuccess = await saveRequestDetailClient.postAsync();
+                    if(isSuccess) window.location.href = '@Url.Action("Requests", "CustomerSupport")'
+                }
+
+            });
+        }
 
         //customerSelectionDialog
         const lnkAccountName = document.getElementById("lnkAccountName");
@@ -591,8 +439,9 @@
             }
         });
         }
+    });
 
-        const btnAddRecommendation = document.getElementById("btnAddRecommendation");
+        @* const btnAddRecommendation = document.getElementById("btnAddRecommendation");
         if(btnAddRecommendation){
             btnAddRecommendation.addEventListener("click", async (evt) => {
             evt.preventDefault();
@@ -660,9 +509,9 @@
 
             txtRecommendation.value = '';
         });
-        }
+        } *@
 
-        const tblMaterials = document.getElementById("tblMaterialList");
+        @* const tblMaterials = document.getElementById("tblMaterialList");
 
         const btnAddMaterial = document.getElementById("btnAddMaterial");
         if(btnAddMaterial){
@@ -798,9 +647,9 @@
                 setMaterialSaveListener(lnkSave, tblMaterials);
             });
         }
-    });
+    }); *@
 
-    const setMaterialEditListener = function(link, elTable){
+    @* const setMaterialEditListener = function(link, elTable){
         var alert = new Alert();
         if(link.dataset.isset == true) return;
 
@@ -835,9 +684,9 @@
         });
 
         link.dataset.isset = true;
-    };
+    }; *@
 
-    const setMaterialSaveListener = function(link, elTable){
+    @* const setMaterialSaveListener = function(link, elTable){
         var alert = new Alert();
         if(link.dataset.isset == true) return;
 
@@ -913,6 +762,6 @@
         });
 
         link.dataset.isset=true;
-    };
+    }; *@
 
 </script>

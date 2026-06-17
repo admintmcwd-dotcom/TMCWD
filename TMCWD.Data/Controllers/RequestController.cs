@@ -46,7 +46,7 @@ namespace TMCWD.Data.Controllers
         public async Task<ActionResult<IEnumerable<Request>>> GetRequests()
         {
             var data = await _requestService.GetAll();
-            if (!data.Any()) return NotFound("No request(s) found");
+            if (data == null || !data.Any()) return NotFound("No request(s) found");
             return Ok(data);
         }
 
@@ -69,9 +69,16 @@ namespace TMCWD.Data.Controllers
         [HttpGet("SearchRequest/{searchString}")]
         public async Task<ActionResult<IEnumerable<Request>>> SearchRequest(string searchString)
         {
-            var requests = from request in await _requestService.GetAll()
-                          join customer in await _customerService.GetCustomers() on request.CustomerId equals customer.Id
-                          join account in await _accountService.GetAccounts() on request.AccountId equals account.Id
+
+            var allRequests = await _requestService.GetAll();
+            var customers = await _customerService.GetCustomers();
+            var accounts = await _accountService.GetAccounts();
+
+            if (allRequests == null || customers == null || accounts == null) return NotFound();
+
+            var requests = from request in allRequests
+                           join customer in customers on request.CustomerId equals customer.Id
+                          join account in accounts on request.AccountId equals account.Id
                           where $"{customer.Firstname} {customer.Lastname}".Contains(searchString) || account.AccountNumber.Contains(searchString) || $"{customer.Lastname} {customer.Firstname}".Contains(searchString)
                           select request;
             if (requests == null || !requests.Any()) return NotFound($"Request with value {searchString} was not found.");

@@ -40,11 +40,30 @@ public enum AccountStatus
 public enum JobOrderStatus
 {
     Inspection = 1,
-    Charging = 2,
-    Payment = 3,
-    Releasing = 4,
-    Installation = 5,
-    Verification = 6,
-    Completed = 7,
-    Rejected = 8
+    Recommendation = 2,
+    Charging = 3,
+    Payment = 4,
+    Releasing = 5,
+    Installation = 6,
+    Verification = 7,
+    Completed = 8,
+    Rejected = 9
+}
+
+public enum RequestFileType
+{
+    Finding = 1,
+    Verification = 2
+}
+
+public enum FileType
+{
+    Png = 1,
+    Jpeg = 2,
+    Image = 3,
+    Tiff = 4,
+    Pdf = 5,
+    Word = 6,
+    Text = 7,
+    Other = 8,
 }

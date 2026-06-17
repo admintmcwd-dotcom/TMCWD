@@ -20,12 +20,14 @@ builder.Services.AddTransient<OtherFeeTypeTransaction>();
 builder.Services.AddTransient<FindingTransaction>();
 builder.Services.AddTransient<ApplicationLoginTransaction>();
 builder.Services.AddTransient<JobOrderTransaction>();
+builder.Services.AddTransient<ApprovalHistoryTransaction>();
+builder.Services.AddTransient<RequestFileTransaction>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddHttpClient("TmcWdApi", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5178");
+    client.BaseAddress = new Uri(builder.Configuration["webServiceLocation"] ?? "");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 

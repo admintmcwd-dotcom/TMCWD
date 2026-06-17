@@ -138,6 +138,8 @@ HTMLElement.prototype.DataTable = async function(options){
     var client = new WebClient(options.getUrl, null);
     var response = await client.getAsync();
 
+    if (options.loadedCallback) options.loadedCallback(response);
+
     if (response == null || response.length == 0) {
         trDefault.replaceChildren();
         trDefault.appendChild(tdNoRecord);
@@ -167,7 +169,8 @@ HTMLElement.prototype.DataTable = async function(options){
         options.columns.forEach((column) => {
             const itemValue = item[column.dataMember];
             const td = document.createElement("td");
-            td.classList.add('px-6', 'py-3');
+            //td.classList.add('px-6', 'py-3');
+            td.className = column.className ?? 'px-6 py-3';
             if (column.isCentered) td.classList.add('text-center');
             if (column.isEditable) {
                 td.innerHTML = `<p class='editable-content-text w-full'>${itemValue}</p>
@@ -338,6 +341,7 @@ HTMLElement.prototype.SetServices = async function (options) {
         checkbox.value = '';
         checkbox.type = "checkbox";
         checkbox.checked = type.isSelected;
+        checkbox.disabled = options.isDisabled;
 
         serviceDiv.appendChild(checkbox);
 
@@ -407,6 +411,129 @@ HTMLElement.prototype.SetServices = async function (options) {
     // });
 };
 
+HTMLElement.prototype.Dropzone = function (options) {
+    const dropzone = this;
+    var filesForUpload = [];
+    if (dropzone.tagName.toLowerCase() !== "div") return;
+
+    if (!dropzone.classList.contains('drop-zone')) return;
+
+    const fileUpload = dropzone.querySelector('input[type="file"]');
+
+    dropzone.addEventListener("dragover", (evt) => {
+        evt.preventDefault();
+    });
+
+    dropzone.addEventListener("drop", (evt) => {
+        evt.preventDefault();
+        if (handleFiles(evt.dataTransfer.files)) {
+            if (!checkIsSizeAllowed(filesForUpload)) {
+                if (options.onError) options.onError('File size exceeds maximum allowed size');
+            }
+        }
+        if (options.onChange) options.onChange(filesForUpload);
+    });
+
+    if (fileUpload) {
+        fileUpload.addEventListener("change", (evt) => {
+            evt.preventDefault();
+            if (handleFiles(evt.target.files)) {
+                if (!checkIsSizeAllowed(filesForUpload)) {
+                    if (options.onError) options.onError('The uploaded files exceeds the allowed maximum file size');
+                }
+            }
+            if (options.onChange) options.onChange(filesForUpload);
+        });
+    }
+
+    let handleFiles = function (files) {
+        try {
+            [...files].forEach((file) => {
+                const pFile = document.createElement('p');
+                const spanFilename = document.createElement('span');
+                const imageIcon = document.createElement('i');
+                const removeIcon = document.createElement('i');
+                const lnkRemove = document.createElement('a');
+
+                let isExists = checkFileExists(file);
+                let isAllowed = checkIsFileAllowed(file);
+
+                //if (!isAllowed) throw new Error("The file type of " + file.name + " is not allowed.")
+
+                if (!isExists && isAllowed) {
+                    filesForUpload.push(file);
+
+                    const fileList = document.getElementById(options.fileListContainer);
+                    const sizeInMB = convertBtoMB(file.size);
+
+                    if (fileList) {
+                        spanFilename.textContent = file.name + ' - ' + sizeInMB + 'MB' + ' - ' + file.type;
+                        spanFilename.classList.add('mr-1');
+                        imageIcon.classList.add('fa-solid', 'fa-file-image', 'mr-1');
+                        removeIcon.classList.add('fa-solid', 'fa-xmark', 'text-red-500');
+                        pFile.classList.add('w-full', 'flex', 'items-center');
+                        pFile.appendChild(imageIcon);
+                        pFile.appendChild(spanFilename);
+                        lnkRemove.appendChild(removeIcon);
+                        lnkRemove.href = '#';
+                        pFile.appendChild(lnkRemove);
+                        fileList.appendChild(pFile);
+                    }
+
+                    lnkRemove.addEventListener('click', (evt) => {
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                        pFile.remove();
+                        if (options.onRemove) options.onRemove(file);
+
+                    });
+
+                }
+                else if (!isAllowed) {
+                    if (options.onError) options.onError('The file ' + file.name + ' is not allowed.');
+                }
+            });
+
+        }
+        catch (ex) {
+            if (options.onError) options.onError(ex.message + ' - Exception');
+            return false;
+        }
+
+        return true;
+    };
+
+    let checkFileExists = function (file) {
+        let exists = filesForUpload.filter((item, index, array) => {
+            return item.name === file.name && item.type === file.type;
+        });
+
+        return exists != null && exists.length > 0;
+    };
+
+    let checkIsSizeAllowed = function (files) {
+        var sum = 0;
+        [...files].forEach((file) => sum + convertBtoMB(file.size));
+        return sum.toFixed(2) < (options.maxSizeInMB ?? 30);
+    };
+
+    let checkIsFileAllowed = function (file) {
+
+        if (options.allowedTypes == null) return true;
+
+        const isAllowed = options.allowedTypes.filter((type) => {
+            return type == file.type
+        });
+
+        return isAllowed != null && isAllowed.length > 0;
+    };
+
+};
+
+const convertBtoMB = function (sizeInByte) {
+    return (sizeInByte / (1024 * 1024)).toFixed(2);
+};
+
 class WebClient {
 
     url = "";
@@ -432,6 +559,22 @@ class WebClient {
             returnResult = result;
         });
         
+        return returnResult;
+    }
+
+    async postFileAsync() {
+        var returnResult = null;
+        await fetch(this.url, {
+            method: 'POST',
+            body: this.data
+        }).then(response => {
+            if (!response.ok || response.status == 204)
+                return null;
+            return response.json();
+        }).then(result => {
+            returnResult = result;
+        });
+
         return returnResult;
     }
 
@@ -635,7 +778,12 @@ class Alert {
         if (options) {
             const alertWindow = document.getElementById(options.type + 'Alert');
             var alertSpan = document.querySelector('#' + options.type + 'Alert span');
-            alertSpan.innerText = options.content;
+            if (options.content) {
+                alertSpan.innerText = options.content;
+            }
+            if (options.html) {
+                alertSpan.innerHTML = options.html;
+            }
             alertWindow.classList.remove('hidden');
             var timeOutInSeconds = options.timeOut ?? 3000;
             if (options.autoHide) {

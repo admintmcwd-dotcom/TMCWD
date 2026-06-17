@@ -13,7 +13,7 @@ namespace TMCWD.Data.Services
             _context = context;
         }
 
-        public async Task<JobOrder> Get(int id)
+        public async Task<JobOrder?> Get(int id)
         {
             var jobOrder = await _context.JobOrders.Where(x => x.Id == id).FirstOrDefaultAsync();
             return jobOrder;
@@ -25,7 +25,7 @@ namespace TMCWD.Data.Services
             return await jobOrders.ToListAsync();
         }
 
-        public async Task<JobOrder> GetByRequestDetailId(int requestDetailId)
+        public async Task<JobOrder?> GetByRequestDetailId(int requestDetailId)
         {
             var jobOrder = await _context.JobOrders.Where(x => x.RequestDetailId == requestDetailId).FirstOrDefaultAsync();
             return jobOrder;

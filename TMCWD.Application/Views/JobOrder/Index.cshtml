@@ -1,0 +1,338 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_insideLayout";
+}
+@model TMCWD.Application.Models.FindingViewModel
+
+<div id="accordion-collapse-joborder" data-accordion="collapse" class="rounded-lg border border-default overflow-hidden shadow-xs">
+    <!--Job Order Details-->
+    <h2 id="accordion-collapse-heading-1" class="bg-gray-300">
+        <button id="accordion-button-item-1" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Details</span>
+            <svg id="accordion-icon-item-1" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
+        </button>
+    </h2>
+    <div id="accordion-collapse-body-1" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-1">
+        <div class="grid gap-6 mb-6 md:grid-cols-4 border-b px-4 py-4">
+            <div>
+                <label for="txtOrderNumber" class="block mb-2.5 text-sm font-medium text-heading">Order Number</label>
+                <p id="pOrderNumber" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                    Loading...
+                </p>
+            </div>
+            <div>
+                <label for="pServiceType" class="block mb-2.5 text-sm font-medium text-heading">Service</label>
+                <p id="pServiceType" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                    Loading...
+                </p>
+            </div>
+            <div>
+                <label for="pDateLogged" class="block mb-2.5 text-sm font-medium text-heading">Date Logged</label>
+                <p id="pDateLogged" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                    Loading...
+                </p>
+            </div>
+            <div>
+                <label for="pStatus" class="block mb-2.5 text-sm font-medium text-heading">Status</label>
+                <p id="pStatus" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body">
+                    Loading...
+                </p>
+            </div>
+        </div>
+        <div class="w-full text-right px-4 pb-4">
+            <button id="btnClose" type="button" class="px-4 py-2 text-sm text-white bg-blue-700 text-black font-semibold rounded-md hover:bg-blue-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
+                <i class="fa-solid fa-door-closed mr-2" aria-hidden="true"></i>Close
+            </button>
+            <button id="btnReject" type="button" class="px-4 py-2 text-sm text-white bg-red-700 text-black font-semibold rounded-md hover:bg-red-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
+                <i class="fa-solid fa-times mr-2"></i>Reject
+            </button>
+            <button id="btnApprove" type="button" class="px-4 py-2 text-sm text-white bg-green-700 text-black font-semibold rounded-md hover:bg-green-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
+                <i class="fa-solid fa-check mr-2" aria-hidden="true"></i>Approve
+            </button>
+        </div>
+    </div>
+    <!--History-->
+    <h2 id="accordion-collapse-heading-2" class="bg-gray-300">
+        <button id="accordion-button-item-2" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-2" aria-expanded="true" aria-controls="accordion-collapse-body-2">
+            <span>History</span>
+            <svg id="accordion-icon-item-2" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
+        </button>
+    </h2>
+    <div id="accordion-collapse-body-2" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-2">
+        <div class="w-full px-4 py-4">
+            <table id="tblHistory" class="customer-select-list w-full text-sm text-left rtl:text-right text-body border">
+                <thead class=" text-sm text-body bg-neutral-secondary-soft border-b rounded-lg border-default">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 font-medium text-center">Date</th>
+                        <th scope="col" class="px-6 py-3 font-medium text-center">User</th>
+                        <th scope="col" class="px-6 py-3 font-medium text-center">Details</th>
+                        <th scope="col" class="px-6 py-3 font-medium text-center">Remarks</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <!--Findings-->
+    <h2 id="accordion-collapse-heading-3" class="bg-gray-300">
+        <button id="accordion-button-item-3" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-3" aria-expanded="true" aria-controls="accordion-collapse-body-3">
+            <span>Findings</span>
+            <svg id="accordion-icon-item-3" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
+        </button>
+    </h2>
+    <div id="accordion-collapse-body-3" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-3">
+        <div class="grid gap-6 mb-6 md:grid-cols-[80%_20%] px-4 py-4">
+            <div>
+                @* <textarea id="txtFinding" rows="4" class="w-full border rounded-md px-2 py-2" required placeholder="Findings . . ." ></textarea> *@
+                @Html.TextAreaFor(x => x.Details, new { id = "txtFinding", rows = "4", @class = "w-full border rounded-md px-2 py-2", placeholder = "Findings . . .", required = "required" })
+            </div>
+            <div>
+                <button id="btnSaveFindings" type="button" class="py-2 px-4 rounded-md border bg-green-700 text-white hover:bg-green-500 hover:text-black">
+                    <i class="fa-solid fa-save"></i>
+                </button>
+            </div>
+            <div class="grid col-span-2">
+                <div class="grid gap-6 md:grid-cols-2">
+                    <div>
+                        <!-- Findings File Upload -->
+                        <form id="frmDropzone" enctype="multipart/form-data" method="post" action='@Url.Action("SaveFinding", "Finding")'>
+                        @* @using (Html.BeginForm("SaveFinding", "Finding", FormMethod.Post, new { id = "frmFindingDz" }))
+                        {  *@  
+                            @Html.HiddenFor(x => x.Details, new { id = "hdDetails" })
+                            @Html.HiddenFor(x => x.JobOrderId, new { id = "hdJobOrderId" })
+                            <div id="findings-dropzone" class="flex items-center justify-center w-full drop-zone">
+                                <div class="flex flex-col items-center justify-center w-full h-64 bg-neutral-secondary-medium border border-dashed border-default-strong rounded-md">
+                                    <div class="flex flex-col items-center justify-center text-body pt-5 pb-6">
+                                        <svg class="w-8 h-8 mb-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01" /></svg>
+                                        <p class="mb-2 text-sm">Click the button below or drag and drop file(s) to upload</p>
+                                        <p class="text-xs mb-4">Allowed Files: <span class="font-semibold">.png, .jgp, .img</span></p>
+                                        <p class="text-xs mb-4">Max. File Size: <span class="font-semibold">30MB</span></p>
+                                        <!-- Upload Button -->
+                                        <button type="button" onclick="document.getElementById('findingFiles').click()" class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-500 box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-md text-sm px-3 py-2 focus:outline-none">
+                                            <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" /></svg>
+                                            Browse file
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Hidden File Input (Outside Label) -->
+                                <input id="findingFiles" name="findingFiles" asp-for="FindingFiles" type="file" class="hidden" multiple />
+                            </div>
+                            @* } *@
+                        </form>
+                                <!-- End Findings File Upload -->
+                    </div>
+                    <div id="fileListDiv" class="border rounded-md mr-7 p-2">
+                        <!-- Images here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Recommendation-->
+    <h2 id="accordion-collapse-heading-3" class="bg-gray-300">
+        <button id="accordion-button-item-3" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-3" aria-expanded="true" aria-controls="accordion-collapse-body-3">
+            <span>Findings</span>
+            <svg id="accordion-icon-item-3" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
+        </button>
+    </h2>
+    <div id="accordion-collapse-body-3" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-3">
+        
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+        const alert = new Alert();
+        var errorList = [];
+
+        var filesForUpload = [];
+
+        getJobOrderDetails(@Model.JobOrderId, @Model.RequestId);
+
+        const collapsePanel = document.getElementById("accordion-collapse-joborder");
+        if(collapsePanel) collapsePanel.Collapsible();
+
+        const tblHistory = document.getElementById("tblHistory");
+        if(tblHistory){
+            tblHistory.DataTable({
+                processing: true,
+                getUrl: '@Url.Action("GetHistory", "Approval")' + '?jobOrderId=' + '@Model.JobOrderId',
+                rowClassNames: 'border-b hover:bg-gray-100',
+                columns: 
+                [
+                    { dataMember: 'dateCreated' },
+                    { dataMember: 'createdBy' },
+                    { dataMember: 'Details' },
+                    { dataMember: 'Remarks' }
+                ]
+            });
+        }
+
+        const dropzone = document.getElementById('findings-dropzone');
+        if(dropzone){
+            dropzone.Dropzone({
+                fileListContainer: 'fileListDiv',
+                allowedTypes: [ 'image/png', 'image/jpg', 'image/img' ],
+                maxSizeInMB: 30,
+                onError: (error) => { handlerError(error); },
+                onChange: (files) => { filesForUpload = files; console.log('Files:', files); },
+                onRemove: (file) => { removeFile(file); },
+            });
+        }
+
+        const txtFinding = document.getElementById("txtFinding");
+        const btnSaveFindings = document.getElementById("btnSaveFindings");
+        if(btnSaveFindings){
+            btnSaveFindings.addEventListener("click", (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                
+                if(txtFinding){
+                    if(txtFinding.value == ''){
+                        alert.show({
+                            type: 'error',
+                            content: 'Need to provide findings',
+                            autoHide: true
+                        });
+                        return;
+                    }
+                }
+                else{
+                    alert.show({
+                        type: 'error',
+                        content: 'Need to provide findings',
+                        autoHide: true
+                    });
+                    return;
+                }
+
+                if(filesForUpload == null || filesForUpload.length <= 0){
+                    alert.show({
+                        type: 'error',
+                        content: 'No attached evidence',
+                        autoHide: true
+                    });
+                    return;
+                }
+
+                if(isExceedFileSize()){
+                    alert.show({
+                        type: 'error',
+                        content: 'Evidence files size exceeds the maximum allowed',
+                        autoHide: true
+                    });
+                }
+
+                if(errorList != null && errorList.length > 0){
+                    showError();
+
+                    return;
+                }
+                console.log('For Saving');
+
+                var finding = saveFinding();
+
+                if(finding){
+                    var postedFile = postFile();
+                }
+
+                moveToNextStatus();
+
+            });
+        }
+
+        async function postFile()
+        {
+            var formData = new FormData();
+
+            for(let i = 0; i < filesForUpload.length; i++){
+                var file = filesForUpload[i];
+                formData.append('files', file);
+            }
+
+            var fileClient = new WebClient('@Url.Action("SaveFindingFile", "Finding")', formData);
+            await fileClient.postFileAsync();
+        }
+
+        function showError(){
+            var innerHtml = `<ul>`;
+            if(errorList != null && errorList.length > 0){
+                [...errorList].forEach((error) => {
+                    innerHtml += `<li>${error}</li>`
+                });
+                innerHtml += `</ul>`;
+
+                alert.show({
+                    type: 'error',
+                    html: innerHtml,
+                    autoHide: true
+                });
+            }
+        }
+
+        function handlerError(error){
+            alert.show({
+                type: 'error',
+                content: error,
+                autoHide: true
+            });
+        };
+
+        function isExceedFileSize(){
+            var sum = 0;
+            [...filesForUpload].forEach((file) => { sum += convertBtoMB(file.size); });
+            return sum > 30; 
+        }
+
+        function removeFile(file){
+            const index = filesForUpload.indexOf(file);
+            if(index >= 0){
+                filesForUpload.splice(index, 1);
+            }
+        }
+
+        async function saveFinding(){
+            var data = {
+                id: 0,
+                detail: txtFinding.value,
+                createdBy: 0
+            };
+
+            var findingClient = new WebClient('@Url.Action("SaveFinding", "Finding")' + '?jobOrderId=' + '@Model.JobOrderId', data);
+            return await findingClient.postAsync();
+        }
+
+        async function getJobOrderDetails(jobOrderId, requestId){
+            var joApi = new WebClient('@Url.Action("GetJobOrder", "JobOrder")' + '?jobOrderId=' + jobOrderId + '&requestId=' + requestId, null);
+            var jo = await joApi.getAsync();
+
+            if(jo){
+
+                console.log('Job Order Details:', jo);
+
+                const pOrderNumber = document.getElementById("pOrderNumber");
+                const pServiceType = document.getElementById("pServiceType");
+                const pDateLogged = document.getElementById("pDateLogged");
+                const pStatus = document.getElementById("pStatus");
+
+                pOrderNumber.textContent = jo.orderNumber;
+                pDateLogged.textContent = jo.dateLogged;
+                pStatus.textContent = jo.status;
+                pServiceType.textContent = jo.serviceType;
+                
+            }
+        }
+
+        async function moveToNextStatus(){
+            var reqClient = new WebClient('@Url.Action("MoveToNextStatus", "JobOrder")' + '?jobOrderId=' + '@Model.JobOrderId' + '&requestId=' + '@Model.RequestId', null);
+            var resp = await reqClient.postAsync();
+            console.log();
+            return resp;
+        }
+
+    });
+
+</script>
