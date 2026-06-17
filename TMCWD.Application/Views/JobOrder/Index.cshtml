@@ -82,25 +82,21 @@
         </button>
     </h2>
     <div id="accordion-collapse-body-3" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-3">
-        <div class="grid gap-6 mb-6 md:grid-cols-[80%_20%] px-4 py-4">
-            <div>
-                @* <textarea id="txtFinding" rows="4" class="w-full border rounded-md px-2 py-2" required placeholder="Findings . . ." ></textarea> *@
-                @Html.TextAreaFor(x => x.Details, new { id = "txtFinding", rows = "4", @class = "w-full border rounded-md px-2 py-2", placeholder = "Findings . . .", required = "required" })
-            </div>
-            <div>
-                <button id="btnSaveFindings" type="button" class="py-2 px-4 rounded-md border bg-green-700 text-white hover:bg-green-500 hover:text-black">
-                    <i class="fa-solid fa-save"></i>
-                </button>
-            </div>
-            <div class="grid col-span-2">
-                <div class="grid gap-6 md:grid-cols-2">
-                    <div>
-                        <!-- Findings File Upload -->
-                        <form id="frmDropzone" enctype="multipart/form-data" method="post" action='@Url.Action("SaveFinding", "Finding")'>
-                        @* @using (Html.BeginForm("SaveFinding", "Finding", FormMethod.Post, new { id = "frmFindingDz" }))
-                        {  *@  
-                            @Html.HiddenFor(x => x.Details, new { id = "hdDetails" })
-                            @Html.HiddenFor(x => x.JobOrderId, new { id = "hdJobOrderId" })
+        @if (Model.Status == JobOrderStatus.Inspection)
+        {
+            <div class="grid gap-6 mb-6 md:grid-cols-[80%_20%] px-4 py-4">
+                <div>
+                    @Html.TextAreaFor(x => x.Details, new { id = "txtFinding", rows = "4", @class = "w-full border rounded-md px-2 py-2", placeholder = "Findings . . .", required = "required" })
+                </div>
+                <div>
+                    <button id="btnSaveFindings" type="button" class="py-2 px-4 rounded-md border bg-green-700 text-white hover:bg-green-500 hover:text-black">
+                        <i class="fa-solid fa-save"></i>
+                    </button>
+                </div>
+                <div class="grid col-span-2">
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <div>
+                            <!-- Findings File Upload -->
                             <div id="findings-dropzone" class="flex items-center justify-center w-full drop-zone">
                                 <div class="flex flex-col items-center justify-center w-full h-64 bg-neutral-secondary-medium border border-dashed border-default-strong rounded-md">
                                     <div class="flex flex-col items-center justify-center text-body pt-5 pb-6">
@@ -118,26 +114,47 @@
                                 <!-- Hidden File Input (Outside Label) -->
                                 <input id="findingFiles" name="findingFiles" asp-for="FindingFiles" type="file" class="hidden" multiple />
                             </div>
-                            @* } *@
-                        </form>
-                                <!-- End Findings File Upload -->
-                    </div>
-                    <div id="fileListDiv" class="border rounded-md mr-7 p-2">
-                        <!-- Images here -->
+                            <!-- End Findings File Upload -->
+                        </div>
+                        <div id="fileListDiv" class="border rounded-md mr-7 p-2">
+                            <!-- Images here -->
+                        </div>
                     </div>
                 </div>
+            
+            
             </div>
-        </div>
+        }
+        else
+        {
+            <div id="divFiles" class="w-full grid grid-cols-4 gap-4 px-4 py-4">
+                <div class="w-full col-span-4 text-center p-4">
+                    No record(s) found . . .
+                </div>
+            </div>
+        }
     </div>
     <!--Recommendation-->
-    <h2 id="accordion-collapse-heading-3" class="bg-gray-300">
-        <button id="accordion-button-item-3" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-3" aria-expanded="true" aria-controls="accordion-collapse-body-3">
-            <span>Findings</span>
-            <svg id="accordion-icon-item-3" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
+    <h2 id="accordion-collapse-heading-4" class="bg-gray-300">
+        <button id="accordion-button-item-4" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-4" aria-expanded="true" aria-controls="accordion-collapse-body-4">
+            <span>Recommendation</span>
+            <svg id="accordion-icon-item-4" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
         </button>
     </h2>
-    <div id="accordion-collapse-body-3" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-3">
-        
+    <div id="accordion-collapse-body-4" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default pr-4" aria-labelledby="accordion-collapse-heading-4">
+        <div class="grid grid-cols-[80%_20%] px-4 py-4 gap-4">
+            <div>
+                <textarea id="txtRecommendation" rows="4" class="w-full border rounded-md text-black p-4 focus:border-gray-300" placeholder="Recommendation"></textarea>
+            </div>
+            <div>
+                <button id="btnAddRecommendation" type="button" class="text-white bg-green-700 border rounded-md py-2 px-4 text-sm hover:bg-green-500">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+            <div class="w-full col-span-2 border rounded-md">
+                <div class="w-full h-16 text-sm text-center p-4 text-sm">No record(s) found . . . .</div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -151,6 +168,8 @@
         var filesForUpload = [];
 
         getJobOrderDetails(@Model.JobOrderId, @Model.RequestId);
+
+        getInspectionFiles(@Model.JobOrderId);
 
         const collapsePanel = document.getElementById("accordion-collapse-joborder");
         if(collapsePanel) collapsePanel.Collapsible();
@@ -331,6 +350,15 @@
             var resp = await reqClient.postAsync();
             console.log();
             return resp;
+        }
+
+        async function getInspectionFiles(){
+            var reqFileClient = new WebClient('@Url.Action("GetAll", "RequestFile")' + '?jobOrderId=' + '@Model.JobOrderId', null);
+            var resp = await reqFileClient.getAsync();
+            if(resp){
+                const fileDiv = document.getElementById("divFiles");
+                fileDiv.replaceChildren();
+            }
         }
 
     });

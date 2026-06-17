@@ -530,6 +530,22 @@ HTMLElement.prototype.Dropzone = function (options) {
 
 };
 
+HTMLElement.prototype.LoadImages = async function (options) {
+    var imageContainer = this;
+
+    if (imageContainer.tagName !== 'DIV') return;
+
+    if (!imageContainer.classList.contains('image-container')) return;
+
+    if (options.getImageDataUrl) {
+        var loadImageClient = new WebClient(options.getImageDataUrl, null);
+        var resp = await loadImageClient.getAsync();
+        if (resp) {
+            var divImageItem = document.createElement('div');
+        }
+    }
+};
+
 const convertBtoMB = function (sizeInByte) {
     return (sizeInByte / (1024 * 1024)).toFixed(2);
 };

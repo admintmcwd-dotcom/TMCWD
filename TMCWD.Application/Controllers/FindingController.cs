@@ -37,10 +37,10 @@ namespace TMCWD.Application.Controllers
         {
             if (files == null || !files.Any()) return Ok(false);
 
-            var destinationPath = Path.GetFullPath($"../Files/{DateTime.Now.ToString("yyyyMMdd")}");
+            var destinationPath = $"../Files/{DateTime.Now.ToString("yyyyMMdd")}";
             if (!Directory.Exists(destinationPath))
             {
-                Directory.CreateDirectory(destinationPath);
+                Directory.CreateDirectory(Path.GetFullPath(destinationPath));
             }
 
             List<RequestFile> requestFiles = new();
@@ -49,17 +49,18 @@ namespace TMCWD.Application.Controllers
             {
                 RequestFile reqFile = new()
                 {
-                    JobOrderId = 0,
+                    JobOrderId = jobOrderId,
                     OriginalFilename = file.FileName,
                     PhysicalFilename = $"{Guid.NewGuid().ToString().Replace("-", "")}.{Path.GetExtension(file.FileName)}",
                     RequestType = RequestFileType.Finding,
                     Path = destinationPath,
-                    CreatedBy = _authenticatedUser.User.Id
+                    CreatedBy = _authenticatedUser.User.Id,
+                    Type = FileType.Png
                 };
 
                 requestFiles.Add(reqFile);
 
-                using (Stream stream = new FileStream(Path.Combine(destinationPath, reqFile.PhysicalFilename), FileMode.Create, FileAccess.Write))
+                using (Stream stream = new FileStream(Path.Combine(Path.GetFullPath(destinationPath), reqFile.PhysicalFilename), FileMode.Create, FileAccess.Write))
                 {
                     await file.CopyToAsync(stream);
                 }

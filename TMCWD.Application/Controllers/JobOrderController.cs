@@ -28,12 +28,13 @@ namespace TMCWD.Application.Controllers
             _inspectionTypeTransaction = inspectionTypeTransaction;
         }
 
-        public async Task<IActionResult> Index(int id, int requestId)
+        public async Task<IActionResult> Index(int id, int requestId, int status)
         {
             FindingViewModel viewModel = new()
             {
                 JobOrderId = id,
-                RequestId = requestId
+                RequestId = requestId,
+                Status = (JobOrderStatus)status
             };
             return View(viewModel);
         }
