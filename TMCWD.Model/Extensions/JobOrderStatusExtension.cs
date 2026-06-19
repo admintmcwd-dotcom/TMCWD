@@ -20,6 +20,7 @@ namespace TMCWD.Model.Extensions
                 JobOrderStatus.Verification => "For Verification",
                 JobOrderStatus.Completed => "Completed",
                 JobOrderStatus.Rejected => "Rejected",
+                JobOrderStatus.Recommendation => "For Recommendation",
                 _ => throw new IndexOutOfRangeException(nameof(status))
             };
         }

@@ -11,11 +11,11 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
 
         public int JobOrderId { get; set; }
 
-        public RequestFileType RequestType { get; set; }
+        public RequestFileType RequestFileType { get; set; }
 
         public FileType Type { get; set; }
 
-        public decimal Size { get; set; }
+        public long Size { get; set; }
 
         public string Path { get; set; }
 

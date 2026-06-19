@@ -88,7 +88,7 @@ namespace TMCWD.Application.Controllers
             var requestDetail = await _requestTransaction.GetRequestDetail(jobOrder.RequestDetailId, requestId);
             var inspectionType = await _inspectionTypeTransaction.Get(requestDetail.RequestTypeId);
 
-            return Ok(new { OrderNumber = jobOrder.JobOrderNumber, ServiceType = inspectionType.Name, DateLogged = request.DateCreated, Status = jobOrder.Status.GetStatusString() });
+            return Ok(new { OrderNumber = jobOrder.JobOrderNumber, ServiceType = inspectionType.Name, DateLogged = request.DateCreated, Status = jobOrder.Status.GetStatusString(), StatusValue = (int)jobOrder.Status });
         }
 
         [HttpPost]

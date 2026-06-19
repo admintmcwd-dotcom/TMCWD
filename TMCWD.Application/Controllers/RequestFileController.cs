@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TMCWD.CustomerSupport;
 using TMCWD.Model.CustomerSupport;
+using TMCWD.Model.Extensions;
 using TMCWD.Services;
 
 namespace TMCWD.Application.Controllers
@@ -31,16 +32,8 @@ namespace TMCWD.Application.Controllers
                     JobOrderId = jobOrderId,
                     CreatedBy = _authenticatedUserService.User.Id,
                     UpdatedBy = _authenticatedUserService.User.Id,
-                    RequestType = (RequestFileType) requestFileType,
-                    Type = Path.GetExtension(file.FileName.ToLower()) switch
-                    {
-                        "png" => FileType.Png,
-                        "txt" => FileType.Text,
-                        "jpg" => FileType.Jpeg,
-                        "pdf" => FileType.Pdf,
-                        "img" => FileType.Image,
-                         _ => FileType.Other
-                    }
+                    RequestFileType = (RequestFileType)requestFileType,
+                    Type = Path.GetExtension(file.FileName.ToLower()).Replace(".", "").GetFileTypeFromExtenstion()
                 };
                 requestFiles.Add(requestFile);
             }

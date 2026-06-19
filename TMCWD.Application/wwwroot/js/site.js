@@ -530,19 +530,98 @@ HTMLElement.prototype.Dropzone = function (options) {
 
 };
 
+HTMLElement.prototype.LoadFindings = async function (options) {
+    var findingsContainer = this;
+    if (findingsContainer.tagName !== 'DIV') return;
+
+    if (!findingsContainer.classList.contains('findings-container')) return;
+
+    if (options.getImageDataUrl) {
+        const loadImageClient = new WebClient(options.getImageDataUrl, null);
+        var resp = await loadImageClient.getAsync();
+        if (resp) {
+            if (resp.findings) {
+                resp.findings.forEach((finding) => {
+                    const numberOfColumns = options.numberOfColumns ?? 4;
+                    findingsContainer.replaceChildren();
+                    const divFinding = document.createElement('div');
+                    divFinding.classList.add('col-span-' + numberOfColumns, 'w-full');
+                    const pFindingNarrative = document.createElement('p');
+                    pFindingNarrative.classList.add('w-full', 'p-4', 'border', 'rounded-md', 'text-sm');
+                    pFindingNarrative.textContent = finding.detail;
+                    divFinding.appendChild(pFindingNarrative);
+                    findingsContainer.appendChild(divFinding);
+                });
+            }
+
+            if (resp.files) {
+                resp.files.forEach((file) => {
+                    const divImageItem = document.createElement('div');
+                    divImageItem.classList.add('w-32', 'border', 'p-2', 'rounded-md', 'border-gray-400');
+                    const img = document.createElement('img');
+                    img.classList.add('w-full', 'h-full');
+                    img.src = file.path + '/' + file.physicalFilename;
+                    //const pName = document.createElement('p');
+                    //pName.classList.add('w-full', 'text-center', 'text-xs', 'font-bold');
+                    //pName.textContent = file.originalFilename;
+                    const lnk = document.createElement('a');
+                    lnk.href = '#';
+                    lnk.title = file.originalFilename;
+                    lnk.alt = file.originalFilename;
+                    lnk.appendChild(img);
+                    console.log('Image', img);
+                    //lnk.appendChild(pName);
+                    divImageItem.appendChild(lnk);
+                    findingsContainer.appendChild(divImageItem);
+
+                    lnk.addEventListener('click', (evt) => {
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                        const imgModal = document.getElementById("imgModal");
+                        const img = this.querySelector('img');
+                        img.src = file.path + '/' + file.physicalFilename;
+                        imgModal.showModal();
+                    });
+                });
+            }
+            if (options.loadComplete) {
+                options.loadComplete(true, "Successfully loaded findigs");
+            }
+        }
+        else {
+            if (options.loadComplete) {
+                options.loadComplete(false, "No records found");
+            }
+        }
+    }
+};
+
 HTMLElement.prototype.LoadImages = async function (options) {
     var imageContainer = this;
-
     if (imageContainer.tagName !== 'DIV') return;
 
     if (!imageContainer.classList.contains('image-container')) return;
-
+    
     if (options.getImageDataUrl) {
-        var loadImageClient = new WebClient(options.getImageDataUrl, null);
-        var resp = await loadImageClient.getAsync();
-        if (resp) {
-            var divImageItem = document.createElement('div');
-        }
+        //const loadImageClient = new WebClient(options.getImageDataUrl, null);
+        //var resp = await loadImageClient.getAsync();
+        //if (resp) {
+            const divImageItem = document.createElement('div');
+            divImageItem.classList.add('w-32', 'border', 'p-2', 'rounded-md', 'border-gray-400');
+            const img = document.createElement('img');
+            img.classList.add('h-16', 'mb-2');
+            img.src = '/images/25d4be42ce174de8b31791b886fe3dcf.png';
+            const pName = document.createElement('p');
+            pName.classList.add('w-full', 'text-center', 'text-xs', 'font-bold');
+            pName.textContent = 'ict policy 2025.png';
+            const lnk = document.createElement('a');
+            lnk.href = '#';
+            lnk.appendChild(img);
+            lnk.appendChild(pName);
+            divImageItem.appendChild(lnk);
+            imageContainer.replaceChildren();
+            imageContainer.appendChild(divImageItem);
+        //}
     }
 };
 
