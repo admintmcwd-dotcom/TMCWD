@@ -168,15 +168,15 @@
     <img src="/images/25d4be42ce174de8b31791b886fe3dcf.png" class="w-40 h-40 object-cover border rounded-md" />
 </div> *@
 
-<div id="image-viewer" class="image-viewer absolute top-0 left-0 h-screen w-screen bg-opacity-0 bg-gray-500 transition-all transition-discrete delay-150 duration-300 hidden">
+@* <div id="image-viewer" class="image-viewer absolute top-0 left-0 h-screen w-screen bg-gray-500 bg-opacity-30">
     <div class="absolute inset-0"></div>
-    <div class="relative border border-gray-500 z-10 top-1/2 -translate-y-1/2 bg-white rounded-lg text-black scale-50">
-        <div class="grid grid-cols-2 w-full pt-1 px-2.5 text-4xl gap-6">
+    <div class="relative border border-gray-500 z-10 top-1/2 -translate-y-1/2 bg-white rounded-lg text-black scale-50 transition-all transition-discrete delay-150 duration-300">
+        <div class="grid grid-cols-2 w-full pt-1 px-2.5 text-4xl gap-6 mb-1">
             <div class="text-left">
-                <a href="#" class="image-viewer-zoom-in">
+                <a href="#" class="image-viewer-zoom-in focus:border-none">
                     <i class="fa-solid fa-magnifying-glass-plus"></i>
                 </a>
-                <a href="#" class="image-viewer-zoom-out">
+                <a href="#" class="image-viewer-zoom-out focus:border-none">
                     <i class="fa-solid fa-magnifying-glass-minus"></i>
                 </a>
             </div>
@@ -190,7 +190,9 @@
             <img src="/uploads/20260619/5E0855767424411ABCDC7611D70EB792.png" alt="test.png" class="w-full h-full" />
         </div>
     </div>
-</div>
+</div> *@
+
+<div id="image-viewer" class="image-viewer"></div>
 
 <script type="text/javascript">
 
@@ -202,6 +204,7 @@
         var filesForUpload = [];
 
         const imageViewer = document.getElementById('image-viewer');
+        imageViewer.ImageViewer();
 
         const testLink = document.getElementById('test-link');
         testLink.addEventListener('click', (evt) => {
@@ -211,14 +214,14 @@
             imageViewer.classList.add('bg-opacity-30');
         });
 
-        const closeViewer = imageViewer.getElementsByClassName('image-viewer-close')[0];
-        closeViewer.addEventListener("click", (evt) => {
-            evt.preventDefault();
-            evt.stopPropagation();
-            imageViewer.classList.remove('bg-opacity-30');
-            imageViewer.classList.add('bg-opacity-0', 'hidden');
+        // const closeViewer = imageViewer.getElementsByClassName('image-viewer-close')[0];
+        // closeViewer.addEventListener("click", (evt) => {
+        //     evt.preventDefault();
+        //     evt.stopPropagation();
+        //     imageViewer.classList.remove('bg-opacity-30');
+        //     imageViewer.classList.add('bg-opacity-0', 'hidden');
 
-        });
+        // });
 
         getJobOrderDetails(@Model.JobOrderId, @Model.RequestId);
 
@@ -327,7 +330,7 @@
 
             var fileClient = new WebClient('@Url.Action("SaveFindingFile", "Finding")' + '?jobOrderId=' + '@Model.JobOrderId', formData);
             await fileClient.postFileAsync();
-        }
+        };
 
         function showError(){
             var innerHtml = `<ul>`;
@@ -343,7 +346,7 @@
                     autoHide: true
                 });
             }
-        }
+        };
 
         function handlerError(error){
             alert.show({
@@ -400,7 +403,7 @@
                     const divFiles = document.getElementById('divFiles');
                     divFiles.LoadFindings({
                         getImageDataUrl: '@Url.Action("GetFindings", "Finding")' + '?jobOrderId=' + '@Model.JobOrderId',
-                        numberOfColumns: 4,
+                        numberOfColumns: 7,
                         loadComplete: (success, msg) => {
                             var findingsContainer = document.getElementById('finding-container');
                             if(success) {
