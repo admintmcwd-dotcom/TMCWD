@@ -8,7 +8,7 @@ namespace TMCWD.Data.Controllers
 {
 
     [ApiController]
-    [Route("api/{requestId}/[controller]")]
+    [Route("api/{jobOrderId}/[controller]")]
     public class MaterialController : Controller
     {
         private readonly IMaterialService _service;
@@ -37,17 +37,17 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetByRequestId")]
-        public async Task<IActionResult> GetByRequestId(int requestId)
+        public async Task<IActionResult> GetByJobOrderId(int jobOrderId)
         {
-            var materials = await _service.GetByRequestId(requestId);
+            var materials = await _service.GetByJobOrderId(jobOrderId);
             if(materials == null || !materials.Any()) return NotFound();
             return Ok(materials);
         }
 
         [HttpPost("SaveUpdate/{userId}")]
-        public async Task<IActionResult> SaveUpdate(int userId, int requestId, [FromBody] Material material)
+        public async Task<IActionResult> SaveUpdate(int userId, int jobOrderId, [FromBody] Material material)
         {
-            var updatedMaterial = await _service.SaveUpdate(userId, requestId, material);
+            var updatedMaterial = await _service.SaveUpdate(userId, jobOrderId, material);
             if (material == null) return NoContent();
             return Ok(updatedMaterial);
         }

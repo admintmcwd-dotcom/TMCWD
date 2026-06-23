@@ -23,8 +23,8 @@ namespace TMCWD.Data.Entities
         [Required, Column("InventoryId")]
         public System.Int64 InventoryId { get; set; }
 
-        [Required, Column("RequestId")]
-        public System.Int64 RequestId { get; set; }
+        [Required, Column("JobOrderId")]
+        public System.Int64 JobOrderId { get; set; }
 
         [Required, Column("RequestedQuantity")]
         public System.Int64 RequestedQuantity { get; set; } = 0;

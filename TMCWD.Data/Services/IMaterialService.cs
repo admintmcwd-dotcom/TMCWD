@@ -7,7 +7,7 @@ namespace TMCWD.Data.Services
 
         Task<Material?> Get(int id);
         Task<List<Material>> GetAll();
-        Task<List<Material>> GetByRequestId(int requestId);
+        Task<List<Material>> GetByJobOrderId(int jobOrderId);
         Task<Material> SaveUpdate(int userId, int requestId, Material material);
         Task<Material> UpdateQuantityOrNewUnitCost(int userId, int requestId, Material updateMaterial);
 

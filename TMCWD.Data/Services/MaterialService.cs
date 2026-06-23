@@ -27,13 +27,13 @@ namespace TMCWD.Data.Services
             return await material.ToListAsync();
         }
 
-        public async Task<List<Material>> GetByRequestId(int requestId)
+        public async Task<List<Material>> GetByJobOrderId(int jobOrderId)
         {
-            var materials = _context.Materials.Where(x => x.RequestId == requestId);
+            var materials = _context.Materials.Where(x => x.JobOrderId == jobOrderId);
             return await materials.ToListAsync();
         }
 
-        public async Task<Material> SaveUpdate(int userId, int requestId, Material material)
+        public async Task<Material> SaveUpdate(int userId, int jobOrderId, Material material)
         {
             material.DateUpdated = DateTime.Now;
             if(material.Id > 0)
@@ -43,7 +43,7 @@ namespace TMCWD.Data.Services
             }
             else
             {
-                material.RequestId = requestId;
+                material.JobOrderId = jobOrderId;
                 material.DateCreated = DateTime.Now;
                 material.CreatedBy = userId;
                 _context.Materials.Add(material);

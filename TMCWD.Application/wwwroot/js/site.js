@@ -74,6 +74,11 @@ HTMLElement.prototype.setDropdown = function (selectCallBack) {
                             [...result].forEach((el) => {
                                 elContent[0].appendChild(el);
                             });
+                            if (elContent[0].classList.contains('hidden')) {
+                                icon.classList.toggle('fa-chevron-down');
+                                icon.classList.toggle('fa-chevron-up');
+                                elContent[0].classList.toggle("hidden");
+                            }
                         });
                     }
 
@@ -644,19 +649,19 @@ HTMLElement.prototype.ImageViewer = function () {
     viewerContainer.appendChild(backDrop);
 
     const viewerPanel = document.createElement('div');
-    viewerPanel.classList.add('relative', 'border', 'border-gray-500', 'z-10', 'top-1/2', '-translate-y-1/2', 'bg-white', 'rounded-lg', 'text-black');
-    viewerPanel.classList.add('scale-50', 'transition-all', 'transition-discrete', 'delay-150', 'duration-300');
+    viewerPanel.classList.add('relative', 'border', 'border-gray-500', 'z-10', 'top-1/2', 'bg-white', 'left-1/2', '-translate-y-1/2', '-translate-x-1/2');
+    viewerPanel.classList.add('rounded-lg', 'text-black', 'w-1/2', 'h-5/6', 'transition-all', 'transition-discrete', 'delay-150', 'duration-300');
 
     viewerContainer.appendChild(viewerPanel);
 
     const controlPanel = document.createElement('div');
-    controlPanel.classList.add('grid', 'grid-cols-2', 'w-full', 'pt-1', 'px-2.5', 'text-4xl', 'gap-6', 'mb-1');
+    controlPanel.classList.add('grid', 'grid-cols-2', 'w-full', 'pt-1', 'px-2.5', 'text-lg', 'gap-6', 'mb-1');
 
     const zoomButtonPanel = document.createElement('div');
     zoomButtonPanel.classList.add('text-left');
 
     const zoomInButton = document.createElement('a');
-    zoomInButton.classList.add('image-viewer-zoom-in', 'focus:border-none');
+    zoomInButton.classList.add('image-viewer-zoom-in', 'focus:border-none', 'mr-2', 'hidden');
     zoomInButton.href = '#';
 
     var scales = ['scale-50', 'scale-75', 'scale-100'];
@@ -681,14 +686,14 @@ HTMLElement.prototype.ImageViewer = function () {
     });
 
     const zoomInIcon = document.createElement('i');
-    zoomInIcon.classList.add('fa-solid', 'fa-magnifying-glass-plus');
+    zoomInIcon.classList.add('fa-solid', 'fa-circle-plus');
 
     zoomInButton.appendChild(zoomInIcon);
 
     zoomButtonPanel.appendChild(zoomInButton);
 
     const zoomOutButton = document.createElement('a');
-    zoomOutButton.classList.add('image-viewer-close', 'focus:border-none');
+    zoomOutButton.classList.add('image-viewer-close', 'focus:border-none', 'hidden');
     zoomOutButton.href = '#';
 
     zoomOutButton.addEventListener('click', (evt) => {
@@ -711,7 +716,7 @@ HTMLElement.prototype.ImageViewer = function () {
     });
 
     const zoomOutButtonIcon = document.createElement('i');
-    zoomOutButtonIcon.classList.add('fa-solid', 'fa-magnifying-glass-minus');
+    zoomOutButtonIcon.classList.add('fa-solid', 'fa-circle-minus');
 
     zoomOutButton.appendChild(zoomOutButtonIcon);
 
@@ -745,9 +750,9 @@ HTMLElement.prototype.ImageViewer = function () {
     viewerPanel.appendChild(controlPanel);
 
     const imageContainer = document.createElement('div');
-    imageContainer.classList.add('pt-0', 'pb-4', 'px-4');
+    imageContainer.classList.add('w-full', 'h-full');
     const image = document.createElement('img');
-    image.classList.add('pt-0', 'pb-4', 'px-4');
+    image.classList.add('pb-6', 'w-full', 'h-full');
     imageContainer.appendChild(image);
 
     viewerPanel.appendChild(imageContainer);

@@ -51,6 +51,9 @@
             <button id="btnApprove" type="button" class="px-4 py-2 text-sm text-white bg-green-700 text-black font-semibold rounded-md hover:bg-green-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
                 <i class="fa-solid fa-check mr-2" aria-hidden="true"></i>Approve
             </button>
+            <button id="btnSubmit" type="button" class="px-4 py-2 text-sm text-white bg-green-700 text-black font-semibold rounded-md hover:bg-green-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
+                <i class="fa-solid fa-paper-plane mr-2" aria-hidden="true"></i>Submit
+            </button>
         </div>
     </div>
     <!--History-->
@@ -127,20 +130,70 @@
             </div>
         </div>
     </div>
-    <!--Recommendation-->
+    <!--Materials-->
     <h2 id="accordion-collapse-heading-4" class="bg-gray-300">
         <button id="accordion-button-item-4" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-4" aria-expanded="true" aria-controls="accordion-collapse-body-4">
-            <span>Recommendation</span>
+            <span>Materials</span>
             <svg id="accordion-icon-item-4" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
         </button>
     </h2>
-    <div id="accordion-collapse-body-4" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default pr-4" aria-labelledby="accordion-collapse-heading-4">
+    <div id="accordion-collapse-body-4" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-4">
+        <div class="w-full grid grid-cols-2 py-4 px-4 gap-2">
+            <!--Select-->
+            <div>
+                <div class="relative w-full">
+                    <input type="hidden" class="selected-value" />
+                    <select id="cmbMaterials" class="hidden"></select>
+                    <div class="relative grid grid-cols-[95%_5%] border rounded-md gap-2 text-sm px-4 py-2">
+                        <div class="w-full text-left">
+                            <input class="dropdown-input w-full focus:outline-none" placeholder="Select Material" />
+                        </div>
+                        <div class="w-full text-right">
+                            <button type="button" class="border-none">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="dropdown-options" class="absolute dropdown-options w-full mt-1 border rounded-md py-2 px-2 bg-white max-h-64 overflow-y-scroll hidden">
+                        <p class="w-full hover:bg-blue-500">No materials</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button id="cmdAdd" class="border rounded-md bg-green-700 px-3 py-2 text-sm text-white hover:bg-green-500">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="w-full border-bottom border-gray-500">
+            <table id="tblMaterials" class="w-full text-sm text-left rtl:text-right text-body border rounded-md">
+                <thead>
+                    <tr class="border-b">
+                        <th scope="col" class="px-6 py-3 font-medium">Name</th>
+                        <th scope="col" class="px-6 py-3 font-medium">UOM</th>
+                        <th scope="col" class="px-6 py-3 font-medium">On Hand</th>
+                        <th scope="col" class="px-6 py-3 font-medium">Requested</th>
+                        <th scope="col" class="px-6 py-3 font-medium">Selling Price</th>
+                        <th scope="col" class="px-6 py-3 font-medium"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <!--Recommendation-->
+    <h2 id="accordion-collapse-heading-5" class="bg-gray-300">
+        <button id="accordion-button-item-5" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-5" aria-expanded="true" aria-controls="accordion-collapse-body-5">
+            <span>Recommendation</span>
+            <svg id="accordion-icon-item-5" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
+        </button>
+    </h2>
+    <div id="accordion-collapse-body-5" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default pr-4" aria-labelledby="accordion-collapse-heading-5">
         <div class="grid grid-cols-[80%_20%] px-4 py-4 gap-4">
             <div>
                 <textarea id="txtRecommendation" rows="4" class="w-full border rounded-md text-black p-4 focus:border-gray-300" placeholder="Recommendation"></textarea>
             </div>
             <div>
-                <button id="btnAddRecommendation" type="button" class="text-white bg-green-700 border rounded-md py-2 px-4 text-sm hover:bg-green-500">
+                <button id="btnAddRecommendation" type="button" class="text-white bg-green-700 border rounded-md py-2 px-3 text-sm hover:bg-green-500">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
@@ -150,53 +203,12 @@
         </div>
     </div>
 </div>
-<a id="test-link" href="#">Test</a>
-
-@* <el-dialog>
-    <dialog id="imgModal" aria-labelledby="dialogTextTitle" class="text-modal fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
-        <el-dialog-backdrop class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
-        <div tabindex="0" class="flex min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
-            <el-dialog-panel class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
-                <img src="/images/25d4be42ce174de8b31791b886fe3dcf.png" />
-            </el-dialog-panel>
-        </div>
-    </dialog>
-</el-dialog> *@
-
-@* <div class="relative h-screen w-screen bg-transparent">
-    <div class="absolute inset-0 backdrop-blur-md w-full h-full z-10"></div>
-    <img src="/images/25d4be42ce174de8b31791b886fe3dcf.png" class="w-40 h-40 object-cover border rounded-md" />
-</div> *@
-
-@* <div id="image-viewer" class="image-viewer absolute top-0 left-0 h-screen w-screen bg-gray-500 bg-opacity-30">
-    <div class="absolute inset-0"></div>
-    <div class="relative border border-gray-500 z-10 top-1/2 -translate-y-1/2 bg-white rounded-lg text-black scale-50 transition-all transition-discrete delay-150 duration-300">
-        <div class="grid grid-cols-2 w-full pt-1 px-2.5 text-4xl gap-6 mb-1">
-            <div class="text-left">
-                <a href="#" class="image-viewer-zoom-in focus:border-none">
-                    <i class="fa-solid fa-magnifying-glass-plus"></i>
-                </a>
-                <a href="#" class="image-viewer-zoom-out focus:border-none">
-                    <i class="fa-solid fa-magnifying-glass-minus"></i>
-                </a>
-            </div>
-            <div class="text-right">
-                <a href="#" class="image-viewer-close">
-                    <i class="fa-solid fa-xmark"></i>
-                </a>
-            </div>
-        </div>
-        <div class="pt-0 pb-4 px-4">
-            <img src="/uploads/20260619/5E0855767424411ABCDC7611D70EB792.png" alt="test.png" class="w-full h-full" />
-        </div>
-    </div>
-</div> *@
 
 <div id="image-viewer" class="image-viewer"></div>
 
 <script type="text/javascript">
 
-    document.addEventListener("DOMContentLoaded", function(event) {
+    document.addEventListener("DOMContentLoaded", async function(event) {
 
         const alert = new Alert();
         var errorList = [];
@@ -206,26 +218,64 @@
         const imageViewer = document.getElementById('image-viewer');
         imageViewer.ImageViewer();
 
-        const testLink = document.getElementById('test-link');
-        testLink.addEventListener('click', (evt) => {
-            evt.preventDefault();
-            evt.stopPropagation();
-            imageViewer.classList.remove('bg-opacity-0', 'hidden');
-            imageViewer.classList.add('bg-opacity-30');
-        });
+        const cmbMaterials = document.getElementById('cmbMaterials');
+        if(cmbMaterials){
+            var materials = await getInventory();
 
-        // const closeViewer = imageViewer.getElementsByClassName('image-viewer-close')[0];
-        // closeViewer.addEventListener("click", (evt) => {
-        //     evt.preventDefault();
-        //     evt.stopPropagation();
-        //     imageViewer.classList.remove('bg-opacity-30');
-        //     imageViewer.classList.add('bg-opacity-0', 'hidden');
+            if(materials){
+                const dropdownOptions = document.getElementById('dropdown-options');
+                dropdownOptions.replaceChildren();
+                [...materials].forEach((material) => {
+                    const lnk = document.createElement('a');
+                    lnk.href = '#';
+                    const par = document.createElement('p');
+                    par.classList.add('w-full', 'px-2', 'py-2', 'hover:bg-blue-500', 'hover:text-white');
+                    par.textContent = material.name;
+                    lnk.appendChild(par);
+                    lnk.dataset.itemid = material.id;
+                    lnk.dataset.itemname = material.name;
+                    lnk.dataset.unitsellingprice = material.unitSellingPrice;
+                    dropdownOptions.appendChild(lnk);
+                });
+            }
 
-        // });
+            cmbMaterials.setDropdown((itemId, itemName) => {
+                    console.log('Id:', itemId);
+                    console.log('Name:', itemName);
+            });
+        }
+
+        const tblMaterials = document.getElementById('tblMaterials');
+        if(tblMaterials){
+            tblMaterials.DataTable({
+                processing: true,
+                getUrl: '@Url.Action("GetMaterialRequest", "CustomerSupport")' + '?jobOrderId=' + '@Model.JobOrderId',
+                rowClassNames: 'border-b hover:bg-gray-100',
+                stockCheck: { srcDataMember: 'onHand', compareToDataMember: 'requiredQuantity' },
+                columns: [
+                    {
+                        dataMember: 'name'
+                    },
+                    {
+                        dataMember: 'uom'
+                    },
+                    {
+                        dataMember: 'onHand'
+                    },
+                    {
+                        dataMember: 'requestedQuantity'
+                    },
+                    {
+                        dataMember: 'sellingPrice'
+                    }
+                ],
+                buttons:[
+                    { className: 'fa-solid fa-trash', clickCallBack: (data) => { console.log('Data:', data); } }
+                ]
+            });
+        }
 
         getJobOrderDetails(@Model.JobOrderId, @Model.RequestId);
-
-        //getInspectionFiles(@Model.JobOrderId);
 
         const collapsePanel = document.getElementById("accordion-collapse-joborder");
         if(collapsePanel) collapsePanel.Collapsible();
@@ -313,8 +363,6 @@
                 if(finding){
                     var postedFile = postFile();
                 }
-
-                //moveToNextStatus();
 
             });
         }
@@ -422,6 +470,23 @@
             var resp = await reqClient.postAsync();
             console.log();
             return resp;
+        }
+
+        async function getInventory(){
+            var inventoryClient = new WebClient('@Url.Action("GetInventory", "Engineering")', null);
+            var items = await inventoryClient.getAsync();
+            return items;
+        }
+
+        async function saveInventory(inventoryId, jobOrderId, unitSellingPrice){
+            var data = {
+                jobOrderId: jobOrderId,
+                inventoryId: inventoryId,
+                unitSellingPrice: unitSellingPrice
+            };
+            var materialClient = new WebClient('@Url.Action("SaveMaterial", "CustomerSupport")', data);
+            var res = await materialClient.postAsync();
+            return res;
         }
 
         @* async function getInspectionFiles(){

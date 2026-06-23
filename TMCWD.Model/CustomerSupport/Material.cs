@@ -15,8 +15,8 @@ namespace TMCWD.Model.CustomerSupport
         public int Id { get; set; }
         [DisplayName("Inventory Id")]
         public int InventoryId { get; set; }
-        [DisplayName("Request Id")]
-        public int RequestId { get; set; }
+        [DisplayName("Job Order Id")]
+        public int JobOrderId { get; set; }
         [DisplayName("Requested Quantity")]
         public decimal RequestedQuantity { get; set; }
         [DisplayName("Selling Price")]

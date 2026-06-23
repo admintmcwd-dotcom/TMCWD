@@ -8,7 +8,7 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
     {
         public int Id { get; set; }
         public int InventoryId { get; set; }
-        public int RequestId { get; set; }
+        public int JobOrderId { get; set; }
         public decimal RequestedQuantity { get; set; }
         public decimal UnitSellingPrice { get; set; }
         public int CreatedBy { get; set; }

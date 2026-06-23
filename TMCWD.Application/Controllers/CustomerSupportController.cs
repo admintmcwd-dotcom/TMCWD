@@ -243,16 +243,15 @@ namespace TMCWD.Application.Controllers
                     Task<Account> getAccountTask = _accountTransaction.Get(model.AddEditRequest.AccountId);
                     Task<List<RequestDetail>> getRequestDetailsTask = _requestTransaction.GetRequestDetailByRequestId(model.AddEditRequest.Id);
                     Task<List<Recommendation>> getRecommendationsTask = _recommendationTransaction.GetByRequestId(model.AddEditRequest.Id);
-                    Task<List<Material>> getMaterial = _materialTransaction.GetByRequestId(model.AddEditRequest.Id);
+                    //Task<List<Material>> getMaterial = _materialTransaction.GetByJobOrderIdId(model.AddEditRequest.Id);
 
-                    await Task.WhenAll(getCustomerTask, getAccountTask, getRequestDetailsTask, getRecommendationsTask, getMaterial);
+                    await Task.WhenAll(getCustomerTask, getAccountTask, getRequestDetailsTask, getRecommendationsTask);
                     model.CurrentCustomer = getCustomerTask.Result;
                     model.CurrentAccount = getAccountTask.Result;
                     requestDetails = getRequestDetailsTask.Result;
                     model.Recommendations = getRecommendationsTask.Result;
-                    var materials = getMaterial.Result;
-                    if (model.InventoryItems == null || materials == null) model.Materials = new();
-                    else model.Materials = GetMaterialDetails(materials, model.InventoryItems);
+                    //if (model.InventoryItems == null || materials == null) model.Materials = new();
+                    //else model.Materials = GetMaterialDetails(materials, model.InventoryItems);
                 }
             }
 
@@ -320,9 +319,9 @@ namespace TMCWD.Application.Controllers
         #region material
 
         [HttpPost]
-        public async Task<IActionResult> SaveMaterial(int requestId, [FromBody] object data)
+        public async Task<IActionResult> SaveMaterial(int jobOrderId, [FromBody] object data)
         {
-            if (requestId == 0 || data == null) return BadRequest();
+            if (jobOrderId == 0 || data == null) return BadRequest();
 
             string content = JsonSerializer.Serialize(data);
 
@@ -344,7 +343,7 @@ namespace TMCWD.Application.Controllers
             //int.TryParse(quantityProp.GetString(), out int quantity);
 
             Task<Inventory> getInventoryItemTask = _inventoryTransaction.Get(invId);
-            Task<List<Material>> getRequestMaterialsTask = _materialTransaction.GetByRequestId(requestId);
+            Task<List<Material>> getRequestMaterialsTask = _materialTransaction.GetByJobOrderId(jobOrderId);
 
             await Task.WhenAll(getInventoryItemTask, getRequestMaterialsTask);
 
@@ -364,10 +363,16 @@ namespace TMCWD.Application.Controllers
                 RequestedQuantity = quant,
             };
 
-            var savedMaterial = await _materialTransaction.SaveUpdate(_authenticatedUserService.User.Id, requestId, material);
+            var savedMaterial = await _materialTransaction.SaveUpdate(_authenticatedUserService.User.Id, jobOrderId, material);
 
             return Ok(new { material = savedMaterial, inventory = inventoryItem });
 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveMaterial(Material material)
+        {
+            return Ok();
         }
 
         [HttpPut]
@@ -452,6 +457,31 @@ namespace TMCWD.Application.Controllers
             var updatedRecommendation = await _recommendationTransaction.SaveUpdate(recommendation.RequestId, _authenticatedUserService.User.Id, recommendation);
 
             return Ok(updatedRecommendation);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMaterialRequest(int jobOrderId)
+        {
+            Task<List<Material>> getMaterials = _materialTransaction.GetByJobOrderId(jobOrderId);
+            Task<List<Inventory>> getInventory = _inventoryTransaction.GetAll();
+            await Task.WhenAll(getMaterials, getInventory);
+            var materials = getMaterials.Result;
+            var inventory = getInventory.Result;
+            if (materials == null || !materials.Any()) return NoContent();
+
+            var materialInventory = from mats in materials
+                                    join invItems in inventory on mats.InventoryId equals invItems.Id
+                                    select new
+                                    {
+                                        Id = mats.Id,
+                                        InventoryId = invItems.Id,
+                                        Name = invItems.Name,
+                                        OnHand = invItems.Quantity,
+                                        RequestedQuantity = mats.RequestedQuantity,
+                                        SellingPrice = invItems.UnitSellingPrice,
+                                        UOM = invItems.UOM
+                                    };
+            return Ok(materialInventory);
         }
 
         #endregion

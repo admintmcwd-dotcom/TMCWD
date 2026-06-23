@@ -19,6 +19,7 @@ namespace TMCWD.Model.Engineering.Interfaces
         public decimal Quantity { get; set; }
 
         public decimal UnitCost { get; set; }
+
         public decimal UnitSellingPrice { get; set; }
 
         public bool IsActive { get; set; }
