@@ -11,5 +11,7 @@ namespace TMCWD.Data.Services
         Task<Material> SaveUpdate(int userId, int requestId, Material material);
         Task<Material> UpdateQuantityOrNewUnitCost(int userId, int requestId, Material updateMaterial);
 
+        Task<bool> Delete(Material material);
+
     }
 }

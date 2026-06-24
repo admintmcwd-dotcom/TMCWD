@@ -66,6 +66,13 @@ namespace TMCWD.Data.Services
             return updateMaterial;
         }
 
+        public async Task<bool> Delete(Material material)
+        {
+            var removedMaterial = _context.Materials.Remove(material);
+            await _context.SaveChangesAsync();
+            return removedMaterial != null;
+        }
+
     }
 
 }

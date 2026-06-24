@@ -319,60 +319,69 @@ namespace TMCWD.Application.Controllers
         #region material
 
         [HttpPost]
-        public async Task<IActionResult> SaveMaterial(int jobOrderId, [FromBody] object data)
-        {
-            if (jobOrderId == 0 || data == null) return BadRequest();
+        //public async Task<IActionResult> SaveMaterial(int jobOrderId, [FromBody] object data)
+        //{
+        //    if (jobOrderId == 0 || data == null) return BadRequest();
 
-            string content = JsonSerializer.Serialize(data);
+        //    string content = JsonSerializer.Serialize(data);
 
-            if (String.IsNullOrEmpty(content.Trim())) return NoContent();
+        //    if (String.IsNullOrEmpty(content.Trim())) return NoContent();
 
-            using var doc = JsonDocument.Parse(content);
-            var root = doc.RootElement;
+        //    using var doc = JsonDocument.Parse(content);
+        //    var root = doc.RootElement;
 
-            if (root.ValueKind == JsonValueKind.Null) return NoContent();
+        //    if (root.ValueKind == JsonValueKind.Null) return NoContent();
 
-            var inventoryIdProp = root.GetProperty("inventoryId");
-            var quantityProp = root.GetProperty("quantity");
+        //    var inventoryIdProp = root.GetProperty("inventoryId");
+        //    var quantityProp = root.GetProperty("quantity");
 
-            if (inventoryIdProp.ValueKind == JsonValueKind.Null || quantityProp.ValueKind == JsonValueKind.Null) return NoContent();
+        //    if (inventoryIdProp.ValueKind == JsonValueKind.Null || quantityProp.ValueKind == JsonValueKind.Null) return NoContent();
 
-            int invId = inventoryIdProp.GetInt32();
-            int quant = quantityProp.GetInt32();
-            //int.TryParse(inventoryIdProp.GetString(), out int inventoryId);
-            //int.TryParse(quantityProp.GetString(), out int quantity);
+        //    int invId = inventoryIdProp.GetInt32();
+        //    int quant = quantityProp.GetInt32();
+        //    //int.TryParse(inventoryIdProp.GetString(), out int inventoryId);
+        //    //int.TryParse(quantityProp.GetString(), out int quantity);
 
-            Task<Inventory> getInventoryItemTask = _inventoryTransaction.Get(invId);
-            Task<List<Material>> getRequestMaterialsTask = _materialTransaction.GetByJobOrderId(jobOrderId);
+        //    Task<Inventory> getInventoryItemTask = _inventoryTransaction.Get(invId);
+        //    Task<List<Material>> getRequestMaterialsTask = _materialTransaction.GetByJobOrderId(jobOrderId);
 
-            await Task.WhenAll(getInventoryItemTask, getRequestMaterialsTask);
+        //    await Task.WhenAll(getInventoryItemTask, getRequestMaterialsTask);
 
-            Inventory inventoryItem = getInventoryItemTask.Result;
-            List<Material> requestMaterials = getRequestMaterialsTask.Result;
+        //    Inventory inventoryItem = getInventoryItemTask.Result;
+        //    List<Material> requestMaterials = getRequestMaterialsTask.Result;
 
-            if (requestMaterials != null && requestMaterials.Any())
-            {
-                var existingMaterial = requestMaterials.Where(x => x.InventoryId == invId).FirstOrDefault();
-                if (existingMaterial != null) return NoContent();
-            }
+        //    if (requestMaterials != null && requestMaterials.Any())
+        //    {
+        //        var existingMaterial = requestMaterials.Where(x => x.InventoryId == invId).FirstOrDefault();
+        //        if (existingMaterial != null) return NoContent();
+        //    }
 
-            Material material = new()
-            {
-                InventoryId = invId,
-                UnitSellingPrice = inventoryItem.UnitSellingPrice,
-                RequestedQuantity = quant,
-            };
+        //    Material material = new()
+        //    {
+        //        InventoryId = invId,
+        //        UnitSellingPrice = inventoryItem.UnitSellingPrice,
+        //        RequestedQuantity = quant,
+        //    };
 
-            var savedMaterial = await _materialTransaction.SaveUpdate(_authenticatedUserService.User.Id, jobOrderId, material);
+        //    var savedMaterial = await _materialTransaction.SaveUpdate(_authenticatedUserService.User.Id, jobOrderId, material);
 
-            return Ok(new { material = savedMaterial, inventory = inventoryItem });
+        //    return Ok(new { material = savedMaterial, inventory = inventoryItem });
 
-        }
+        //}
 
         [HttpPost]
-        public async Task<IActionResult> SaveMaterial(Material material)
+        public async Task<IActionResult> SaveMaterial(int jobOrderId, [FromBody] Material material)
         {
-            return Ok();
+            var savedMaterial = await _materialTransaction.SaveUpdate(_authenticatedUserService.User.Id, jobOrderId, material);
+            if (savedMaterial == null) return NoContent();
+            return Ok(savedMaterial);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteMaterial(int jobOrderId, int id)
+        {
+            var isSuccess = await _materialTransaction.DeleteMaterial(jobOrderId, id);
+            return Ok(isSuccess);
         }
 
         [HttpPut]

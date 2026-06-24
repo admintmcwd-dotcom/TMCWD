@@ -36,7 +36,7 @@ namespace TMCWD.Data.Controllers
             return Ok(materials);
         }
 
-        [HttpGet("GetByRequestId")]
+        [HttpGet("GetByJobOrderId")]
         public async Task<IActionResult> GetByJobOrderId(int jobOrderId)
         {
             var materials = await _service.GetByJobOrderId(jobOrderId);
@@ -65,6 +65,15 @@ namespace TMCWD.Data.Controllers
             var material = await _service.UpdateQuantityOrNewUnitCost(userId, requestId, forUpdate);
             if(material == null) return NotFound();
             return Ok(material);
+        }
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> DeleteMaterial(int id)
+        {
+            var material = await _service.Get(id);
+            if (material == null) return NotFound();
+            var res = await _service.Delete(material);
+            return Ok(res);
         }
 
     }

@@ -86,6 +86,15 @@ namespace TMCWD.CustomerSupport
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToMaterial(data);
         }
+
+        public async Task<bool> DeleteMaterial(int jobOrderId, int id)
+        {
+            var response = await _webService.Client.DeleteAsync($"api/{jobOrderId}/Material/Delete/{id}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return false;
+            return data == "true";
+        }
+
     }
 
 }

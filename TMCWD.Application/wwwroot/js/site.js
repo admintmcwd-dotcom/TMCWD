@@ -48,9 +48,10 @@ HTMLElement.prototype.setDropdown = function (selectCallBack) {
                                 const elSelectedValues = parentDiv.getElementsByClassName("selected-value");
                                 var itemId = evt.target.parentElement.dataset.itemid;
                                 var itemName = evt.target.parentElement.dataset.itemname;
+                                var unitSellingPrice = evt.target.parentElement.dataset.unitsellingprice;
                                 if (inputs) inputs[0].value = itemName;
                                 if (elSelectedValues) elSelectedValues[0].value = itemId;
-                                if (selectCallBack) selectCallBack(itemId, itemName);
+                                if (selectCallBack) selectCallBack(itemId, itemName, unitSellingPrice);
                                 icon.classList.toggle('fa-chevron-down');
                                 icon.classList.toggle('fa-chevron-up');
                                 elContent[0].classList.toggle("hidden");
@@ -90,6 +91,19 @@ HTMLElement.prototype.setDropdown = function (selectCallBack) {
     }
 };
 
+HTMLElement.prototype.clearDropdown = function () {
+    var select = this;
+
+    if (select.tagName !== 'SELECT') return;
+
+    var parentContainer = select.parentElement;
+
+    var inputText = parentContainer.querySelector('input[type="text"]');
+    var inputHidden = parentContainer.querySelector('input[type="hidden"]');
+    if (inputText) inputText.value = '';
+    if (inputHidden) inputHidden.value = '';
+}
+
 HTMLElement.prototype.DataTable = async function(options){
     const table = this;
     if (table.tagName !== "TABLE" || options.columns == null) return;
@@ -119,6 +133,7 @@ HTMLElement.prototype.DataTable = async function(options){
     }
 
     if (options.processing) {
+        tbody.replaceChildren();
         trDefault.innerHTML = `
         <td colspan="${columnCount}" class="w-full h-32 text-center align-middle">
             <div class="place-items-center">
@@ -209,7 +224,6 @@ HTMLElement.prototype.DataTable = async function(options){
             buttonTd.className = options.buttonColumnClassNames ? options.buttonColumnClassNames : "w-64";
             options.buttons.forEach((button) => {
                 const elButton = document.createElement("button");
-                //elButton.onclick = button.location == null || button.location == '' ? '' : 'window.location.href="' + button.location + '"';
                 elButton.dataset.isset = false;
                 elButton.className = "text-center hover:rounded p-2.5 hover:bg-blue-900 hover:text-white mr-2";
                 const icon = document.createElement("i");
@@ -774,7 +788,7 @@ class WebClient {
     }
 
     async postAsync() {
-        var returnResult = null;
+        let returnResult = null;
         await fetch(this.url, {
             method: 'POST',
             headers: {
@@ -793,7 +807,7 @@ class WebClient {
     }
 
     async postFileAsync() {
-        var returnResult = null;
+        let returnResult = null;
         await fetch(this.url, {
             method: 'POST',
             body: this.data
@@ -809,7 +823,7 @@ class WebClient {
     }
 
     async patchAsync() {
-        var returnResult = null;
+        let returnResult = null;
         await fetch(this.url, {
             method: 'PATCH',
             headers: {
@@ -827,7 +841,7 @@ class WebClient {
     }
 
     async getAsync() {
-        var returnResult = null;
+        let returnResult = null;
         await fetch(this.url, {
             method: 'GET',
             headers: {
@@ -845,7 +859,7 @@ class WebClient {
     }
 
     async putAsync() {
-        var returnResult = null;
+        let returnResult = null;
         await fetch(this.url, {
             method: 'PUT',
             headers: {
@@ -863,6 +877,24 @@ class WebClient {
         return returnResult;
     }
 
+    async deleteAsync() {
+        let returnResult = null;
+        await fetch(this.url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.data)
+        }).then(response => {
+            if (!response.ok)
+                return null;
+            return response.json();
+        }).then(result => {
+            returnResult = result;
+        });
+
+        return returnResult;
+    }
 };
 
 class ModalDialog {

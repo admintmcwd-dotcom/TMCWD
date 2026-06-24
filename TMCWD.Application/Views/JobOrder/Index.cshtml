@@ -138,7 +138,7 @@
         </button>
     </h2>
     <div id="accordion-collapse-body-4" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-4">
-        <div class="w-full grid grid-cols-2 py-4 px-4 gap-2">
+        <div class="w-full grid grid-cols-[50%_15%_35%] py-4 px-4 gap-2">
             <!--Select-->
             <div>
                 <div class="relative w-full">
@@ -146,7 +146,7 @@
                     <select id="cmbMaterials" class="hidden"></select>
                     <div class="relative grid grid-cols-[95%_5%] border rounded-md gap-2 text-sm px-4 py-2">
                         <div class="w-full text-left">
-                            <input class="dropdown-input w-full focus:outline-none" placeholder="Select Material" />
+                            <input type="text" class="dropdown-input w-full focus:outline-none" placeholder="Select Material" />
                         </div>
                         <div class="w-full text-right">
                             <button type="button" class="border-none">
@@ -159,13 +159,16 @@
                     </div>
                 </div>
             </div>
+            <div class="w-full">
+                <input id="txtMaterialQuantity" type="number" step="0.01" class="w-full px-2 py-2 text-sm border rounded-md focus:outline-none" />
+            </div>
             <div>
-                <button id="cmdAdd" class="border rounded-md bg-green-700 px-3 py-2 text-sm text-white hover:bg-green-500">
+                <button id="cmdAddMaterial" class="border rounded-md bg-green-700 px-3 py-2 text-sm text-white hover:bg-green-500 focus:outline-none">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
         </div>
-        <div class="w-full border-bottom border-gray-500">
+        <div class="w-full border-top border-gray-200 px-4 py-4">
             <table id="tblMaterials" class="w-full text-sm text-left rtl:text-right text-body border rounded-md">
                 <thead>
                     <tr class="border-b">
@@ -214,6 +217,7 @@
         var errorList = [];
 
         var filesForUpload = [];
+        var materialData = null;
 
         const imageViewer = document.getElementById('image-viewer');
         imageViewer.ImageViewer();
@@ -239,41 +243,20 @@
                 });
             }
 
-            cmbMaterials.setDropdown((itemId, itemName) => {
+            cmbMaterials.setDropdown((itemId, itemName, unitSellingPrice) => {
                     console.log('Id:', itemId);
                     console.log('Name:', itemName);
+                    console.log('Unit Selling Price:', unitSellingPrice);
+                    materialData = {
+                        inventoryId: itemId,
+                        itemName: itemName,
+                        unitSellingPrice: unitSellingPrice,
+                        requestedQuantity: 0
+                    };
             });
         }
 
-        const tblMaterials = document.getElementById('tblMaterials');
-        if(tblMaterials){
-            tblMaterials.DataTable({
-                processing: true,
-                getUrl: '@Url.Action("GetMaterialRequest", "CustomerSupport")' + '?jobOrderId=' + '@Model.JobOrderId',
-                rowClassNames: 'border-b hover:bg-gray-100',
-                stockCheck: { srcDataMember: 'onHand', compareToDataMember: 'requiredQuantity' },
-                columns: [
-                    {
-                        dataMember: 'name'
-                    },
-                    {
-                        dataMember: 'uom'
-                    },
-                    {
-                        dataMember: 'onHand'
-                    },
-                    {
-                        dataMember: 'requestedQuantity'
-                    },
-                    {
-                        dataMember: 'sellingPrice'
-                    }
-                ],
-                buttons:[
-                    { className: 'fa-solid fa-trash', clickCallBack: (data) => { console.log('Data:', data); } }
-                ]
-            });
-        }
+        refreshMaterial();
 
         getJobOrderDetails(@Model.JobOrderId, @Model.RequestId);
 
@@ -305,6 +288,34 @@
                 onError: (error) => { handlerError(error); },
                 onChange: (files) => { filesForUpload = files; console.log('Files:', files); },
                 onRemove: (file) => { removeFile(file); },
+            });
+        }
+
+        const cmdAddMaterial = document.getElementById('cmdAddMaterial');
+        if(cmdAddMaterial){
+            cmdAddMaterial.addEventListener('click', async (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                const txtMaterialQuantity = document.getElementById('txtMaterialQuantity');
+                if(txtMaterialQuantity){
+                    var requestedQuantity = txtMaterialQuantity.value;
+                    if(requestedQuantity == null || requestedQuantity == ''){
+                        handlerError('Quantity is requried');
+                        return;
+                    }
+                    materialData.requestedQuantity = + requestedQuantity;
+                    var saveMaterialClient = new WebClient('@Url.Action("SaveMaterial", "CustomerSupport")' + '?jobOrderId=' + '@Model.JobOrderId', materialData);
+                    var result = await saveMaterialClient.postAsync();
+                    if(result){
+                        cmbMaterials.clearDropdown();
+                        txtMaterialQuantity.value = '';
+                        refreshMaterial();
+                    }
+                }
+                else{
+                    handlerError('Quantity is requried');
+                }
             });
         }
 
@@ -486,6 +497,45 @@
             };
             var materialClient = new WebClient('@Url.Action("SaveMaterial", "CustomerSupport")', data);
             var res = await materialClient.postAsync();
+            return res;
+        }
+
+        function refreshMaterial(){
+            const tblMaterials = document.getElementById('tblMaterials');
+            if(tblMaterials){
+                tblMaterials.DataTable({
+                    processing: true,
+                    getUrl: '@Url.Action("GetMaterialRequest", "CustomerSupport")' + '?jobOrderId=' + '@Model.JobOrderId',
+                    rowClassNames: 'border-b hover:bg-gray-100',
+                    stockCheck: { srcDataMember: 'onHand', compareToDataMember: 'requestedQuantity' },
+                    columns: [
+                        { dataMember: 'name' },
+                        { dataMember: 'uom' },
+                        { dataMember: 'onHand' },
+                        { dataMember: 'requestedQuantity' },
+                        { dataMember: 'sellingPrice' }
+                    ],
+                    buttons:[
+                        { 
+                            className: 'fa-solid fa-trash', 
+                            clickCallback: async (data) => {
+                                console.log('Data:', data);
+                                var res = await deleteRequestedMaterial(data);
+                                console.log('Result:', res);
+                                if(res){
+                                    refreshMaterial();
+                                }
+                            }
+                        }
+                    ]
+                });
+            }
+        }
+
+        async function deleteRequestedMaterial(material){
+            console.log('Material:', material);
+            let materialClient = new WebClient('@Url.Action("DeleteMaterial", "CustomerSupport")' + '?jobOrderId=' + '@Model.JobOrderId' + '&id=' + material.id, null);
+            var res = await materialClient.deleteAsync();
             return res;
         }
 
