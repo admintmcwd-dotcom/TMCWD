@@ -59,8 +59,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-23T05:48:22.107Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -80,8 +79,7 @@
               "RelativeToolTip": "TMCWD.Application\\Controllers\\CustomerSupportController.cs",
               "ViewState": "AgIAAHABAAAAAAAAAAASwH8BAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-23T04:41:36.693Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-23T04:41:36.693Z"
             },
             {
               "$type": "Document",
@@ -91,7 +89,7 @@
               "RelativeDocumentMoniker": "TMCWD.Application\\Views\\JobOrder\\Index.cshtml",
               "ToolTip": "C:\\Projects\\TMCWD\\TMCWD.Application\\Views\\JobOrder\\Index.cshtml",
               "RelativeToolTip": "TMCWD.Application\\Views\\JobOrder\\Index.cshtml",
-              "ViewState": "AgIAAP0BAAAAAAAAAAAAAA0CAAA2AAAAAAAAAA==",
+              "ViewState": "AgIAAMsBAAAAAAAAAAAqwNkBAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-06-17T06:36:37.839Z",
               "EditorCaption": ""
@@ -106,8 +104,7 @@
               "RelativeToolTip": "TMCWD.CustomerSupport\\MaterialTransaction.cs",
               "ViewState": "AgIAADYAAAAAAAAAAAAmwF8AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-23T07:48:56.806Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-23T07:48:56.806Z"
             },
             {
               "$type": "Document",
@@ -119,8 +116,7 @@
               "RelativeToolTip": "TMCWD.Application\\Views\\CustomerSupport\\Requests.cshtml",
               "ViewState": "AgIAAHgAAAAAAAAAAAAAAGkAAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-23T07:11:08.092Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-23T07:11:08.092Z"
             },
             {
               "$type": "Document",
@@ -132,8 +128,7 @@
               "RelativeToolTip": "TMCWD.Data\\Services\\MaterialService.cs",
               "ViewState": "AgIAADEAAAAAAAAAAAAcwEQAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-23T07:46:13.121Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-23T07:46:13.121Z"
             },
             {
               "$type": "Document",
@@ -157,8 +152,7 @@
               "RelativeToolTip": "TMCWD.Application\\wwwroot\\js\\site.js",
               "ViewState": "AgIAAG0DAAAAAAAAAAAgwHwDAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-06-17T03:10:23.868Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-17T03:10:23.868Z"
             },
             {
               "$type": "Document",
