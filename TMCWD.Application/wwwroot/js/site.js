@@ -48,9 +48,10 @@ HTMLElement.prototype.setDropdown = function (selectCallBack) {
                                 const elSelectedValues = parentDiv.getElementsByClassName("selected-value");
                                 var itemId = evt.target.parentElement.dataset.itemid;
                                 var itemName = evt.target.parentElement.dataset.itemname;
+                                var unitSellingPrice = evt.target.parentElement.dataset.unitsellingprice;
                                 if (inputs) inputs[0].value = itemName;
                                 if (elSelectedValues) elSelectedValues[0].value = itemId;
-                                if (selectCallBack) selectCallBack(itemId, itemName);
+                                if (selectCallBack) selectCallBack(itemId, itemName, unitSellingPrice);
                                 icon.classList.toggle('fa-chevron-down');
                                 icon.classList.toggle('fa-chevron-up');
                                 elContent[0].classList.toggle("hidden");
@@ -74,6 +75,11 @@ HTMLElement.prototype.setDropdown = function (selectCallBack) {
                             [...result].forEach((el) => {
                                 elContent[0].appendChild(el);
                             });
+                            if (elContent[0].classList.contains('hidden')) {
+                                icon.classList.toggle('fa-chevron-down');
+                                icon.classList.toggle('fa-chevron-up');
+                                elContent[0].classList.toggle("hidden");
+                            }
                         });
                     }
 
@@ -84,6 +90,19 @@ HTMLElement.prototype.setDropdown = function (selectCallBack) {
         }
     }
 };
+
+HTMLElement.prototype.clearDropdown = function () {
+    var select = this;
+
+    if (select.tagName !== 'SELECT') return;
+
+    var parentContainer = select.parentElement;
+
+    var inputText = parentContainer.querySelector('input[type="text"]');
+    var inputHidden = parentContainer.querySelector('input[type="hidden"]');
+    if (inputText) inputText.value = '';
+    if (inputHidden) inputHidden.value = '';
+}
 
 HTMLElement.prototype.DataTable = async function(options){
     const table = this;
@@ -114,6 +133,7 @@ HTMLElement.prototype.DataTable = async function(options){
     }
 
     if (options.processing) {
+        tbody.replaceChildren();
         trDefault.innerHTML = `
         <td colspan="${columnCount}" class="w-full h-32 text-center align-middle">
             <div class="place-items-center">
@@ -204,7 +224,6 @@ HTMLElement.prototype.DataTable = async function(options){
             buttonTd.className = options.buttonColumnClassNames ? options.buttonColumnClassNames : "w-64";
             options.buttons.forEach((button) => {
                 const elButton = document.createElement("button");
-                //elButton.onclick = button.location == null || button.location == '' ? '' : 'window.location.href="' + button.location + '"';
                 elButton.dataset.isset = false;
                 elButton.className = "text-center hover:rounded p-2.5 hover:bg-blue-900 hover:text-white mr-2";
                 const icon = document.createElement("i");
@@ -530,6 +549,231 @@ HTMLElement.prototype.Dropzone = function (options) {
 
 };
 
+HTMLElement.prototype.LoadFindings = async function (options) {
+    var findingsContainer = this;
+    if (findingsContainer.tagName !== 'DIV') return;
+
+    if (!findingsContainer.classList.contains('findings-container')) return;
+
+    if (options.getImageDataUrl) {
+        const loadImageClient = new WebClient(options.getImageDataUrl, null);
+        var resp = await loadImageClient.getAsync();
+        if (resp) {
+            if (resp.findings) {
+                resp.findings.forEach((finding) => {
+                    const numberOfColumns = options.numberOfColumns ?? 4;
+                    findingsContainer.replaceChildren();
+                    const divFinding = document.createElement('div');
+                    divFinding.classList.add('col-span-' + numberOfColumns, 'w-full');
+                    const pFindingNarrative = document.createElement('p');
+                    pFindingNarrative.classList.add('w-full', 'p-4', 'border', 'rounded-md', 'text-sm');
+                    pFindingNarrative.textContent = finding.detail;
+                    divFinding.appendChild(pFindingNarrative);
+                    findingsContainer.appendChild(divFinding);
+                });
+            }
+
+            if (resp.files) {
+                resp.files.forEach((file) => {
+                    const divImageItem = document.createElement('div');
+                    divImageItem.classList.add('w-32', 'border', 'p-2', 'rounded-md', 'border-gray-400');
+                    const img = document.createElement('img');
+                    img.classList.add('w-full', 'h-full');
+                    img.src = file.path + '/' + file.physicalFilename;
+
+                    const lnk = document.createElement('a');
+                    lnk.href = '#';
+                    lnk.title = file.originalFilename;
+                    lnk.alt = file.originalFilename;
+                    lnk.appendChild(img);
+
+                    divImageItem.appendChild(lnk);
+                    findingsContainer.appendChild(divImageItem);
+
+                    lnk.addEventListener('click', (evt) => {
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                        const imgModal = document.getElementById("image-viewer");
+                        const img = imgModal.querySelector('img');
+                        img.src = file.path + '/' + file.physicalFilename;
+                        img.alt = file.originalFilename;
+                        imgModal.classList.toggle('hidden');
+                    });
+                });
+            }
+            if (options.loadComplete) {
+                options.loadComplete(true, "Successfully loaded findigs");
+            }
+        }
+        else {
+            if (options.loadComplete) {
+                options.loadComplete(false, "No records found");
+            }
+        }
+    }
+};
+
+HTMLElement.prototype.LoadImages = async function (options) {
+    var imageContainer = this;
+    if (imageContainer.tagName !== 'DIV') return;
+
+    if (!imageContainer.classList.contains('image-container')) return;
+    
+    if (options.getImageDataUrl) {
+        //const loadImageClient = new WebClient(options.getImageDataUrl, null);
+        //var resp = await loadImageClient.getAsync();
+        //if (resp) {
+            const divImageItem = document.createElement('div');
+            divImageItem.classList.add('w-32', 'border', 'p-2', 'rounded-md', 'border-gray-500');
+            const img = document.createElement('img');
+            img.classList.add('h-16', 'mb-2');
+            img.src = '/images/25d4be42ce174de8b31791b886fe3dcf.png';
+            const pName = document.createElement('p');
+            pName.classList.add('w-full', 'text-center', 'text-xs', 'font-bold');
+            pName.textContent = 'ict policy 2025.png';
+            const lnk = document.createElement('a');
+            lnk.href = '#';
+            lnk.appendChild(img);
+            lnk.appendChild(pName);
+            divImageItem.appendChild(lnk);
+            imageContainer.replaceChildren();
+            imageContainer.appendChild(divImageItem);
+        //}
+    }
+};
+
+HTMLElement.prototype.ImageViewer = function () {
+    const viewerContainer = this;
+    var isInitialization = true;
+    if (viewerContainer.tagName !== 'DIV') return;
+    if (!viewerContainer.classList.contains('image-viewer')) return;
+
+    if (!viewerContainer.classList.contains('absolute')) viewerContainer.classList.add('absolute');
+    if (!viewerContainer.classList.contains('top-0')) viewerContainer.classList.add('top-0');
+    if (!viewerContainer.classList.contains('left-0')) viewerContainer.classList.add('left-0');
+    if (!viewerContainer.classList.contains('h-screen')) viewerContainer.classList.add('h-screen');
+    if (!viewerContainer.classList.contains('w-screen')) viewerContainer.classList.add('w-screen');
+    if (!viewerContainer.classList.contains('bg-gray-500')) viewerContainer.classList.add('bg-gray-500');
+    if (!viewerContainer.classList.contains('bg-opacity-30')) viewerContainer.classList.add('bg-opacity-30');
+    if (!viewerContainer.classList.contains('hidden')) viewerContainer.classList.add('hidden');
+
+    const backDrop = document.createElement('div');
+    backDrop.classList.add('absolute', 'inset-0');
+
+    viewerContainer.appendChild(backDrop);
+
+    const viewerPanel = document.createElement('div');
+    viewerPanel.classList.add('relative', 'border', 'border-gray-500', 'z-10', 'top-1/2', 'bg-white', 'left-1/2', '-translate-y-1/2', '-translate-x-1/2');
+    viewerPanel.classList.add('rounded-lg', 'text-black', 'w-1/2', 'h-5/6', 'transition-all', 'transition-discrete', 'delay-150', 'duration-300');
+
+    viewerContainer.appendChild(viewerPanel);
+
+    const controlPanel = document.createElement('div');
+    controlPanel.classList.add('grid', 'grid-cols-2', 'w-full', 'pt-1', 'px-2.5', 'text-lg', 'gap-6', 'mb-1');
+
+    const zoomButtonPanel = document.createElement('div');
+    zoomButtonPanel.classList.add('text-left');
+
+    const zoomInButton = document.createElement('a');
+    zoomInButton.classList.add('image-viewer-zoom-in', 'focus:border-none', 'mr-2', 'hidden');
+    zoomInButton.href = '#';
+
+    var scales = ['scale-50', 'scale-75', 'scale-100'];
+
+    zoomInButton.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        for (let i = 0; i < scales.length; i++) {
+            let scale = scales[i];
+            if (viewerPanel.classList.contains(scale)) {
+                let currentScaleClass = '';
+                if (i + 1 >= scales.length) currentScaleClass = scales[scales.length - 1];
+                else currentScaleClass = scales[i + 1];
+
+                viewerPanel.classList.toggle(scale);
+                viewerPanel.classList.toggle(currentScaleClass);
+                break;
+            }
+        }
+
+    });
+
+    const zoomInIcon = document.createElement('i');
+    zoomInIcon.classList.add('fa-solid', 'fa-circle-plus');
+
+    zoomInButton.appendChild(zoomInIcon);
+
+    zoomButtonPanel.appendChild(zoomInButton);
+
+    const zoomOutButton = document.createElement('a');
+    zoomOutButton.classList.add('image-viewer-close', 'focus:border-none', 'hidden');
+    zoomOutButton.href = '#';
+
+    zoomOutButton.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        for (let i = 0; i < scales.length; i++) {
+            let scale = scales[i];
+            if (viewerPanel.classList.contains(scale)) {
+                let currentScaleClass = '';
+                if (i - 1 <= 0) currentScaleClass = scales[0];
+                else currentScaleClass = scales[i - 1];
+
+                viewerPanel.classList.toggle(scale);
+                viewerPanel.classList.toggle(currentScaleClass);
+                break;
+            }
+        }
+
+    });
+
+    const zoomOutButtonIcon = document.createElement('i');
+    zoomOutButtonIcon.classList.add('fa-solid', 'fa-circle-minus');
+
+    zoomOutButton.appendChild(zoomOutButtonIcon);
+
+    zoomButtonPanel.appendChild(zoomOutButton);
+
+    controlPanel.appendChild(zoomButtonPanel);
+
+    const closeButtonPanel = document.createElement('div');
+    closeButtonPanel.classList.add('text-right');
+
+    const closeButton = document.createElement('a');
+    closeButton.classList.add('image-viewer-close', 'focus:display-none');
+    closeButton.href = '#';
+
+    const closeIcon = document.createElement('i');
+    closeIcon.classList.add('fa-solid', 'fa-xmark');
+
+    closeButton.appendChild(closeIcon);
+    closeButtonPanel.appendChild(closeButton);
+
+    closeButton.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        viewerContainer.classList.toggle('hidden');
+
+    });
+
+    controlPanel.appendChild(closeButtonPanel);
+
+    viewerPanel.appendChild(controlPanel);
+
+    const imageContainer = document.createElement('div');
+    imageContainer.classList.add('w-full', 'h-full');
+    const image = document.createElement('img');
+    image.classList.add('pb-6', 'w-full', 'h-full');
+    imageContainer.appendChild(image);
+
+    viewerPanel.appendChild(imageContainer);
+    viewerContainer.appendChild(viewerPanel);
+
+};
+
 const convertBtoMB = function (sizeInByte) {
     return (sizeInByte / (1024 * 1024)).toFixed(2);
 };
@@ -544,7 +788,7 @@ class WebClient {
     }
 
     async postAsync() {
-        var returnResult = null;
+        let returnResult = null;
         await fetch(this.url, {
             method: 'POST',
             headers: {
@@ -563,7 +807,7 @@ class WebClient {
     }
 
     async postFileAsync() {
-        var returnResult = null;
+        let returnResult = null;
         await fetch(this.url, {
             method: 'POST',
             body: this.data
@@ -579,7 +823,7 @@ class WebClient {
     }
 
     async patchAsync() {
-        var returnResult = null;
+        let returnResult = null;
         await fetch(this.url, {
             method: 'PATCH',
             headers: {
@@ -597,7 +841,7 @@ class WebClient {
     }
 
     async getAsync() {
-        var returnResult = null;
+        let returnResult = null;
         await fetch(this.url, {
             method: 'GET',
             headers: {
@@ -615,7 +859,7 @@ class WebClient {
     }
 
     async putAsync() {
-        var returnResult = null;
+        let returnResult = null;
         await fetch(this.url, {
             method: 'PUT',
             headers: {
@@ -633,6 +877,24 @@ class WebClient {
         return returnResult;
     }
 
+    async deleteAsync() {
+        let returnResult = null;
+        await fetch(this.url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.data)
+        }).then(response => {
+            if (!response.ok)
+                return null;
+            return response.json();
+        }).then(result => {
+            returnResult = result;
+        });
+
+        return returnResult;
+    }
 };
 
 class ModalDialog {

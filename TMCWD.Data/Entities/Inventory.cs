@@ -25,7 +25,7 @@ namespace TMCWD.Data.Entities
         public decimal UnitCost { get; set; }
 
         [Required, Column("UnitSellingPrice")]
-        public decimal UnitSellingPricer { get; set; }
+        public decimal UnitSellingPrice { get; set; }
 
         [Column("IsActive")]
         public bool IsActive { get; set; }

@@ -28,12 +28,13 @@ namespace TMCWD.Application.Controllers
             _inspectionTypeTransaction = inspectionTypeTransaction;
         }
 
-        public async Task<IActionResult> Index(int id, int requestId)
+        public async Task<IActionResult> Index(int id, int requestId, int status)
         {
             FindingViewModel viewModel = new()
             {
                 JobOrderId = id,
-                RequestId = requestId
+                RequestId = requestId,
+                Status = (JobOrderStatus)status
             };
             return View(viewModel);
         }
@@ -87,7 +88,7 @@ namespace TMCWD.Application.Controllers
             var requestDetail = await _requestTransaction.GetRequestDetail(jobOrder.RequestDetailId, requestId);
             var inspectionType = await _inspectionTypeTransaction.Get(requestDetail.RequestTypeId);
 
-            return Ok(new { OrderNumber = jobOrder.JobOrderNumber, ServiceType = inspectionType.Name, DateLogged = request.DateCreated, Status = jobOrder.Status.GetStatusString() });
+            return Ok(new { OrderNumber = jobOrder.JobOrderNumber, ServiceType = inspectionType.Name, DateLogged = request.DateCreated, Status = jobOrder.Status.GetStatusString(), StatusValue = (int)jobOrder.Status });
         }
 
         [HttpPost]

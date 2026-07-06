@@ -17,11 +17,11 @@ namespace TMCWD.Model.CustomerSupport
         [DisplayName("Order Id")]
         public int JobOrderId { get; set; }
         [DisplayName("Request File Type")]
-        public RequestFileType RequestType { get; set; }
+        public RequestFileType RequestFileType { get; set; }
         [DisplayName("File Type")]
         public FileType Type { get; set; }
         [DisplayName("Size")]
-        public decimal Size { get; set; }
+        public long Size { get; set; }
         [DisplayName("File Path")]
         public string Path { get; set; } = string.Empty;
         [DisplayName("Physical Filename")]

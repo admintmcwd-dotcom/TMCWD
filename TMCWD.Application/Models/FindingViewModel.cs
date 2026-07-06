@@ -11,6 +11,8 @@
 
         public string Details { get; set; } = string.Empty;
 
+        public JobOrderStatus Status { get; set; }
+
         public List<IFormFile> FindingFiles { get; set; } = new();
 
     }

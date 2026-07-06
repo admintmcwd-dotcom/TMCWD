@@ -41,15 +41,18 @@
                 </p>
             </div>
         </div>
-        <div class="w-full text-right px-4 pb-4">
+        <div id="divStatusButtons" class="w-full text-right px-4 pb-4 pointer-events-none">
             <button id="btnClose" type="button" class="px-4 py-2 text-sm text-white bg-blue-700 text-black font-semibold rounded-md hover:bg-blue-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
                 <i class="fa-solid fa-door-closed mr-2" aria-hidden="true"></i>Close
             </button>
-            <button id="btnReject" type="button" class="px-4 py-2 text-sm text-white bg-red-700 text-black font-semibold rounded-md hover:bg-red-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
+            <button id="btnReject" type="button" class="px-4 py-2 text-sm text-white bg-red-700 text-black font-semibold rounded-md hover:bg-red-500 transition duration-150 hidden" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
                 <i class="fa-solid fa-times mr-2"></i>Reject
             </button>
-            <button id="btnApprove" type="button" class="px-4 py-2 text-sm text-white bg-green-700 text-black font-semibold rounded-md hover:bg-green-500 transition duration-150" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
+            <button id="btnApprove" type="button" class="px-4 py-2 text-sm text-white bg-green-700 text-black font-semibold rounded-md hover:bg-green-500 transition duration-150 hidden" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
                 <i class="fa-solid fa-check mr-2" aria-hidden="true"></i>Approve
+            </button>
+            <button id="btnSubmit" type="button" class="px-4 py-2 text-sm text-white bg-green-700 text-black font-semibold rounded-md hover:bg-green-500 transition duration-150 hidden" onclick="location.href='@Url.Action("Requests", "CustomerSupport")'">
+                <i class="fa-solid fa-paper-plane mr-2" aria-hidden="true"></i>Submit
             </button>
         </div>
     </div>
@@ -82,9 +85,8 @@
         </button>
     </h2>
     <div id="accordion-collapse-body-3" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-3">
-        <div class="grid gap-6 mb-6 md:grid-cols-[80%_20%] px-4 py-4">
+        <div id="finding-container" class="grid gap-6 mb-6 md:grid-cols-[80%_20%] px-4 py-4 pointer-events-none">
             <div>
-                @* <textarea id="txtFinding" rows="4" class="w-full border rounded-md px-2 py-2" required placeholder="Findings . . ." ></textarea> *@
                 @Html.TextAreaFor(x => x.Details, new { id = "txtFinding", rows = "4", @class = "w-full border rounded-md px-2 py-2", placeholder = "Findings . . .", required = "required" })
             </div>
             <div>
@@ -96,31 +98,24 @@
                 <div class="grid gap-6 md:grid-cols-2">
                     <div>
                         <!-- Findings File Upload -->
-                        <form id="frmDropzone" enctype="multipart/form-data" method="post" action='@Url.Action("SaveFinding", "Finding")'>
-                        @* @using (Html.BeginForm("SaveFinding", "Finding", FormMethod.Post, new { id = "frmFindingDz" }))
-                        {  *@  
-                            @Html.HiddenFor(x => x.Details, new { id = "hdDetails" })
-                            @Html.HiddenFor(x => x.JobOrderId, new { id = "hdJobOrderId" })
-                            <div id="findings-dropzone" class="flex items-center justify-center w-full drop-zone">
-                                <div class="flex flex-col items-center justify-center w-full h-64 bg-neutral-secondary-medium border border-dashed border-default-strong rounded-md">
-                                    <div class="flex flex-col items-center justify-center text-body pt-5 pb-6">
-                                        <svg class="w-8 h-8 mb-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01" /></svg>
-                                        <p class="mb-2 text-sm">Click the button below or drag and drop file(s) to upload</p>
-                                        <p class="text-xs mb-4">Allowed Files: <span class="font-semibold">.png, .jgp, .img</span></p>
-                                        <p class="text-xs mb-4">Max. File Size: <span class="font-semibold">30MB</span></p>
-                                        <!-- Upload Button -->
-                                        <button type="button" onclick="document.getElementById('findingFiles').click()" class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-500 box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-md text-sm px-3 py-2 focus:outline-none">
-                                            <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" /></svg>
-                                            Browse file
-                                        </button>
-                                    </div>
+                        <div id="findings-dropzone" class="flex items-center justify-center w-full drop-zone">
+                            <div class="flex flex-col items-center justify-center w-full h-64 bg-neutral-secondary-medium border border-dashed border-default-strong rounded-md">
+                                <div class="flex flex-col items-center justify-center text-body pt-5 pb-6">
+                                    <svg class="w-8 h-8 mb-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01" /></svg>
+                                    <p class="mb-2 text-sm">Click the button below or drag and drop file(s) to upload</p>
+                                    <p class="text-xs mb-4">Allowed Files: <span class="font-semibold">.png, .jgp, .img</span></p>
+                                    <p class="text-xs mb-4">Max. File Size: <span class="font-semibold">30MB</span></p>
+                                    <!-- Upload Button -->
+                                    <button type="button" onclick="document.getElementById('findingFiles').click()" class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-500 box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-md text-sm px-3 py-2 focus:outline-none">
+                                        <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" /></svg>
+                                        Browse file
+                                    </button>
                                 </div>
-                                <!-- Hidden File Input (Outside Label) -->
-                                <input id="findingFiles" name="findingFiles" asp-for="FindingFiles" type="file" class="hidden" multiple />
                             </div>
-                            @* } *@
-                        </form>
-                                <!-- End Findings File Upload -->
+                            <!-- Hidden File Input (Outside Label) -->
+                            <input id="findingFiles" name="findingFiles" asp-for="FindingFiles" type="file" class="hidden" multiple />
+                        </div>
+                        <!-- End Findings File Upload -->
                     </div>
                     <div id="fileListDiv" class="border rounded-md mr-7 p-2">
                         <!-- Images here -->
@@ -128,29 +123,147 @@
                 </div>
             </div>
         </div>
+
+        <div id="divFiles" class="findings-container w-full grid grid-cols-4 gap-4 px-4 py-4 hidden">
+            <div class="w-full col-span-4 text-center p-4">
+                No record(s) found . . .
+            </div>
+        </div>
     </div>
-    <!--Recommendation-->
-    <h2 id="accordion-collapse-heading-3" class="bg-gray-300">
-        <button id="accordion-button-item-3" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-3" aria-expanded="true" aria-controls="accordion-collapse-body-3">
-            <span>Findings</span>
-            <svg id="accordion-icon-item-3" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
+    <!--Materials-->
+    <h2 id="accordion-collapse-heading-4" class="bg-gray-300">
+        <button id="accordion-button-item-4" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-4" aria-expanded="true" aria-controls="accordion-collapse-body-4">
+            <span>Materials</span>
+            <svg id="accordion-icon-item-4" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
         </button>
     </h2>
-    <div id="accordion-collapse-body-3" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-3">
-        
+    <div id="accordion-collapse-body-4" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default" aria-labelledby="accordion-collapse-heading-4">
+        <div id="divMaterial" class="w-full grid grid-cols-[50%_15%_35%] py-4 px-4 gap-2 hidden">
+            <!--Select-->
+            <div>
+                <div class="relative w-full">
+                    <input type="hidden" class="selected-value" />
+                    <select id="cmbMaterials" class="hidden"></select>
+                    <div class="relative grid grid-cols-[95%_5%] border rounded-md gap-2 text-sm px-4 py-2">
+                        <div class="w-full text-left">
+                            <input type="text" class="dropdown-input w-full focus:outline-none" placeholder="Select Material" />
+                        </div>
+                        <div class="w-full text-right">
+                            <button type="button" class="border-none">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="dropdown-options" class="absolute dropdown-options w-full mt-1 border rounded-md py-2 px-2 bg-white max-h-64 overflow-y-scroll hidden">
+                        <p class="w-full hover:bg-blue-500">No materials</p>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full">
+                <input id="txtMaterialQuantity" type="number" step="0.01" class="w-full px-2 py-2 text-sm border rounded-md focus:outline-none" />
+            </div>
+            <div>
+                <button id="cmdAddMaterial" class="border rounded-md bg-green-700 px-3 py-2 text-sm text-white hover:bg-green-500 focus:outline-none">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="w-full border-top border-gray-200 px-4 py-4">
+            <table id="tblMaterials" class="w-full text-sm text-left rtl:text-right text-body border rounded-md">
+                <thead>
+                    <tr class="border-b">
+                        <th scope="col" class="px-6 py-3 font-medium">Name</th>
+                        <th scope="col" class="px-6 py-3 font-medium">UOM</th>
+                        <th scope="col" class="px-6 py-3 font-medium">On Hand</th>
+                        <th scope="col" class="px-6 py-3 font-medium">Requested</th>
+                        <th scope="col" class="px-6 py-3 font-medium">Selling Price</th>
+                        <th id="columnButton" scope="col" class="px-6 py-3 font-medium"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6" class="text-center px-4 py-4">
+                            No record(s) found . . .
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--Recommendation-->
+    <h2 id="accordion-collapse-heading-5" class="bg-gray-300">
+        <button id="accordion-button-item-5" type="button" class="collapsible-button flex items-center justify-between w-full p-5 font-medium rtl:text-right text-body rounded-t-base border border-t-0 border-x-0 border-b-default hover:text-heading hover:bg-neutral-secondary-medium gap-3" data-accordion-target="#accordion-collapse-body-5" aria-expanded="true" aria-controls="accordion-collapse-body-5">
+            <span>Recommendation</span>
+            <svg id="accordion-icon-item-5" data-accordion-icon class="w-5 h-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" /></svg>
+        </button>
+    </h2>
+    <div id="accordion-collapse-body-5" class="collapsible-body bg-white border border-s-0 border-e-0 border-t-0 border-b-default pr-4" aria-labelledby="accordion-collapse-heading-5">
+        <div id="divRecommendationEntry" class="grid grid-cols-[80%_20%] px-4 py-4 gap-2 hidden">
+            <div>
+                <textarea id="txtRecommendation" rows="4" class="w-full border rounded-md text-black p-4 focus:border-gray-300 focus:outline-none" placeholder="Recommendation"></textarea>
+            </div>
+            <div>
+                <button id="btnAddRecommendation" type="button" class="text-white bg-green-700 border rounded-md py-2 px-3 text-sm hover:bg-green-500">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="w-full border rounded-md">
+            <div class="w-full h-16 text-sm text-center p-4 text-sm">No record(s) found . . . .</div>
+        </div>
     </div>
 </div>
 
+<div id="image-viewer" class="image-viewer"></div>
+
 <script type="text/javascript">
 
-    document.addEventListener("DOMContentLoaded", function(event) {
+    document.addEventListener("DOMContentLoaded", async function(event) {
 
         const alert = new Alert();
         var errorList = [];
 
         var filesForUpload = [];
+        var materialData = null;
+        var jobOrderDetails = null;
 
         getJobOrderDetails(@Model.JobOrderId, @Model.RequestId);
+
+        const imageViewer = document.getElementById('image-viewer');
+        imageViewer.ImageViewer();
+
+        const cmbMaterials = document.getElementById('cmbMaterials');
+        if(cmbMaterials){
+            var materials = await getInventory();
+
+            if(materials){
+                const dropdownOptions = document.getElementById('dropdown-options');
+                dropdownOptions.replaceChildren();
+                [...materials].forEach((material) => {
+                    const lnk = document.createElement('a');
+                    lnk.href = '#';
+                    const par = document.createElement('p');
+                    par.classList.add('w-full', 'px-2', 'py-2', 'hover:bg-blue-500', 'hover:text-white');
+                    par.textContent = material.name;
+                    lnk.appendChild(par);
+                    lnk.dataset.itemid = material.id;
+                    lnk.dataset.itemname = material.name;
+                    lnk.dataset.unitsellingprice = material.unitSellingPrice;
+                    dropdownOptions.appendChild(lnk);
+                });
+            }
+
+            cmbMaterials.setDropdown((itemId, itemName, unitSellingPrice) => {
+                materialData = {
+                    inventoryId: itemId,
+                    itemName: itemName,
+                    unitSellingPrice: unitSellingPrice,
+                    requestedQuantity: 0
+                };
+            });
+        }
+
+        //refreshMaterial();
 
         const collapsePanel = document.getElementById("accordion-collapse-joborder");
         if(collapsePanel) collapsePanel.Collapsible();
@@ -239,8 +352,6 @@
                     var postedFile = postFile();
                 }
 
-                moveToNextStatus();
-
             });
         }
 
@@ -253,9 +364,9 @@
                 formData.append('files', file);
             }
 
-            var fileClient = new WebClient('@Url.Action("SaveFindingFile", "Finding")', formData);
+            var fileClient = new WebClient('@Url.Action("SaveFindingFile", "Finding")' + '?jobOrderId=' + '@Model.JobOrderId', formData);
             await fileClient.postFileAsync();
-        }
+        };
 
         function showError(){
             var innerHtml = `<ul>`;
@@ -271,7 +382,7 @@
                     autoHide: true
                 });
             }
-        }
+        };
 
         function handlerError(error){
             alert.show({
@@ -307,22 +418,72 @@
 
         async function getJobOrderDetails(jobOrderId, requestId){
             var joApi = new WebClient('@Url.Action("GetJobOrder", "JobOrder")' + '?jobOrderId=' + jobOrderId + '&requestId=' + requestId, null);
-            var jo = await joApi.getAsync();
+            jobOrderDetails = await joApi.getAsync();
 
-            if(jo){
-
-                console.log('Job Order Details:', jo);
-
+            if(jobOrderDetails){
                 const pOrderNumber = document.getElementById("pOrderNumber");
                 const pServiceType = document.getElementById("pServiceType");
                 const pDateLogged = document.getElementById("pDateLogged");
                 const pStatus = document.getElementById("pStatus");
+                const btnApprove = document.getElementById('btnApprove');
+                const btnReject = document.getElementById('btnReject');
+                const btnSubmit = document.getElementById('btnSubmit');
+                const divMaterial = document.getElementById('divMaterial');
+                const divRecommendationEntry = document.getElementById('divRecommendationEntry');
 
-                pOrderNumber.textContent = jo.orderNumber;
-                pDateLogged.textContent = jo.dateLogged;
-                pStatus.textContent = jo.status;
-                pServiceType.textContent = jo.serviceType;
+                pOrderNumber.textContent = jobOrderDetails.orderNumber;
+                pDateLogged.textContent = jobOrderDetails.dateLogged;
+                pStatus.textContent = jobOrderDetails.status;
+                pServiceType.textContent = jobOrderDetails.serviceType;
+
+                const divStatusButtons = document.getElementById('divStatusButtons');
+                if(divStatusButtons) divStatusButtons.classList.remove('pointer-events-none');
+
+                const findingContainer = document.getElementById('finding-container');
                 
+                switch(jobOrderDetails.statusValue){
+                    case 1:{
+                        findingContainer.classList.remove('pointer-events-none');
+                        btnApprove.remove();
+                        btnReject.remove();
+                        btnSubmit.classList.toggle('hidden');
+                        setAddMaterial();
+                        refreshMaterial();
+                        break;
+                    }
+                    case 2:{
+                        const divFiles = document.getElementById('divFiles');
+                        divFiles.LoadFindings({
+                            getImageDataUrl: '@Url.Action("GetFindings", "Finding")' + '?jobOrderId=' + '@Model.JobOrderId',
+                            numberOfColumns: 7,
+                            loadComplete: (success, msg) => {
+                                var findingsContainer = document.getElementById('finding-container');
+                                if(success) {
+                                    findingContainer.remove();
+                                    divFiles.classList.remove('hidden');
+                                }
+                                else findingsContainer.classList.remove('pointer-events-none');
+                            }
+                        });
+                        divMaterial.remove();
+                        btnApprove.classList.toggle('hidden');
+                        btnSubmit.remove();
+                        refreshMaterial();
+                        divRecommendationEntry.classList.toggle('hidden');
+                        break;
+                    }
+                    default:{
+                        break;
+                    }
+                }
+
+                // if(jobOrderDetails.statusValue == 1){
+                    
+                // }
+                // else{
+                    
+                // }
+                //divStatusButtons.classList.toggle('hidden');
             }
         }
 
@@ -332,6 +493,132 @@
             console.log();
             return resp;
         }
+
+        async function getInventory(){
+            var inventoryClient = new WebClient('@Url.Action("GetInventory", "Engineering")', null);
+            var items = await inventoryClient.getAsync();
+            return items;
+        }
+
+        async function saveInventory(inventoryId, jobOrderId, unitSellingPrice){
+            var data = {
+                jobOrderId: jobOrderId,
+                inventoryId: inventoryId,
+                unitSellingPrice: unitSellingPrice
+            };
+            var materialClient = new WebClient('@Url.Action("SaveMaterial", "CustomerSupport")', data);
+            var res = await materialClient.postAsync();
+            return res;
+        }
+
+        function refreshMaterial(){
+            const tblMaterials = document.getElementById('tblMaterials');
+            if(tblMaterials){
+                console.log('Materials Table:', tblMaterials);
+                const columnButton = tblMaterials.querySelector('#columnButton');
+
+                if(columnButton == null){
+                    const thead = tblMaterials.querySelector('thead');
+                    const headTr = thead.querySelector('tr');
+                    const column = document.createElement('th');
+                    column.scope = 'col';
+                    column.id = 'columnButton';
+                    column.classList.add('px-6', 'py-3', 'font-medium');
+                    headTr.appendChild(column);
+                }
+
+                if(jobOrderDetails && jobOrderDetails.statusValue == 1){
+                    tblMaterials.DataTable({
+                        processing: true,
+                        getUrl: '@Url.Action("GetMaterialRequest", "CustomerSupport")' + '?jobOrderId=' + '@Model.JobOrderId',
+                        rowClassNames: 'border-b hover:bg-gray-100',
+                        stockCheck: { srcDataMember: 'onHand', compareToDataMember: 'requestedQuantity' },
+                        columns: [
+                            { dataMember: 'name' },
+                            { dataMember: 'uom' },
+                            { dataMember: 'onHand' },
+                            { dataMember: 'requestedQuantity' },
+                            { dataMember: 'sellingPrice' }
+                        ],
+                        buttons:[
+                            { 
+                                className: 'fa-solid fa-trash', 
+                                clickCallback: async (data) => {
+                                    console.log('Data:', data);
+                                    var res = await deleteRequestedMaterial(data);
+                                    console.log('Result:', res);
+                                    if(res){
+                                        refreshMaterial();
+                                    }
+                                }
+                            }
+                        ]
+                    });
+                }
+                else{
+                    columnButton.remove();
+                    tblMaterials.DataTable({
+                        processing: true,
+                        getUrl: '@Url.Action("GetMaterialRequest", "CustomerSupport")' + '?jobOrderId=' + '@Model.JobOrderId',
+                        rowClassNames: 'border-b hover:bg-gray-100',
+                        stockCheck: { srcDataMember: 'onHand', compareToDataMember: 'requestedQuantity' },
+                        columns: [
+                            { dataMember: 'name' },
+                            { dataMember: 'uom' },
+                            { dataMember: 'onHand' },
+                            { dataMember: 'requestedQuantity' },
+                            { dataMember: 'sellingPrice' }
+                        ]
+                    });
+                }
+            }
+        }
+
+        async function deleteRequestedMaterial(material){
+            console.log('Material:', material);
+            let materialClient = new WebClient('@Url.Action("DeleteMaterial", "CustomerSupport")' + '?jobOrderId=' + '@Model.JobOrderId' + '&id=' + material.id, null);
+            var res = await materialClient.deleteAsync();
+            return res;
+        }
+
+        function setAddMaterial(){
+            const cmdAddMaterial = document.getElementById('cmdAddMaterial');
+            if(cmdAddMaterial){
+                cmdAddMaterial.addEventListener('click', async (evt) => {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+
+                    const txtMaterialQuantity = document.getElementById('txtMaterialQuantity');
+                    if(txtMaterialQuantity){
+                        var requestedQuantity = txtMaterialQuantity.value;
+                        if(requestedQuantity == null || requestedQuantity == ''){
+                            handlerError('Quantity is requried');
+                            return;
+                        }
+                        materialData.requestedQuantity = + requestedQuantity;
+                        var saveMaterialClient = new WebClient('@Url.Action("SaveMaterial", "CustomerSupport")' + '?jobOrderId=' + '@Model.JobOrderId', materialData);
+                        var result = await saveMaterialClient.postAsync();
+                        if(result){
+                            cmbMaterials.clearDropdown();
+                            txtMaterialQuantity.value = '';
+                            refreshMaterial();
+                        }
+                    }
+                    else{
+                        handlerError('Quantity is requried');
+                    }
+                });
+            }
+        }
+
+        @* async function getInspectionFiles(){
+            var reqFileClient = new WebClient('@Url.Action("GetAll", "RequestFile")' + '?jobOrderId=' + '@Model.JobOrderId', null);
+            var resp = await reqFileClient.getAsync();
+            if(resp){
+                const fileDiv = document.getElementById("divFiles");
+                fileDiv.replaceChildren();
+            }
+        } *@
 
     });
 

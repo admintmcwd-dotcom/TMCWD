@@ -3,6 +3,7 @@ using System.Text.Json;
 using TMCWD.Application.Models;
 using TMCWD.CustomerSupport;
 using TMCWD.Model.CustomerSupport;
+using TMCWD.Model.Extensions;
 using TMCWD.Services;
 
 namespace TMCWD.Application.Controllers
@@ -37,29 +38,47 @@ namespace TMCWD.Application.Controllers
         {
             if (files == null || !files.Any()) return Ok(false);
 
-            var destinationPath = Path.GetFullPath($"../Files/{DateTime.Now.ToString("yyyyMMdd")}");
-            if (!Directory.Exists(destinationPath))
+#if DEBUG
+            var parentUploadPath = $"../TMCWD.Application/wwwroot";
+#else
+            var parentUploadPath = $"../";
+#endif
+
+            if (!Directory.Exists(parentUploadPath))
             {
-                Directory.CreateDirectory(destinationPath);
+                Directory.CreateDirectory(Path.GetFullPath(parentUploadPath));
             }
 
+            string currentPath = $"Uploads/{DateTime.Now.ToString("yyyyMMdd")}";
+            var currentUploadPath = Path.Combine(parentUploadPath, currentPath);
+
+            if (!Directory.Exists(currentUploadPath))
+            {
+                Directory.CreateDirectory(currentUploadPath);
+
+            }
             List<RequestFile> requestFiles = new();
 
             foreach (var file in files)
             {
+                string extenstion = Path.GetExtension(file.FileName).Replace(".", "");
                 RequestFile reqFile = new()
                 {
-                    JobOrderId = 0,
+                    JobOrderId = jobOrderId,
                     OriginalFilename = file.FileName,
-                    PhysicalFilename = $"{Guid.NewGuid().ToString().Replace("-", "")}.{Path.GetExtension(file.FileName)}",
-                    RequestType = RequestFileType.Finding,
-                    Path = destinationPath,
-                    CreatedBy = _authenticatedUser.User.Id
+                    PhysicalFilename = $"{Guid.NewGuid().ToString().ToUpper().Replace("-", "")}.{extenstion}",
+                    RequestFileType = RequestFileType.Finding,
+                    Path = $"/{currentPath}",
+                    CreatedBy = _authenticatedUser.User.Id,
+                    Type = extenstion.GetFileTypeFromExtenstion(),
+                    Size = file.Length,
+                    DateCreated = DateTime.Now
+                    
                 };
 
                 requestFiles.Add(reqFile);
 
-                using (Stream stream = new FileStream(Path.Combine(destinationPath, reqFile.PhysicalFilename), FileMode.Create, FileAccess.Write))
+                using (Stream stream = new FileStream(Path.Combine(Path.GetFullPath(currentUploadPath), reqFile.PhysicalFilename), FileMode.Create, FileAccess.Write))
                 {
                     await file.CopyToAsync(stream);
                 }
@@ -68,6 +87,17 @@ namespace TMCWD.Application.Controllers
             List<RequestFile> savedFiles = await _requestFileTransaction.SaveRange(requestFiles);
 
             return Ok(savedFiles != null && !savedFiles.Any());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFindings(int jobOrderId)
+        {
+            var finding = await _findingTransaction.GetAll(jobOrderId);
+            if (finding == null || !finding.Any()) return NotFound();
+
+            var requestFile = await _requestFileTransaction.GetAll(jobOrderId);
+
+            return Ok(new { Findings = finding, Files = requestFile ?? new List<RequestFile>() });
         }
 
     }

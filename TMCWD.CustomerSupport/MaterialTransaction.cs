@@ -49,19 +49,19 @@ namespace TMCWD.CustomerSupport
             return ConvertJsonToMaterials(data);
         }
 
-        public async Task<List<Material>> GetByRequestId(int requestId)
+        public async Task<List<Material>> GetByJobOrderId(int jobOrderId)
         {
-            var response = await _webService.Client.GetAsync($"api/{requestId}/Material/GetByRequestId");
+            var response = await _webService.Client.GetAsync($"api/{jobOrderId}/Material/GetByJobOrderId");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToMaterials(data);
         }
 
-        public async Task<Material> SaveUpdate(int userId, int requestId, Material material)
+        public async Task<Material> SaveUpdate(int userId, int jobOrderId, Material material)
         {
             var content = JsonContent.Create(material);
 
-            var response = await _webService.Client.PostAsync($"api/{requestId}/Material/SaveUpdate/{userId}", content);
+            var response = await _webService.Client.PostAsync($"api/{jobOrderId}/Material/SaveUpdate/{userId}", content);
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -86,6 +86,15 @@ namespace TMCWD.CustomerSupport
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToMaterial(data);
         }
+
+        public async Task<bool> DeleteMaterial(int jobOrderId, int id)
+        {
+            var response = await _webService.Client.DeleteAsync($"api/{jobOrderId}/Material/Delete/{id}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return false;
+            return data == "true";
+        }
+
     }
 
 }

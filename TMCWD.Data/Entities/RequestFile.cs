@@ -31,7 +31,7 @@ namespace TMCWD.Data.Entities
         public int FileType { get; set; }
 
         [Required, Column("Size")]
-        public decimal Size { get; set; }
+        public long Size { get; set; }
 
         [Column("CreatedBy")]
         public System.Int64 CreatedBy { get; set; }

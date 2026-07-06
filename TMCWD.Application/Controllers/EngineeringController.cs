@@ -75,5 +75,13 @@ namespace TMCWD.Application.Controllers
             return RedirectToAction("Inventory", "Engineering");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetInventory()
+        {
+            var inventoryItems = await _inventoryTransaction.GetAll();
+            if (inventoryItems == null || !inventoryItems.Any()) return NoContent();
+            return Ok(inventoryItems);
+        }
+
     }
 }
