@@ -75,5 +75,13 @@ namespace TMCWD.Data.Controllers
             return Ok(account);
         }
 
+        [HttpGet("GetByZoneAndBook/{zone}/{book}")]
+        public async Task<ActionResult> GetByZoneAndBook(int zone, int book)
+        {
+            var accounts = await _accountService.GetByZoneAndBook(zone, book);
+            if (accounts == null || !accounts.Any()) return NotFound($"No accounts were found.");
+            return Ok(accounts);
+
     }
+}
 }

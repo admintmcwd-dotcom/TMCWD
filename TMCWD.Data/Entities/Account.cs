@@ -28,6 +28,12 @@ namespace TMCWD.Data.Entities
         [MaxLength(50), Column("MeterNumber")]
         public string MeterNumber { get; set; } = string.Empty;
 
+        [Column("Zone")]
+        public int Zone { get; set; }
+
+        [Column("Book")]
+        public int Book { get; set; }
+
         [Column("UnitNo")]
         public string? UnitNumber { get; set; } = string.Empty;
 

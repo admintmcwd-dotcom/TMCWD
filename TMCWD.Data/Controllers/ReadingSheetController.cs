@@ -57,9 +57,10 @@ namespace TMCWD.Data.Controllers
             return Ok(readingSheets);
         }
 
-        public async Task<IActionResult> GetByBillingDate(int zone, int book, DateTime dueDate)
+        [HttpGet("GetByBillingDate/{zone}/{book}/{billingDate}")]
+        public async Task<IActionResult> GetByBillingDate(int zone, int book, DateTime billingDate)
         {
-            var readingSheet = await _readingSheetService.GetByBilligDate(zone, book, dueDate);
+            var readingSheet = await _readingSheetService.GetByBillingDate(zone, book, billingDate);
             if (readingSheet == null) return NotFound();
             return Ok(readingSheet);
         }
@@ -67,7 +68,7 @@ namespace TMCWD.Data.Controllers
         [HttpGet("SaveUpdate/{userId}")]
         public async Task<IActionResult> SaveUpdate(int userId, ReadingSheet readingSheet)
         {
-            var readingSheetCheck = await _readingSheetService.GetByBilligDate(readingSheet.Zone, readingSheet.Book, readingSheet.BillingDate);
+            var readingSheetCheck = await _readingSheetService.GetByBillingDate(readingSheet.Zone, readingSheet.Book, readingSheet.BillingDate);
             if (readingSheetCheck != null) return Ok(readingSheetCheck);
             var result = await _readingSheetService.SaveUpdate(userId, readingSheet);
             return Ok(result);
