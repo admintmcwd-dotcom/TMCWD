@@ -28,6 +28,8 @@ builder.Services.AddScoped<IFindingService, FindingService>();
 builder.Services.AddScoped<IJobOrderService, JobOrderService>();
 builder.Services.AddScoped<IApprovalHistoryService, ApprovalHistoryService>();
 builder.Services.AddScoped<IRequestFileService, RequestFileService>();
+builder.Services.AddScoped<IBillingService, BillingService>();
+builder.Services.AddScoped<IReadingSheetService, ReadingSheetService>();
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 

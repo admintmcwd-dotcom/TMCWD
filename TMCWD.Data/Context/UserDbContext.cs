@@ -43,6 +43,10 @@ namespace TMCWD.Data.Context
 
         public DbSet<RequestFile> Files { get; set; }
 
+        public DbSet<Billing> Billings { get; set; }
+
+        public DbSet<ReadingSheet> ReadingSheets { get; set; }
+
         #endregion
 
         #region constructors
