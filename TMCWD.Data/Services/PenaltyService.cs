@@ -4,9 +4,8 @@ using TMCWD.Data.Entities;
 
 namespace TMCWD.Data.Services
 {
-    public class PenaltyService
+    public class PenaltyService : IPenaltyService
     {
-
         private readonly UserDbContext _context;
 
         public PenaltyService(UserDbContext context)
@@ -16,22 +15,25 @@ namespace TMCWD.Data.Services
 
         public async Task<Penalty> Get(int id)
         {
-            return await _context.Penalties.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var penalty = await _context.Penalties.Where(x => x.Id == id).FirstOrDefaultAsync();
+            return penalty;
         }
 
         public async Task<List<Penalty>> GetAll()
         {
-            return await _context.Penalties.ToListAsync();
+            var penalties = await _context.Penalties.ToListAsync();
+            return penalties;
         }
 
-        public async Task<List<Penalty>> GetByBillingReferenceId(string billingReferenceId)
+        public async Task<List<Penalty>> GetByReference(string referenceId)
         {
-            return await _context.Penalties.Where(x => x.BillingReferenceId == billingReferenceId).ToListAsync();
+            var penalties = await _context.Penalties.Where(x => x.BillingReferenceId == referenceId).ToListAsync();
+            return penalties;
         }
 
         public async Task<Penalty> SaveUpdate(int userId, Penalty penalty)
         {
-            if (penalty.Id == 0)
+            if(penalty.Id == 0)
             {
                 penalty.CreatedBy = userId;
                 penalty.DateCreated = DateTime.Now;
@@ -39,16 +41,11 @@ namespace TMCWD.Data.Services
             }
             else
             {
-                var existingPenalty = await _context.Penalties.Where(x => x.Id == penalty.Id).FirstOrDefaultAsync();
-                if (existingPenalty != null)
-                {
-                    existingPenalty.BillingReferenceId = penalty.BillingReferenceId;
-                    existingPenalty.Amount = penalty.Amount;
-                    existingPenalty.UpdatedBy = userId;
-                    existingPenalty.DateUpdated = DateTime.Now;
-                    _context.Penalties.Update(existingPenalty);
-                }
+                penalty.UpdatedBy = userId;
+                penalty.DateUpdated = DateTime.Now;
+                _context.Penalties.Update(penalty);
             }
+
             await _context.SaveChangesAsync();
             return penalty;
         }

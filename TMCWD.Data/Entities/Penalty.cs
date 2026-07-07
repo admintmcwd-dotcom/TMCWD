@@ -17,6 +17,9 @@ namespace TMCWD.Data.Entities
         [Column("Amount")]
         public decimal Amount { get; set; }
 
+        [Column("PaymentStatus")]
+        public int PaymentStatus { get; set; }
+
         [Column("PenaltyTypeId")]
         public System.Int64 PenaltyTypeId { get; set; }
 

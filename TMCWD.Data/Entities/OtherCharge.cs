@@ -12,11 +12,17 @@ namespace TMCWD.Data.Entities
         [Key, Column("Id")]
         public System.Int64 Id { get; set; }
 
-        [Column("Name")]
-        public string Name { get; set; } = string.Empty;
+        [Column("BillingReferenceId")]
+        public string BillingReferenceId { get; set; } = string.Empty;
 
         [Column("Type")]
         public int Type { get; set; }
+
+        [Column("Amount")]
+        public decimal Amount { get; set; }
+
+        [Column("PaymentStatus")]
+        public int PaymentStatus { get; set; }
 
         [Column("CreatedBy")]
         public System.Int64 CreatedBy { get; set; }

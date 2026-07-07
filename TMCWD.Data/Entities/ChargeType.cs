@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TMCWD.Data.Entities
 {
-
-    [Table("penalty_type")]
-    public class PenaltyType
+    [Table("charge_types")]
+    public class ChargeType
     {
 
         [Key, Column("Id")]
@@ -13,6 +12,9 @@ namespace TMCWD.Data.Entities
 
         [Required, Column("Name")]
         public string Name { get; set; } = string.Empty;
+
+        [Required, Column("ClassificationId")]
+        public int ClassificationId { get; set; }
 
         [Column("CreatedBy")]
         public System.Int64 CreatedBy { get; set; }
@@ -22,6 +24,7 @@ namespace TMCWD.Data.Entities
 
         [Column("UpdatedBy")]
         public System.Int64 UpdatedBy { get; set; }
+
 
         [Column("DateUpdated")]
         public DateTime DateUpdated { get; set; }

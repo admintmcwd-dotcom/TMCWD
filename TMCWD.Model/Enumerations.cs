@@ -67,3 +67,17 @@ public enum FileType
     Text = 7,
     Other = 8,
 }
+
+public enum FeeClassification
+{
+    Penalty = 1,
+    OtherFee = 2,
+    Adjustment = 3,
+}
+
+public enum PaymentStatus
+{
+    Pending = 1,
+    Paid = 2,
+    Overdue = 3
+}
