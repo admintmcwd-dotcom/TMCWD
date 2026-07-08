@@ -9,6 +9,8 @@ namespace TMCWD.Data.Services
         Task<Account?> GetByAccountNumber(string accountNumber);
         Task<IEnumerable<Account>> GetByCustomerId(int customerId);
         Task<Account?> GetByMeterNumber(string meterNumber);
+
+        Task<List<Account>> GetByZoneAndBook(int zone, int book);
         Task<Account> SaveUpdate(int userId, Account account);
         Task<IEnumerable<Account>> GetAccounts();
     }

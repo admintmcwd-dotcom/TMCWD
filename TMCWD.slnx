@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Billing/TMCWD.Billing.csproj" Id="09612385-17a7-4b27-9250-46a264de7bf4" />
   <Project Path="TMCWD.Administration/TMCWD.Administration.csproj" Id="4e6cc8b8-7588-436b-8457-750e2263dae8" />
   <Project Path="TMCWD.Application/TMCWD.Application.csproj" />
   <Project Path="TMCWD.CustomerSupport/TMCWD.CustomerSupport.csproj" Id="f6c72248-5ca5-4257-abd8-f137190d5951" />

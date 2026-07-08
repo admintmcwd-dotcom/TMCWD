@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TMCWD.Data.Context;
 using TMCWD.Data.Services;
+using TMCWD.Model.Billing.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,12 +23,18 @@ builder.Services.AddScoped<IRequestDetailService, RequestDetailService>();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<IInspectionReportService, InspectionReportService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
-builder.Services.AddScoped<IOtherFeeTypeService, OtherFeeTypeService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IFindingService, FindingService>();
 builder.Services.AddScoped<IJobOrderService, JobOrderService>();
 builder.Services.AddScoped<IApprovalHistoryService, ApprovalHistoryService>();
 builder.Services.AddScoped<IRequestFileService, RequestFileService>();
+builder.Services.AddScoped<IBillingService, BillingService>();
+builder.Services.AddScoped<IReadingSheetService, ReadingSheetService>();
+builder.Services.AddScoped<IChargeTypeService, ChargeTypeService>();
+builder.Services.AddScoped<IPenaltyService, PenaltyService>();
+builder.Services.AddScoped<IOtherChargeService, OtherChargeService>();
+builder.Services.AddScoped<IBillingAdjustmentService, BillingAdjustmentService>();
+
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
