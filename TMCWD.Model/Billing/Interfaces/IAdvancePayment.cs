@@ -14,11 +14,11 @@ namespace TMCWD.Model.Billing.Interfaces
 
         public bool IsActive { get; set; }
 
-        public System.Int64 CreatedBy { get; set; }
+        public int CreatedBy { get; set; }
 
         public DateTime DateCreated { get; set; }
 
-        public System.Int64 UpdatedBy { get; set; }
+        public int UpdatedBy { get; set; }
 
         public DateTime DateUpdated { get; set; }
 
