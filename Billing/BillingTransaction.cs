@@ -29,7 +29,7 @@ namespace TMCWD.Billing
 
         public List<TMCWD.Model.Billing.Billing> ConverJsonToBillings(string json)
         {
-            var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };  
             return JsonSerializer.Deserialize<List<TMCWD.Model.Billing.Billing>>(json, serializerOptions) ?? new();
         }
 
