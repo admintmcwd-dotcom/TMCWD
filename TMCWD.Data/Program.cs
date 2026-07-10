@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 using TMCWD.Data.Context;
 using TMCWD.Data.Services;
 using TMCWD.Model.Billing.Interfaces;
@@ -34,6 +35,8 @@ builder.Services.AddScoped<IChargeTypeService, ChargeTypeService>();
 builder.Services.AddScoped<IPenaltyService, PenaltyService>();
 builder.Services.AddScoped<IOtherChargeService, OtherChargeService>();
 builder.Services.AddScoped<IBillingAdjustmentService, BillingAdjustmentService>();
+builder.Services.AddScoped<IAdvancePaymentService, AdvancePaymentService>();
+builder.Services.AddScoped<IPaymentCheckService, PaymentCheckService>();
 
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();

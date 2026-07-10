@@ -67,7 +67,7 @@ namespace TMCWD.Billing
             return ConvertJsonToChargeTypes(data);
         }
 
-        public async Task<ChargeType?> SaveUpdate(int chargeTypeId, ChargeType chargeType)
+        public async Task<ChargeType> SaveUpdate(int chargeTypeId, ChargeType chargeType)
         {
             var content = System.Net.Http.Json.JsonContent.Create(chargeType);
             var response = await _webService.Client.PostAsync($"api/ChargeTypes/SaveUpdate/{chargeTypeId}", content);

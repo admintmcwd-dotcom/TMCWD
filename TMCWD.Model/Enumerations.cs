@@ -81,3 +81,10 @@ public enum PaymentStatus
     Paid = 2,
     Overdue = 3
 }
+
+public enum PaymentType
+{
+    Cash = 1,
+    Check = 2,
+    EWallet = 3
+}

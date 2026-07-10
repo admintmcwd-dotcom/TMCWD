@@ -36,6 +36,9 @@ namespace TMCWD.Data.Entities
         [Required, Column("TotalBillAmount")]
         public decimal TotalBillAmount { get; set; }
 
+        [Required, Column("PaymentType")]
+        public int PaymentType { get; set; }
+
         [Required, Column("PaymentStatus")]
         public int PaymentStatus { get; set; }
 

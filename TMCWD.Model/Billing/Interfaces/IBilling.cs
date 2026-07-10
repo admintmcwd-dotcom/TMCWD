@@ -29,6 +29,8 @@ namespace TMCWD.Model.Billing.Interfaces
 
         public decimal TotalBillAmount { get; set; }
 
+        public PaymentType PaymentType { get; set; }
+
         public PaymentStatus PaymentStatus { get; set; }
 
         public int CreatedBy { get; set; }

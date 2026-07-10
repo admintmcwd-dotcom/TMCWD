@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Json;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -69,6 +70,16 @@ namespace TMCWD.Billing
             if (!response.IsSuccessStatusCode) return null;
 
             return ConvertJsonToReadingSheets(data);
+        }
+
+        public async Task<ReadingSheet> SaveUpdate(int userId, ReadingSheet readingSheet) 
+        {
+            var content = JsonContent.Create(readingSheet);
+            var response = await _webService.Client.PostAsync($"api/ReadingSheet/SaveUpdate/{userId}", content);
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToReadingSheet(data);
         }
 
         #endregion

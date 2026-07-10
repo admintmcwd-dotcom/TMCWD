@@ -55,6 +55,12 @@ namespace TMCWD.Data.Context
 
         public DbSet<BillingAdjustment> BillingAdjustments { get; set; }
 
+        public DbSet<PaymentCheck> PaymentChecks { get; set; }
+
+        public DbSet<AdvancePayment> AdvancePayments { get; set; }
+
+        public DbSet<WebHook> WebHooks { get; set; }
+
         #endregion
 
         #region constructors

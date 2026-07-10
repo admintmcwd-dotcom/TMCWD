@@ -40,6 +40,9 @@ namespace TMCWD.Model.Billing
         [DisplayName("Total Bill Amount")]
         public decimal TotalBillAmount { get; set; }
 
+        [DisplayName("PaymentType")]
+        public PaymentType PaymentType { get; set; }
+
         [DisplayName("Status")]
         public PaymentStatus PaymentStatus { get; set; }
 
