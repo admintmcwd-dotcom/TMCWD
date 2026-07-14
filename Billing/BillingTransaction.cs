@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using TMCWD.Services;
+using TMCWD.Model.Billing.Interfaces;
 
 namespace TMCWD.Billing
 {
@@ -21,19 +22,19 @@ namespace TMCWD.Billing
 
         #region methods
 
-        public TMCWD.Model.Billing.Billing ConvertJsonToBilling(string json)
+        public BillingBase ConvertJsonToBilling(string json)
         {
             var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-            return JsonSerializer.Deserialize<TMCWD.Model.Billing.Billing>(json, serializerOptions) ?? new();
+            return JsonSerializer.Deserialize<BillingBase>(json, serializerOptions);
         }
 
-        public List<TMCWD.Model.Billing.Billing> ConverJsonToBillings(string json)
+        public List<BillingBase> ConverJsonToBillings(string json)
         {
             var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };  
-            return JsonSerializer.Deserialize<List<TMCWD.Model.Billing.Billing>>(json, serializerOptions) ?? new();
+            return JsonSerializer.Deserialize<List<BillingBase>>(json, serializerOptions) ?? new();
         }
 
-        public async Task<TMCWD.Model.Billing.Billing> Get(int id)
+        public async Task<BillingBase> Get(int id)
         {
             var response = await _service.Client.GetAsync($"api/Billing/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
@@ -41,21 +42,21 @@ namespace TMCWD.Billing
             return ConvertJsonToBilling(data);
         }
 
-        public async Task<List<TMCWD.Model.Billing.Billing>> GetAll()
+        public async Task<List<BillingBase>> GetAll()
         {
             var response = await _service.Client.GetAsync($"api/Billing/GetAll");
             var data = await response.Content.ReadAsStringAsync();
             return ConverJsonToBillings(data);
         }
 
-        public async Task<TMCWD.Model.Billing.Billing> GetByReference(string reference)
+        public async Task<BillingBase> GetByReference(string reference)
         {
             var response = await _service.Client.GetAsync($"api/Billing/GetByRefence/{reference}");
             var data = await response.Content.ReadAsStringAsync();
             return ConvertJsonToBilling(data);
         }
 
-        public async Task<TMCWD.Model.Billing.Billing> SaveUpdate(int userId, TMCWD.Model.Billing.Billing billing)
+        public async Task<BillingBase> SaveUpdate(int userId, BillingBase billing)
         {
             var content = JsonContent.Create(billing);
             var response = await _service.Client.PostAsync($"api/Billing/SaveUpdate/{userId}", content);

@@ -45,7 +45,7 @@ namespace TMCWD.Billing
 
         public async Task<ChargeType> Get(int id)
         {
-            var response = await _webService.Client.GetAsync($"api/ChargeTypes/Get/{id}");
+            var response = await _webService.Client.GetAsync($"api/ChargeType/Get/{id}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToChargeType(data);
@@ -53,7 +53,7 @@ namespace TMCWD.Billing
 
         public async Task<List<ChargeType>> GetAll()
         {
-            var response = await _webService.Client.GetAsync($"api/ChargeTypes/GetAll");
+            var response = await _webService.Client.GetAsync($"api/ChargeType/GetAll");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return new List<ChargeType>();
             return ConvertJsonToChargeTypes(data);
@@ -61,7 +61,7 @@ namespace TMCWD.Billing
 
         public async Task<List<ChargeType>> GetByClassificationId(int classificationId)
         {
-            var response = await _webService.Client.GetAsync($"api/ChargeTypes/GetByClassificationId/{classificationId}");
+            var response = await _webService.Client.GetAsync($"api/ChargeType/GetByClassificationId/{classificationId}");
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return new List<ChargeType>();
             return ConvertJsonToChargeTypes(data);
@@ -70,7 +70,7 @@ namespace TMCWD.Billing
         public async Task<ChargeType> SaveUpdate(int chargeTypeId, ChargeType chargeType)
         {
             var content = System.Net.Http.Json.JsonContent.Create(chargeType);
-            var response = await _webService.Client.PostAsync($"api/ChargeTypes/SaveUpdate/{chargeTypeId}", content);
+            var response = await _webService.Client.PostAsync($"api/ChargeType/SaveUpdate/{chargeTypeId}", content);
             var data = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return null;
             return ConvertJsonToChargeType(data);

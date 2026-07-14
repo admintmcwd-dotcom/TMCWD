@@ -77,14 +77,19 @@ public enum FeeClassification
 
 public enum PaymentStatus
 {
-    Pending = 1,
+    Unpaid = 1,
     Paid = 2,
     Overdue = 3
 }
 
-public enum PaymentType
+public enum PaymentMethod
 {
     Cash = 1,
     Check = 2,
     EWallet = 3
+}
+
+public enum GatewayType
+{
+    GCash = 1
 }

@@ -76,6 +76,14 @@ namespace TMCWD.Billing
 
         public async Task<AdvancePayment> SaveUpdate(int userId, AdvancePayment advancePayment)
         {
+
+            StringBuilder sb = new();
+
+            if (advancePayment.AccountId == 0) sb.AppendLine("Please select the account to process payment");
+            if (advancePayment.Amount <= 0) sb.Append("Not a valid amount for advance payment");
+
+            if (sb.Length > 0) throw new Exception(sb.ToString());
+
             var content = JsonContent.Create(advancePayment);
             var response = await _service.Client.PostAsync($"SaveUpdate/{userId}", content);
             var data = await response.Content.ReadAsStringAsync();

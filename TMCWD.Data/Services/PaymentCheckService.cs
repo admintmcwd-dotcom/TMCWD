@@ -38,7 +38,7 @@ namespace TMCWD.Data.Services
 
         public async Task<PaymentCheck> GetByReference(string reference)
         {
-            var paymentCheck = await _context.PaymentChecks.Where(x => x.BillingReference == reference).FirstOrDefaultAsync();
+            var paymentCheck = await _context.PaymentChecks.Where(x => x.PaymentReference == reference).FirstOrDefaultAsync();
             return paymentCheck;
         }
 

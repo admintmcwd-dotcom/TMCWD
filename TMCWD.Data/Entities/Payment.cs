@@ -3,27 +3,32 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TMCWD.Data.Entities
 {
-    [Table("payment_checks")]
-    public class PaymentCheck
+    [Table("payments")]
+    public class Payment
     {
+
+        public Payment() { }
 
         [Key, Column("Id")]
         public System.Int64 Id { get; set; }
 
-        [Required, MaxLength(200), Column("PaymentReference")]
+        [Required, MaxLength(200), Column("BillingReference")]
+        public string BillingReference { get; set; } = string.Empty;
+
+        [Required, MaxLength(200), Column("PaymentReferencef")]
         public string PaymentReference { get; set; } = string.Empty;
 
-        [Required, MaxLength(200), Column("Branch")]
-        public string Branch { get; set; } = string.Empty;
+        [Required, MaxLength(100), Column("MacAddress")]
+        public string MacAddress { get; set; } = string.Empty;
 
-        [Required, MaxLength(200), Column("CheckNumber")]
-        public string CheckNumber { get; set; } = string.Empty;
+        [Column("PaidAmount")]
+        public decimal PaidAmount { get; set; }
 
-        [Required, Column("Amount")]
-        public decimal Amount { get; set; }
+        [Required, Column("Method")]
+        public int Method { get; set; }
 
-        [Required, Column("CheckDate")]
-        public DateTime CheckDate { get; set; }
+        [Column("Success")]
+        public bool Success { get; set; }
 
         [Required, Column("CreatedBy")]
         public System.Int64 CreatedBy { get; set; }

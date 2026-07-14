@@ -3,27 +3,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TMCWD.Data.Entities
 {
-    [Table("payment_checks")]
-    public class PaymentCheck
+    [Table("ewallet_transaction")]
+    public class EWalletTransaction
     {
+        #region constructors
+
+        public EWalletTransaction() { }
+
+        #endregion
+
+        #region properties
 
         [Key, Column("Id")]
         public System.Int64 Id { get; set; }
 
-        [Required, MaxLength(200), Column("PaymentReference")]
+        [Required, Column("PaymentReference")]
         public string PaymentReference { get; set; } = string.Empty;
 
-        [Required, MaxLength(200), Column("Branch")]
-        public string Branch { get; set; } = string.Empty;
+        [Required, Column("GatewayType")]
+        public int GatewayType { get; set; }
 
-        [Required, MaxLength(200), Column("CheckNumber")]
-        public string CheckNumber { get; set; } = string.Empty;
-
-        [Required, Column("Amount")]
-        public decimal Amount { get; set; }
-
-        [Required, Column("CheckDate")]
-        public DateTime CheckDate { get; set; }
+        [Required, Column("Data")]
+        public string Data { get; set; } = string.Empty;
 
         [Required, Column("CreatedBy")]
         public System.Int64 CreatedBy { get; set; }
@@ -37,5 +38,8 @@ namespace TMCWD.Data.Entities
         [Column("DateUpdated")]
         public DateTime DateUpdated { get; set; }
 
+        #endregion
+
     }
+
 }

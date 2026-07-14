@@ -25,6 +25,7 @@ namespace TMCWD.Data.Controllers
 
         #region methods
 
+        [HttpGet("Get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
             if (id == 0) return BadRequest();
@@ -36,6 +37,7 @@ namespace TMCWD.Data.Controllers
             return Ok(paymentCheck);
         }
 
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
 
@@ -47,6 +49,7 @@ namespace TMCWD.Data.Controllers
 
         }
 
+        [HttpGet("GetByReference/{reference}")]
         public async Task<IActionResult> GetByReference(string reference)
         {
             if(String.IsNullOrEmpty(reference)) return BadRequest();
@@ -58,6 +61,7 @@ namespace TMCWD.Data.Controllers
             return Ok(paymentCheck);
         }
 
+        [HttpPost("SaveUpdate/{userId}")]
         public async Task<IActionResult> SaveUpdate(int userId, PaymentCheck paymentCheck)
         {
             var savedPaymentCheck = await _service.SaveUpdate(userId, paymentCheck);

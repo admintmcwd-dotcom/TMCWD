@@ -61,6 +61,14 @@ namespace TMCWD.Data.Context
 
         public DbSet<WebHook> WebHooks { get; set; }
 
+        public DbSet<Payment> Payments { get; set; }
+
+        public DbSet<EWalletTransaction> EWalletTransactions { get; set; }
+
+        public DbSet<TMCWD.Data.Entities.Endpoint> Endpoints { get; set; }
+
+        public DbSet<Reading> Readings { get; set; }
+
         #endregion
 
         #region constructors
