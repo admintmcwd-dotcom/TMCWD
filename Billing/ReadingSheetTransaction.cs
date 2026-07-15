@@ -72,6 +72,50 @@ namespace TMCWD.Billing
             return ConvertJsonToReadingSheets(data);
         }
 
+        public async Task<List<ReadingSheet>> GetByAssignedTo(int assignedTo)
+        {
+            var response = await _webService.Client.GetAsync($"api/ReadingSheet/GetByAssignedTo/{assignedTo}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToReadingSheets(data);
+        }
+
+        public async Task<List<ReadingSheet>> GetByZoneBookAndAssignedTo(int zone, int book, int assignedTo)
+        {
+            var response = await _webService.Client.GetAsync($"api/ReadingSheet/GetByZoneBookAndAssignedTo/{zone}/{book}/{assignedTo}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToReadingSheets(data);
+        }
+
+        public async Task<List<ReadingSheet>> GetByZoneAndBook(int zone, int book)
+        {
+            var response = await _webService.Client.GetAsync($"api/ReadingSheet/GetByZoneAndBook/{zone}/{book}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToReadingSheets(data);
+        }
+
+        public async Task<ReadingSheet> GetByBillingDate(DateTime billingDate)
+        {
+            var response = await _webService.Client.GetAsync($"api/ReadingSheet/GetByBillingDate/{billingDate}");
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            return ConvertJsonToReadingSheet(data);
+        }
+
+        public async Task<ReadingSheet> GetCurrentByAssignedTo(int assignedTo)
+        {
+            var response = await _webService.Client.GetAsync($"api/ReadingSheet/GetCurrentByAssignedTo/{assignedTo}");
+            var data = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            return ConvertJsonToReadingSheet(data);
+        }
+
         public async Task<ReadingSheet> SaveUpdate(int userId, ReadingSheet readingSheet) 
         {
             var content = JsonContent.Create(readingSheet);

@@ -15,6 +15,10 @@ namespace TMCWD.Model.CustomerSupport.Interfaces
 
         public string AccountNumber { get; set; }
 
+        public AccountClassification Classification { get; set; }
+
+        public decimal MeterSize { get; set; }
+
         public string MeterNumber { get; set; }
 
         public string UnitNumber { get; set; }

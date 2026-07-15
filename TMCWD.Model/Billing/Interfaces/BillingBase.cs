@@ -83,25 +83,7 @@ namespace TMCWD.Model.Billing.Interfaces
 
         public abstract void LoadPayments(List<PaymentBase> payments, AdvancePayment advancePayment);
 
-        //protected void LoadData(List<PaymentBase> payments, AdvancePayment advancePayment)
-        //{
-        //    _advancePayment = advancePayment;
-        //    _totalPaid = ComputeTotalPayments(payments);
-        //    _unpaid = TotalBillAmount - (_totalPaid + _advancePayment.Amount);
-        //    _unpaid = _unpaid < 0 ? 0: _unpaid;
-        //}
-
-        //protected decimal ComputeTotalPayments(List<PaymentBase> payments)
-        //{
-        //    decimal totalPayments = 0;
-
-        //    foreach(var payment in payments)
-        //    {
-        //        totalPayments += payment.PaidAmount;
-        //    }
-
-        //    return totalPayments;
-        //}
+        public abstract decimal ComputeBill(Reading previousReading, Reading currentReading, List<Penalty> penalties, List<BillingAdjustment> adjustments, List<Tariff> tariffs);
 
         #endregion
 

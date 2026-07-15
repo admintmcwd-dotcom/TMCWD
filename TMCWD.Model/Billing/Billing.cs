@@ -110,10 +110,49 @@ namespace TMCWD.Model.Billing
 
         public override void LoadPayments(List<PaymentBase> payments, AdvancePayment advancePayment)
         {
-            _totalPaid = ComputeTotalPayments(payments);
             _advancePayment = advancePayment;
-            _unpaid = TotalBillAmount - (_totalPaid + _advancePayment.Amount);
-            if (_unpaid <= 0)
+            _totalPaid = ComputeTotalPayments(payments) + _advancePayment.Amount;
+        }
+
+        public override decimal ComputeBill(Reading previousReading, Reading currentReading, List<Penalty> penalties, List<BillingAdjustment> adjustments, List<Tariff> tariffs)
+        {
+            decimal computedBill = 0;
+            decimal adjustmentAmount = 0;
+            decimal penaltyAmount = 0;
+
+            decimal consumption = currentReading.CurrentReading - previousReading.CurrentReading;
+
+            foreach (var tariff in tariffs)
+            {
+                if(consumption > 0)
+                {
+                    computedBill += tariff.ChargeAmount;
+                    consumption -= tariff.Interval;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            foreach (var penalty in penalties)
+            {
+                penaltyAmount += penalty.Amount;
+            }
+
+            foreach (var adjustment in adjustments)
+            {
+                adjustmentAmount += adjustment.Amount;
+            }
+
+            computedBill += penaltyAmount;
+            computedBill -= adjustmentAmount;
+            computedBill = computedBill < 0 ? 0 : computedBill;
+
+            TotalBillAmount = computedBill;
+
+            _unpaid = computedBill - _totalPaid;
+            if (_unpaid < 0)
             {
                 _unpaid = 0;
                 _advancePayment.Amount = Math.Abs(_unpaid);
@@ -122,6 +161,7 @@ namespace TMCWD.Model.Billing
             {
                 _advancePayment.Amount = 0;
             }
+            return computedBill;
         }
 
         private decimal ComputeTotalPayments(List<PaymentBase> payments)

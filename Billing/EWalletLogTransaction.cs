@@ -32,7 +32,7 @@ namespace TMCWD.Billing
         public EWalletBase ConvertJsonToEWalletTransaction(string json)
         {
             var serializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-            return JsonSerializer.Deserialize<EWalletBase>(json, serializerOptions) ?? new();
+            return JsonSerializer.Deserialize<EWalletBase>(json, serializerOptions);
         }
 
         public List<EWalletBase> ConvertJsonToEWalletTransactions(string json)

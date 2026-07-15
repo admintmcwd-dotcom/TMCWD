@@ -37,6 +37,19 @@ public enum AccountStatus
     Closed = 4
 }
 
+public enum AccountClassification
+{
+    Residential = 1,
+    Government = 2,
+    Industrial = 3,
+    Commercial = 4,
+    CommercialA = 5,
+    CommercialB = 6,
+    CommercialC = 7,
+    Wholesale = 8,
+    Bulk = 9
+}
+
 public enum JobOrderStatus
 {
     Inspection = 1,

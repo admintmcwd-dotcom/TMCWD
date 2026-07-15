@@ -15,6 +15,12 @@ namespace TMCWD.Model.CustomerSupport
         [DisplayName("Account Number")]
         public string AccountNumber { get; set; } = string.Empty;
 
+        [DisplayName("Classification")]
+        public AccountClassification Classification { get; set; }
+
+        [DisplayName("Meter Size")]
+        public decimal MeterSize { get; set; }
+
         [DisplayName("Unit No")]
         public string UnitNumber { get; set; } = string.Empty;
 

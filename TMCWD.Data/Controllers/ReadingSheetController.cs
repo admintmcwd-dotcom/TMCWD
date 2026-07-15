@@ -74,5 +74,13 @@ namespace TMCWD.Data.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetCurrentByAssignedTo/{assignedTo}")]
+        public async Task<IActionResult> GetCurrentByAssignedTo(int assignedTo)
+        {
+            var readingSheet = await _readingSheetService.GetCurrentByAssignedTo(assignedTo);
+            if(readingSheet == null) return NotFound();
+            return Ok(readingSheet);
+        }
+
     }
 }

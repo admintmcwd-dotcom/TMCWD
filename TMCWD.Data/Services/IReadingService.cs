@@ -12,6 +12,10 @@ namespace TMCWD.Data.Services
 
         public Task<Reading> GetByAccountAndBillingPeriod(int accountId, DateTime billingPeriod);
 
+        public Task<Reading> GetAccountPreviousReading(int accountId);
+
+        public Task<Reading> GetAccountCurrentReading(int accountId);
+
         public Task<List<Reading>> GetByReader(int readerId);
 
         public Task<Reading> SaveUpdate(int userId, Reading reading);

@@ -78,6 +78,18 @@ namespace TMCWD.Data.Services
             return reading;
         }
 
+        public async Task<Reading> GetAccountCurrentReading(int accountId)
+        {
+            var reading = await _context.Readings.Where(x => x.AccountId == accountId).Take(1).FirstOrDefaultAsync();
+            return reading;
+        }
+
+        public async Task<Reading> GetAccountPreviousReading(int accountId)
+        {
+            var reading = await _context.Readings.Where(x => x.AccountId == accountId).OrderByDescending(x => x.BillingPeriod).Skip(1).Take(1).FirstOrDefaultAsync();
+            return reading;
+        }
+
         #endregion
 
     }

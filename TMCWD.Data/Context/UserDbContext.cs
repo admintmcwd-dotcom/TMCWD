@@ -69,6 +69,8 @@ namespace TMCWD.Data.Context
 
         public DbSet<Reading> Readings { get; set; }
 
+        public DbSet<Tariff> Tariffs { get; set; }
+
         #endregion
 
         #region constructors
