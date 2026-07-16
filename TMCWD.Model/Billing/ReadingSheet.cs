@@ -21,11 +21,8 @@ namespace TMCWD.Model.Billing
         [DisplayName("Billing Date")]
         public DateTime BillingDate { get; set; }
 
-        [DisplayName("Zone")]
-        public int Zone { get; set; }
-
-        [DisplayName("Book")]
-        public int Book { get; set; }
+        [DisplayName("Zone Book Id")]
+        public int ZoneBookId { get; set; }
 
         [DisplayName("Assigned To")]
         public int AssignedTo { get; set; }

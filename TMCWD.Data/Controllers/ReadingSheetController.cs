@@ -68,10 +68,8 @@ namespace TMCWD.Data.Controllers
         [HttpGet("SaveUpdate/{userId}")]
         public async Task<IActionResult> SaveUpdate(int userId, ReadingSheet readingSheet)
         {
-            var readingSheetCheck = await _readingSheetService.GetByBillingDate(readingSheet.Zone, readingSheet.Book, readingSheet.BillingDate);
-            if (readingSheetCheck != null) return Ok(readingSheetCheck);
-            var result = await _readingSheetService.SaveUpdate(userId, readingSheet);
-            return Ok(result);
+            var savedReadingSheet = await _readingSheetService.SaveUpdate(userId, readingSheet);
+            return Ok(savedReadingSheet);
         }
 
         [HttpGet("GetCurrentByAssignedTo/{assignedTo}")]

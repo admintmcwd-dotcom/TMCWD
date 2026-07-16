@@ -12,9 +12,7 @@ namespace TMCWD.Model.Billing.Interfaces
 
         public DateTime BillingDate { get; set; }
 
-        public int Zone { get; set; }
-
-        public int Book { get; set; }
+        public int ZoneBookId { get; set; }
 
         public int AssignedTo { get; set; }
 

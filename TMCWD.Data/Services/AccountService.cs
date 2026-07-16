@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Security.Principal;
 using TMCWD.Data.Context;
 using TMCWD.Data.Entities;
 
@@ -67,8 +68,12 @@ namespace TMCWD.Data.Services
 
         public async Task<List<Account>> GetByZoneAndBook(int zone, int book)
         {
-            var accounts = _dbContext.Accounts.Where(x => x.Zone == zone && x.Book == book);
-            return await accounts.ToListAsync();
+            //var accounts = _dbContext.Accounts.Where(x => x.Zone == zone && x.Book == book);
+            var accts = from zoneBooks in _dbContext.ZoneBooks
+                        join accounts in _dbContext.Accounts on zoneBooks.Id equals accounts.ZoneBookId
+                        where zoneBooks.Zone == zone && zoneBooks.Book == book
+                        select accounts;
+            return await accts.ToListAsync();
         }
     }
 }

@@ -25,6 +25,9 @@ namespace TMCWD.Data.Entities
         [Required, MaxLength(50), Column("AccountNumber")]
         public string AccountNumber { get; set; } = string.Empty;
 
+        [Required, Column("ZoneBookId")]
+        public int ZoneBookId { get; set; }
+
         [Required, Column("Classification")]
         public int Classification { get; set; }
 
@@ -33,12 +36,6 @@ namespace TMCWD.Data.Entities
 
         [MaxLength(50), Column("MeterNumber")]
         public string MeterNumber { get; set; } = string.Empty;
-
-        [Column("Zone")]
-        public int Zone { get; set; }
-
-        [Column("Book")]
-        public int Book { get; set; }
 
         [Column("UnitNo")]
         public string? UnitNumber { get; set; } = string.Empty;

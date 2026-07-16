@@ -52,5 +52,6 @@ namespace TMCWD.Data.Entities
         [Column("IsActive")]
         public bool IsActive { get; set; }
         #endregion
+
     }
 }

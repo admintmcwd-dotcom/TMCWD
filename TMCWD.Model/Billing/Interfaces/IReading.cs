@@ -11,9 +11,7 @@ namespace TMCWD.Model.Billing.Interfaces
 
         public int AccountId { get; set; }
 
-        public int Zone { get; set; }
-
-        public int Book { get; set; }
+        public int ZoneBookId { get; set; }
 
         public decimal CurrentReading { get; set; }
 

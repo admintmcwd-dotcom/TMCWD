@@ -22,11 +22,8 @@ namespace TMCWD.Data.Entities
         [Required, Column("AccountId")]
         public System.Int64 AccountId { get; set; }
 
-        [Required, Column("Zone")]
-        public int Zone { get; set; }
-
-        [Required, Column("Book")]
-        public int Book { get; set; }
+        [Required, Column("ZoneBookId")]
+        public int ZoneBookId { get; set; }
 
         [Required, Column("Reading")]
         public decimal CurrentReading { get; set; }

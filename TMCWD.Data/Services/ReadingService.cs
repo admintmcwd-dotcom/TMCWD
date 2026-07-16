@@ -50,8 +50,12 @@ namespace TMCWD.Data.Services
 
         public async Task<List<Reading>> GetByZoneAndBook(int zone, int book)
         {
-            var readings = await _context.Readings.Where(x=> x.Zone == zone && x.Book == book).ToListAsync();
-            return readings;
+            //var readings = await _context.Readings.Where(x=> x.Zone == zone && x.Book == book).ToListAsync();
+            var res = from zoneBooks in _context.ZoneBooks
+                      join readings in _context.Readings on zoneBooks.Id equals readings.ZoneBookId
+                      where zoneBooks.Zone == zone && zoneBooks.Book == book
+                      select readings;
+            return await res.ToListAsync();
         }
 
         public async Task<Reading> SaveUpdate(int userId, Reading reading)

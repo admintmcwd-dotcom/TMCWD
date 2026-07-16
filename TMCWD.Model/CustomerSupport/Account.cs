@@ -15,6 +15,9 @@ namespace TMCWD.Model.CustomerSupport
         [DisplayName("Account Number")]
         public string AccountNumber { get; set; } = string.Empty;
 
+        [DisplayName("Zone Book Id")]
+        public int ZoneBookId { get; set; }
+
         [DisplayName("Classification")]
         public AccountClassification Classification { get; set; }
 

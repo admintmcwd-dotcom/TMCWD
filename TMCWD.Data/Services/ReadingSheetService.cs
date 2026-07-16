@@ -35,34 +35,44 @@ namespace TMCWD.Data.Services
 
         public async Task<List<ReadingSheet>> GetByZoneAndBook(int zone, int book)
         {
-            var readingSheets = _context.ReadingSheets.Where(x => x.Zone == zone && x.Book == book);
-            return await readingSheets.ToListAsync();
+            var sheets = from zoneBooks in _context.ZoneBooks
+                         join readingSheets in _context.ReadingSheets on zoneBooks.Id equals readingSheets.ZoneBookId
+                         where zoneBooks.Zone == zone && zoneBooks.Book == book
+                         select readingSheets;
+            return await sheets.ToListAsync();
         }
 
         public async Task<List<ReadingSheet>> GetByZoneBookAndAssignedTo(int zone, int book, int assignedTo)
         {
-            var readingSheets = _context.ReadingSheets.Where(x => x.Zone == zone && x.Book == book && x.AssignedTo == assignedTo);
-            return await readingSheets.ToListAsync();
+            //var readingSheets = _context.ReadingSheets.Where(x => x.Zone == zone && x.Book == book && x.AssignedTo == assignedTo);
+            var sheets = from zoneBooks in _context.ZoneBooks
+                         join readingSheets in _context.ReadingSheets on zoneBooks.Id equals readingSheets.ZoneBookId
+                         where zoneBooks.Zone == zone && zoneBooks.Book == book && readingSheets.AssignedTo == assignedTo
+                         select readingSheets;
+            return await sheets.ToListAsync();
         }
 
         public async Task<ReadingSheet> GetByBillingDate(int zone, int book, DateTime billingDate)
         {
-            var readingSheet = await _context.ReadingSheets.Where(x => x.Zone == zone && x.Book == book && x.BillingDate == billingDate).FirstOrDefaultAsync();
-            return readingSheet;
+            //var readingSheet = await _context.ReadingSheets.Where(x => x.Zone == zone && x.Book == book && x.BillingDate == billingDate).FirstOrDefaultAsync();
+            var sheet = await (from zoneBooks in _context.ZoneBooks
+                          join readingSheets in _context.ReadingSheets on zoneBooks.Id equals readingSheets.ZoneBookId
+                          where zoneBooks.Zone == zone && zoneBooks.Book == book && readingSheets.BillingDate == billingDate
+                          select readingSheets).FirstOrDefaultAsync();
+            return sheet;
         }
 
         public async Task<ReadingSheet> SaveUpdate(int userId, ReadingSheet readingSheet)
         {
             if (readingSheet.Id > 0)
             {
-                var forUpdate = await _context.ReadingSheets.Where(x => x.Zone == readingSheet.Zone && x.Book == readingSheet.Book && x.BillingDate == readingSheet.BillingDate).FirstOrDefaultAsync();
+                var forUpdate = await _context.ReadingSheets.Where(x => x.ZoneBookId == readingSheet.ZoneBookId && x.BillingDate == readingSheet.BillingDate).FirstOrDefaultAsync();
                 if (forUpdate != null)
                 {
                     forUpdate.Name = readingSheet.Name;
                     forUpdate.BillingDate = readingSheet.BillingDate;
-                    forUpdate.Zone = readingSheet.Zone;
-                    forUpdate.Book = readingSheet.Book;
                     forUpdate.AssignedTo = readingSheet.AssignedTo;
+                    forUpdate.ZoneBookId = readingSheet.ZoneBookId;
                     forUpdate.UpdatedBy = userId;
                     forUpdate.DateUpdated = DateTime.Now;
                     readingSheet = forUpdate;

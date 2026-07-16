@@ -71,6 +71,8 @@ namespace TMCWD.Data.Context
 
         public DbSet<Tariff> Tariffs { get; set; }
 
+        public DbSet<ZoneBook> ZoneBooks { get; set; }
+
         #endregion
 
         #region constructors

@@ -23,11 +23,8 @@ namespace TMCWD.Model.Billing
         [DisplayName("Account Id")]
         public int AccountId { get; set; }
 
-        [DisplayName("Zone")]
-        public int Zone { get; set; }
-
-        [DisplayName("Book")]
-        public int Book { get; set; }
+        [DisplayName("Zone Book Id")]
+        public int ZoneBookId { get; set; }
 
         [DisplayName("Render Id")]
         public int ReaderId { get; set; }
