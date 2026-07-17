@@ -64,6 +64,22 @@ namespace TMCWD.Billing
             return ConvertJsonToZoneBooks(data);
         }
 
+        public async Task<List<ZoneBook>> GetZones()
+        {
+            var response = await _service.Client.GetAsync("api/ZoneBook/GetZones");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToZoneBooks(data);
+        }
+
+        public async Task<List<ZoneBook>> GetBooksByZone(int zone)
+        {
+            var response = await _service.Client.GetAsync($"api/ZoneBook/GetBooksByZone/{zone}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonToZoneBooks(data);
+        }
+
         public async Task<ZoneBook> GetByZoneAndBook(int zone, int book)
         {
             var response = await _service.Client.GetAsync($"api/ZoneBook/GetByZoneAndBook/{zone}/{book}");

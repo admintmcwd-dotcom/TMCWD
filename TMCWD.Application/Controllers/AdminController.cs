@@ -206,6 +206,15 @@ namespace TMCWD.Application.Controllers
             return RedirectToAction("OtherFeeTypes", "Admin");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetUsersByRole(int role)
+        {
+            UserRole userRole = (UserRole)role;
+            var users = await _userTransaction.GetUsersByRole(userRole);
+            if(users == null) return NotFound();
+            return Ok(users);
+        }
+
     }
 
 }

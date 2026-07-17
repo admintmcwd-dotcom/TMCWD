@@ -20,7 +20,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPost("SaveUpdate/{userId}")]
-        public async Task<ActionResult<User>> SaveUpdate(int userId, [FromBody] User user)
+        public async Task<ActionResult> SaveUpdate(int userId, [FromBody] User user)
         {
             StringBuilder sb = new();
 
@@ -55,7 +55,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<User>> Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
 
             if (id <= 0) return BadRequest("To get user, id must be supplied");
@@ -66,7 +66,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetByName/{name}")]
-        public async Task<ActionResult<User>> GetByName(string name)
+        public async Task<ActionResult> GetByName(string name)
         {
 
             if (String.IsNullOrEmpty(name.Trim())) return BadRequest("To get user, name must be supplied");
@@ -77,7 +77,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetByEmail/{email}")]
-        public async Task<ActionResult<User>> GetByEmail(string email)
+        public async Task<ActionResult> GetByEmail(string email)
         {
 
             if (String.IsNullOrEmpty(email.Trim())) return BadRequest("To get user, email must be supplied");
@@ -90,7 +90,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("GetUsers")]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult> GetUsers()
         {
             var users = await _userService.GetUsers();
             if (users == null || !users.Any()) return NotFound();
@@ -98,7 +98,7 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpPut("ChangePassword/{id}/{userId}/{newPassword}")]
-        public async Task<ActionResult<bool>> ChangePassword(int id, int userId, string newPassword)
+        public async Task<ActionResult> ChangePassword(int id, int userId, string newPassword)
         {
             StringBuilder sb = new();
             if (id <= 0) sb.AppendLine("To change password, user id must be supplied");
@@ -115,12 +115,20 @@ namespace TMCWD.Data.Controllers
         }
 
         [HttpGet("SearchUser/{searchString}")]
-        public async Task<ActionResult<IEnumerable<User>>> SearchUser(string searchString)
+        public async Task<ActionResult> SearchUser(string searchString)
         {
             var users = await _userService.SearchUser(searchString);
 
             if(users == null  || !users.Any()) return NotFound($"User(s) with value {searchString} was not found.");
 
+            return Ok(users);
+        }
+
+        [HttpGet("GetUsersByRole/{role}")]
+        public async Task<IActionResult> GetUsersByRole(int role)
+        {
+            var users = await _userService.GetUsersByRole(role);
+            if (users == null || !users.Any()) return NotFound();
             return Ok(users);
         }
 

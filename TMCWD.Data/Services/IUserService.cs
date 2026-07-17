@@ -9,5 +9,6 @@ namespace TMCWD.Data.Services
         Task<User?> GetByEmail(string email);
         Task<IEnumerable<User>?> GetUsers();
         Task<IEnumerable<User>?> SearchUser(string searchString);
+        Task<IEnumerable<User>> GetUsersByRole(int roleId);
     }
 }

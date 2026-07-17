@@ -7,8 +7,24 @@
       "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\views\\billing\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|d:\\projects\\tmcwd\\tmcwd.application\\views\\customersupport\\addeditrequest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\views\\customersupport\\addeditrequest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|d:\\projects\\tmcwd\\tmcwd.application\\controllers\\readingsheetcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\controllers\\readingsheetcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|d:\\projects\\tmcwd\\tmcwd.application\\views\\shared\\components\\calendar\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\views\\shared\\components\\calendar\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|d:\\projects\\tmcwd\\tmcwd.application\\views\\joborder\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\views\\joborder\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DCE5392C-28FB-4AC3-B636-C8C79FEA3F8D}|TMCWD.Model\\TMCWD.Model.csproj|d:\\projects\\tmcwd\\tmcwd.model\\enumerations.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DCE5392C-28FB-4AC3-B636-C8C79FEA3F8D}|TMCWD.Model\\TMCWD.Model.csproj|solutionrelative:tmcwd.model\\enumerations.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|d:\\projects\\tmcwd\\tmcwd.application\\viewcomponents\\calendarviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B013004-DA5A-2790-BDBC-61DAFFC3B9FB}|TMCWD.Application\\TMCWD.Application.csproj|solutionrelative:tmcwd.application\\viewcomponents\\calendarviewcomponent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,15 +46,67 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AddEditRequest.cshtml",
-              "DocumentMoniker": "D:\\Projects\\TMCWD\\TMCWD.Application\\Views\\CustomerSupport\\AddEditRequest.cshtml",
-              "RelativeDocumentMoniker": "TMCWD.Application\\Views\\CustomerSupport\\AddEditRequest.cshtml",
-              "ToolTip": "D:\\Projects\\TMCWD\\TMCWD.Application\\Views\\CustomerSupport\\AddEditRequest.cshtml",
-              "RelativeToolTip": "TMCWD.Application\\Views\\CustomerSupport\\AddEditRequest.cshtml",
-              "ViewState": "AgIAALcAAAAAAAAAAAAAAM0AAAAgAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "Default.cshtml",
+              "DocumentMoniker": "D:\\Projects\\TMCWD\\TMCWD.Application\\Views\\Shared\\Components\\Calendar\\Default.cshtml",
+              "RelativeDocumentMoniker": "TMCWD.Application\\Views\\Shared\\Components\\Calendar\\Default.cshtml",
+              "ToolTip": "D:\\Projects\\TMCWD\\TMCWD.Application\\Views\\Shared\\Components\\Calendar\\Default.cshtml",
+              "RelativeToolTip": "TMCWD.Application\\Views\\Shared\\Components\\Calendar\\Default.cshtml",
+              "ViewState": "AgIAAPMAAAAAAAAAAAAAABsBAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-07-16T07:15:33.751Z",
+              "WhenOpened": "2026-07-17T07:08:18.586Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CalendarViewComponent.cs",
+              "DocumentMoniker": "D:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\CalendarViewComponent.cs",
+              "RelativeDocumentMoniker": "TMCWD.Application\\ViewComponents\\CalendarViewComponent.cs",
+              "ToolTip": "D:\\Projects\\TMCWD\\TMCWD.Application\\ViewComponents\\CalendarViewComponent.cs",
+              "RelativeToolTip": "TMCWD.Application\\ViewComponents\\CalendarViewComponent.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-17T01:54:30.126Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Enumerations.cs",
+              "DocumentMoniker": "D:\\Projects\\TMCWD\\TMCWD.Model\\Enumerations.cs",
+              "RelativeDocumentMoniker": "TMCWD.Model\\Enumerations.cs",
+              "ToolTip": "D:\\Projects\\TMCWD\\TMCWD.Model\\Enumerations.cs",
+              "RelativeToolTip": "TMCWD.Model\\Enumerations.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-17T01:44:30.392Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\Projects\\TMCWD\\TMCWD.Application\\Views\\JobOrder\\Index.cshtml",
+              "RelativeDocumentMoniker": "TMCWD.Application\\Views\\JobOrder\\Index.cshtml",
+              "ToolTip": "D:\\Projects\\TMCWD\\TMCWD.Application\\Views\\JobOrder\\Index.cshtml",
+              "RelativeToolTip": "TMCWD.Application\\Views\\JobOrder\\Index.cshtml",
+              "ViewState": "AgIAAOYAAAAAAAAAAAASwPoAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-16T08:25:05.322Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ReadingSheetController.cs",
+              "DocumentMoniker": "D:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\ReadingSheetController.cs",
+              "RelativeDocumentMoniker": "TMCWD.Application\\Controllers\\ReadingSheetController.cs",
+              "ToolTip": "D:\\Projects\\TMCWD\\TMCWD.Application\\Controllers\\ReadingSheetController.cs",
+              "RelativeToolTip": "TMCWD.Application\\Controllers\\ReadingSheetController.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAD4v2oAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-16T07:38:42.621Z",
               "EditorCaption": ""
             },
             {
@@ -49,7 +117,7 @@
               "RelativeDocumentMoniker": "TMCWD.Application\\Views\\Billing\\Index.cshtml",
               "ToolTip": "D:\\Projects\\TMCWD\\TMCWD.Application\\Views\\Billing\\Index.cshtml",
               "RelativeToolTip": "TMCWD.Application\\Views\\Billing\\Index.cshtml",
-              "ViewState": "AgIAABUAAAAAAAAAAAAAADIAAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAADYAAAAAAAAAAAAiwEYAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-07-16T07:14:28.716Z",
               "EditorCaption": ""

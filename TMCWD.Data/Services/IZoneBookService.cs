@@ -11,6 +11,10 @@ namespace TMCWD.Data.Services
 
         public Task<List<ZoneBook>> GetByZone(int zone);
 
+        public Task<List<ZoneBook>> GetBooksByZone(int zone);
+
+        public Task<List<ZoneBook>> GetZones();
+
         public Task<ZoneBook> GetByZoneAndBook(int zone, int book);
 
         public Task<List<ZoneBook>> GetByWeek(int week);

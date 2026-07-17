@@ -3,90 +3,133 @@
 
 // Write your JavaScript code.
 
-HTMLElement.prototype.setDropdown = function (selectCallBack) {
+HTMLElement.prototype.SearchableDropdown = async function (options) {
     const elSelect = this;
-    var isListenersAttached = false;
+    //var isListenersAttached = false;
 
     if (elSelect.tagName.toLowerCase() === "select") {
         
         const parentDiv = elSelect.parentElement;
-        var btnCollapse = null;
-        var icon = null;
-        var elContent = null;
-        var elOptions = null;
 
         if (parentDiv) {
-            btnCollapse = parentDiv.querySelector("button");
-            if (btnCollapse) {
-                btnCollapse.addEventListener("click", (evt) => {
-                    evt.preventDefault();
-                    icon = btnCollapse.querySelector("i");
-                    elContent = parentDiv.getElementsByClassName("dropdown-options");
-                    icon.classList.toggle('fa-chevron-down');
-                    icon.classList.toggle('fa-chevron-up');
-                    elContent[0].classList.toggle("hidden");
 
-                    const inputs = parentDiv.getElementsByClassName("dropdown-input");
+            var elOptions =[];
+            const inputTexts = parentDiv.getElementsByClassName("dropdown-input");
+            const hiddenTexts = parentDiv.getElementsByClassName("selected-value");
+            const elContent = parentDiv.getElementById("dropdown-options");
+            const btnCollapse = parentDiv.querySelector("button");
+            const icon = btnCollapse.querySelector("i");
 
-                    if (isListenersAttached) return;
+            if (!inputTexts || !inputTexts[0]) return;
+            if (!hiddenTexts || !hiddenTexts[0]) return;
+            if (!elContent || !elContent[0]) return;
+            if (!btnCollapse) return;
+            if (!icon) return;
 
-                    var contents = elContent[0].children;
-                    var elOptions = [];
 
-                    [...contents].forEach((element) => {
-                        elOptions.push(element);
+            var itemClient = new WebClient(options.getItemUrl, options.getItemParameter);
+            var itemData = await itemClient.getAsync();
+
+            if (itemData) {
+                [...itemData].forEach((item) => {
+                    const lnk = document.createElement('a');
+                    lnk.href = '#';
+                    const par = document.createElement('p');
+                    par.classList.add('w-full', 'px-2', 'py-2', 'hover:bg-blue-500', 'hover:text-white');
+                    par.textContent = item.name;
+                    lnk.appendChild(par);
+                    elContent[0].appendChild(lnk);
+                    elOptions.push(lnk);
+
+                    lnk.addEventListener('click', (evt) => {
+                        evt.preventDefault();
+                        evt.stopPropagation();
+
+                        inputTexts[0].value = item[options.dataMemberText];
+                        hiddenTexts[0].value = item[options.dataMemberValue];
+
+                        icon.classList.toggle('fa-chevron-down');
+                        icon.classList.toggle('fa-chevron-up');f
+                        elContent[0].classList.toggle("hidden");
+
+                        if (options.onSelectChange) {
+                            options.onSelectChange(data);
+                        }
                     });
-
-                    var links = elContent[0].querySelectorAll('a');
-                    if (links) {
-
-                        [...links].forEach((link) => {
-                            link.addEventListener("click", (evt) => {
-                                evt.preventDefault();
-                                evt.stopPropagation();
-                                
-                                const elSelectedValues = parentDiv.getElementsByClassName("selected-value");
-                                var itemId = evt.target.parentElement.dataset.itemid;
-                                var itemName = evt.target.parentElement.dataset.itemname;
-                                var unitSellingPrice = evt.target.parentElement.dataset.unitsellingprice;
-                                if (inputs) inputs[0].value = itemName;
-                                if (elSelectedValues) elSelectedValues[0].value = itemId;
-                                if (selectCallBack) selectCallBack(itemId, itemName, unitSellingPrice);
-                                icon.classList.toggle('fa-chevron-down');
-                                icon.classList.toggle('fa-chevron-up');
-                                elContent[0].classList.toggle("hidden");
-                            });
-                        });
-                    }
-
-
-                    if (inputs) {
-                        inputs[0].addEventListener("input", (evt) => {
-                            evt.preventDefault();
-                            evt.stopPropagation();
-                            var searchString = evt.target.value.toLowerCase();
-                            const elFiltered = [...elOptions].filter((element, index, array) => {
-                                var parContent = element.querySelector("p");
-                                return parContent.textContent.toLowerCase().includes(searchString.toLowerCase());
-                            });
-                            elContent[0].replaceChildren();
-
-                            var result = searchString.trim() == '' ? elOptions : elFiltered;
-                            [...result].forEach((el) => {
-                                elContent[0].appendChild(el);
-                            });
-                            if (elContent[0].classList.contains('hidden')) {
-                                icon.classList.toggle('fa-chevron-down');
-                                icon.classList.toggle('fa-chevron-up');
-                                elContent[0].classList.toggle("hidden");
-                            }
-                        });
-                    }
-
-                    isListenersAttached = true;
 
                 });
             }
+
+            btnCollapse.addEventListener("click", (evt) => {
+                evt.preventDefault();
+                //elContent = parentDiv.getElementsByClassName("dropdown-options");
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+                elContent[0].classList.toggle("hidden");
+
+                //const inputs = parentDiv.getElementsByClassName("dropdown-input");
+
+                //if (isListenersAttached) return;
+
+                // var contents = elContent[0].children;
+
+                // [...contents].forEach((element) => {
+                //     elOptions.push(element);
+                // });
+
+                // var links = elContent[0].querySelectorAll('a');
+                // if (links) {
+
+                //     [...links].forEach((link) => {
+                //         link.addEventListener("click", (evt) => {
+                //             evt.preventDefault();
+                //             evt.stopPropagation();
+                                
+                //             const elSelectedValues = parentDiv.getElementsByClassName("selected-value");
+                //             var itemId = evt.target.parentElement.dataset.itemid;
+                //             var itemName = evt.target.parentElement.dataset.itemname;
+                //             var unitSellingPrice = evt.target.parentElement.dataset.unitsellingprice;
+                //             if (inputs) inputs[0].value = itemName;
+                //             if (elSelectedValues) elSelectedValues[0].value = itemId;
+                //             if (selectCallBack) selectCallBack(itemId, itemName, unitSellingPrice);
+                //             icon.classList.toggle('fa-chevron-down');
+                //             icon.classList.toggle('fa-chevron-up');
+                //             elContent[0].classList.toggle("hidden");
+                //         });
+                //     });
+                // }
+
+            });
+
+            inputTexts[0].addEventListener("input", (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                var searchString = evt.target.value.toLowerCase();
+                if (searchString == '') {
+                    hiddenTexts[0].value = '';
+                    if (options.onSelectionClear) options.onSelectionClear();
+                }
+
+                const elFiltered = [...elOptions].filter((element, index, array) => {
+                    var parContent = element.querySelector("p");
+                    return parContent.textContent.toLowerCase().includes(searchString.toLowerCase());
+                });
+
+                elContent[0].replaceChildren();
+
+                var result = searchString.trim() == '' ? elOptions : elFiltered;
+                [...result].forEach((el) => {
+                    elContent[0].appendChild(el);
+                });
+                if (elContent[0].classList.contains('hidden')) {
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                    elContent[0].classList.toggle("hidden");
+                }
+            });
+
+            //isListenersAttached = true;
+
         }
     }
 };

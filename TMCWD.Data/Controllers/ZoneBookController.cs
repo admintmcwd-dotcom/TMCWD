@@ -58,6 +58,22 @@ namespace TMCWD.Data.Controllers
             return Ok(zoneBook);
         }
 
+        [HttpGet("GetZones")]
+        public async Task<IActionResult> GetZones()
+        {
+            var zones = await _service.GetZones();
+            if (zones == null || !zones.Any()) return NotFound();
+            return Ok(zones);
+        }
+
+        [HttpGet("GetBooksByZone/{zone}")]
+        public async Task<IActionResult> GetBooksByZone(int zone)
+        {
+            var books = await _service.GetBooksByZone(zone);
+            if (books == null || !books.Any()) return NotFound();
+            return Ok(books);
+        }
+
         [HttpGet("GetByWeek/{week}")]
         public async Task<IActionResult> GetByWeek(int week)
         {

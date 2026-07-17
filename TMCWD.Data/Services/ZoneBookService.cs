@@ -48,6 +48,26 @@ namespace TMCWD.Data.Services
             return zoneBooks;
         }
 
+        public async Task<List<ZoneBook>> GetZones()
+        {
+            var zones = await (from zoneData in _context.ZoneBooks
+                               select new ZoneBook
+                               {
+                                   Id = 0,
+                                   Area = string.Empty,
+                                   Book = 0,
+                                   Week = 0,
+                                   Zone = zoneData.Zone
+                               }).Distinct().ToListAsync();
+            return zones;
+        }
+
+        public async Task<List<ZoneBook>> GetBooksByZone(int zone)
+        {
+            var books = await _context.ZoneBooks.Where(x => x.Zone == zone).ToListAsync();
+            return books;
+        }
+
         public async Task<ZoneBook> GetByZoneAndBook(int zone, int book)
         {
             var zoneBook = await _context.ZoneBooks.Where(x => x.Zone == zone && x.Book == book).FirstOrDefaultAsync();

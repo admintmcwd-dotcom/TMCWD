@@ -104,6 +104,13 @@ namespace TMCWD.Application.Controllers
             return Ok(zones);
         }
 
+        public async Task<IActionResult> GetBooksByZone(int zone)
+        {
+            var books = await _zoneBookTrans.GetBooksByZone(zone);
+            if(books == null) return NotFound();
+            return Ok(books);
+        }
+
         #endregion
 
     }

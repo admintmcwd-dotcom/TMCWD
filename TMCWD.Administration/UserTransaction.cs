@@ -133,6 +133,14 @@ namespace TMCWD.Administration
             return ConvertJsonStringToUsers(data);
         }
 
+        public async Task<List<User>> GetUsersByRole(UserRole role)
+        {
+            var response = await _webService.Client.GetAsync($"api/User/GetUsersByClient/{(int)role}");
+            var data = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return null;
+            return ConvertJsonStringToUsers(data);
+        }
+
         #endregion
 
     }

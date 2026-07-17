@@ -3,7 +3,8 @@
     SuperAdmin = 1,
     CustomerRepresentative = 2,
     Engineer = 3,
-    Guest = 4
+    MeterReader = 4,
+    Guest = 5
 }
 
 public enum ErrorType
